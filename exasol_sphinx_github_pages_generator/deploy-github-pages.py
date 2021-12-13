@@ -48,7 +48,6 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
         os.chdir(worktree)
         currentworkdir = os.getcwd()
         print(currentworkdir)
-        #run(["pushd", worktree])
         # We need to set the TARGET_BRANCH to the default branch
         # The default branch from github for pages is gh-pages, but you can change that.
         # Not using the default branch actually has benefits, because the branch gh-pages enforces some things.

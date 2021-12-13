@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "exasol-sphinx-github-pages-generator"
+version = "0.1.0"
+description = "Generates Sphinx GitHub pages for a given Git Repository"
+
+license = "MIT"
+
+authors = [
+    "Marlene Kreß <marlene.kress@exasol.com>"
+]
+
+readme = 'README.rst'
+
+repository = "https://github.com/exasol/sphinx-github-pages-generator"
+homepage = "https://github.com/exasol/sphinx-github-pages-generator"
+
+keywords = ['exasol', 'github pages', 'documentaion']
+
+[tool.poetry.dependencies]
+python = ">=3.6.1,<4.0"
+
+
+[tool.poetry.dev-dependencies]
+Sphinx = "^3.5.3"
+poethepoet = "^0.10.0"
+
+
+[tool.poe.tasks]
+build-html-doc = {shell = """
+    cd "$(git rev-parse --show-toplevel)/doc";
+    make clean-build; make html
+    """ }
+open-html-doc = { shell = """
+    cd "$(git rev-parse --show-toplevel)/doc";
+    xdg-open _build/html/index.html""" }
+build-and-open-html-doc = [ "build-html-doc", "open-html-doc" ]
+
+commit-html-doc-to-github-pages-main = { shell = "cd $(git rev-parse --show-toplevel)/doc; bash deploy-to-github-pages-main.sh commit" }
+push-html-doc-to-github-pages-main = { shell = "cd $(git rev-parse --show-toplevel)/doc; bash deploy-to-github-pages-main.sh push" }
+commit-html-doc-to-github-pages-current = { shell = "cd $(git rev-parse --show-toplevel)/doc; bash deploy-to-github-pages-current.sh commit" }
+push-html-doc-to-github-pages-current = { shell = "cd $(git rev-parse --show-toplevel)/doc; bash deploy-to-github-pages-current.sh push" }
+commit-html-doc-to-github-pages-release = { shell = "cd $(git rev-parse --show-toplevel)/doc; bash deploy-to-github-pages-release.sh commit" }
+push-html-doc-to-github-pages-release = { shell = "cd $(git rev-parse --show-toplevel)/doc; bash deploy-to-github-pages-release.sh push" }
+
+
+test =  "pytest tests"
