@@ -111,7 +111,8 @@ def git_commit_and_push(push_origin, push_enabled, source_branch, output_dir, cu
         run(["git", "push", push_origin, target_branch])
     #popd
 
-def main(argv):
+def deploy_github_pages():
+    #sys.argv[1:]
     args = Parser().args
     script_dir = Path(__file__).parent
     source_dir = script_dir.joinpath("doc") # this is where the docs are. TODO make dynamic
@@ -138,7 +139,3 @@ def main(argv):
         output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir)
         git_commit_and_push(args.push_origin, args.push_enabled, source_branch, output_dir, current_commit_id.stdout, args.target_branch)
 
-
-
-if __name__ == "__main__":
-   main(sys.argv[1:])
