@@ -77,7 +77,7 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
 
 def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir):
     print("Build with sphinx")
-    run(["sphinx-build", "-M", "html", "-c", Path(__file__).parent, source_dir, build_dir, "-W"])
+    run(["sphinx-build", "-M", "html", "-c", source_dir, source_dir, build_dir, "-W"]) # TODO own path for source dir?
     print("Generated HTML Output")
     html_output_dir = build_dir + "/html/"
     print(f"Using html_output_dir={html_output_dir}")
