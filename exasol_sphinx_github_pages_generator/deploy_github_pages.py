@@ -81,7 +81,7 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir)
     print("Generated HTML Output")
     html_output_dir = build_dir + "/html/"
     print(f"Using html_output_dir={html_output_dir}")
-    #run([ls -la "$HTML_OUTPUT_DIR"])
+    run(["ls", "-la", html_output_dir])
 
     output_dir = Path(worktree + "/" + source_branch)
     print(f"Using output_dir={output_dir}")
@@ -93,9 +93,9 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir)
     print(f"Copying HTML output {html_output_dir} to the output directory {output_dir}")
     # TODO find "$HTML_OUTPUT_DIR" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
-
+    os.mkdir(f"{worktree}/.nojekyll")
     # touch "$WORKTREE/.nojekyll"
-    # run([ls -la "$OUTPUT_DIR"])
+    run(["ls", "-la", output_dir])
     return output_dir
 
 def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, output_dir, current_commit_id, target_branch):
@@ -103,9 +103,9 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
     print(currentworkdir)
     #pushd "$WORKTREE"
     os.chdir(worktree)
-    print("Current directory before commit and push $PWD") #TODO
+    print(f"Current directory before commit and push {worktree}") #TODO
     print("Git commit")
-    with open (f"{output_dir}/.source", "w+") as file:
+    with open(f"{output_dir}/.source", "w+") as file:
         file.write(f"BRANCH={source_branch}")
         file.write(f"COMMIT_ID={current_commit_id}")
     run(["git", "add", "."])
