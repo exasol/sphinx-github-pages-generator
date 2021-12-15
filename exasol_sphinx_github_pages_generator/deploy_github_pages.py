@@ -132,6 +132,7 @@ def deploy_github_pages(argv):
     with TemporaryDirectory() as tempdir:
         worktree = tempdir + "/worktree"
         build_dir = tempdir + "/build"
+        os.mkdir(build_dir)
 
         print("Using following Directories:")
         print("TMP=" + tempdir)
