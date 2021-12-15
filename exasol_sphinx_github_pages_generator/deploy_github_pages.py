@@ -31,7 +31,7 @@ def detect_or_verify_source_branch(source_branch, current_commit_id):
 def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True, text=True)
     print("target_branch_exists : " + target_branch_exists.stdout + str(target_branch_exists.returncode) + target_branch_exists.stderr)
-    if target_branch_exists.returncode != 0: #TODO better
+    if target_branch_exists.returncode == 0: #TODO better
         print(f"Create worktree from existing branch {target_branch}")
         run(["git", "worktree", "add", worktree, target_branch])
     else:
@@ -71,7 +71,8 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
             run(["git", "reset", "--hard", gh_pages_root_branch])
             print(f"Delete root branch {gh_pages_root_branch}")
             run(["git", "branch", "-D", gh_pages_root_branch])
-        # popd ?
+        os.chdir(currentworkdir)
+        # popd ? TODO
 
 
 def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir):
@@ -113,7 +114,6 @@ def git_commit_and_push(push_origin, push_enabled, source_branch, output_dir, cu
 
 def deploy_github_pages(argv):
     #TODO add errors for wrong arguments?
-    #sys.argv[1:]
     args = Parser(argv).args
     script_dir = Path(__file__).parent
     source_dir = script_dir.joinpath("doc") # this is where the docs are. TODO make dynamic
