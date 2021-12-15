@@ -2,7 +2,7 @@ import argparse
 
 
 class Parser:
-    def __init__(self):
+    def __init__(self, argv):
         parser = argparse.ArgumentParser(description='Process some integers.')
         parser.add_argument('--target_branch', type=str,
                             default="main_doc_test",
@@ -16,4 +16,4 @@ class Parser:
         parser.add_argument('--source_branch', type=str,
                             default="main",
                             help='current branch')
-        self.args = parser.parse_args()
+        self.args = parser.parse_args(argv)

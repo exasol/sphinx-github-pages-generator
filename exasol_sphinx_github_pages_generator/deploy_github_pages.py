@@ -111,9 +111,10 @@ def git_commit_and_push(push_origin, push_enabled, source_branch, output_dir, cu
         run(["git", "push", push_origin, target_branch])
     #popd
 
-def deploy_github_pages():
+def deploy_github_pages(argv):
+    #TODO add errors for wrong arguments?
     #sys.argv[1:]
-    args = Parser().args
+    args = Parser(argv).args
     script_dir = Path(__file__).parent
     source_dir = script_dir.joinpath("doc") # this is where the docs are. TODO make dynamic
     print(source_dir)
