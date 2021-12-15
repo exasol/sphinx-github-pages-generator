@@ -79,7 +79,7 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir)
     print("Build with sphinx")
     run(["sphinx-build", "-M", "html", "-c", source_dir, source_dir, build_dir, "-W"]) # TODO own path for source dir?
     print("Generated HTML Output")
-    html_output_dir = build_dir + "/html/"
+    html_output_dir = build_dir + "/html"
     print(f"Using html_output_dir={html_output_dir}")
     run(["ls", "-la", html_output_dir])
 
