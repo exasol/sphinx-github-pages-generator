@@ -16,4 +16,5 @@ class Parser:
         parser.add_argument('--source_branch', type=str,
                             default="main",
                             help='current branch')
+        parser.add_argument('--source_dir', type=str, default="", help="The doc directory your documentation fildes adn conf.py reside in")
         self.args = parser.parse_args(argv)

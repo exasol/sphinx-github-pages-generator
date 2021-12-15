@@ -120,9 +120,9 @@ def deploy_github_pages(argv):
     #TODO add errors for wrong arguments?
     args = Parser(argv).args
     script_dir = Path(__file__).parent
-    source_dir = script_dir.joinpath("doc") # this is where the docs are. TODO make dynamic
-    print(source_dir)
+    source_dir = args.source_dir#script_dir.joinpath("doc") # this is where the docs are. TODO make dynamic
     print("Commandline parameter")
+    print("source_dir= " + source_dir)
     print("TARGET_BRANCH=" + args.target_branch)
     print("PUSH_ORIGIN=" + args.push_origin)
     print("PUSH_ENABLED=" + args.push_enabled)
