@@ -38,9 +38,7 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
         print(f"Create worktree from new branch {target_branch}")
         # We need to create the worktree directly with the TARGET_BRANCH,
         # because every other branch could be already checked out
-        print("dbug1")
         run(["git", "branch", target_branch])
-        print("dbug2")
         run(["git", "worktree", "add", worktree, target_branch])
         currentworkdir = os.getcwd()
         print(currentworkdir)
@@ -74,10 +72,9 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
         os.chdir(currentworkdir)
         # popd ? TODO
 
-
 def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir):
     print("Build with sphinx")
-    run(["sphinx-build", "-M", "html", source_dir, build_dir, "-W"])
+    run(["sphinx-build", "-c", Path(__file__).parent, "-M", "html", source_dir, build_dir, "-W"])
     print("Generated HTML Output")
     html_output_dir = build_dir + "/html/"
     print(f"Using html_output_dir={html_output_dir}")
