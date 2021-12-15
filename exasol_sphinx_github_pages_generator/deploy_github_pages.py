@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from Parser import Parser
+from exasol_sphinx_github_pages_generator.Parser import Parser
 from tempfile import TemporaryDirectory
 from subprocess import run
 import shutil
