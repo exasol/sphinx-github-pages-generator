@@ -75,8 +75,9 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
         os.chdir(currentworkdir)
         # popd ? TODO
 
-def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir):
+def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, module_path):
     print("Build with sphinx")
+    run(["sphinx-apidoc", "-T", "-d", "1", "--seperate", "-o", "api", module_path ])
     run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir]) # TODO own path for source dir?
     print("Generated HTML Output")
     html_output_dir = build_dir + "/html"
@@ -120,9 +121,11 @@ def deploy_github_pages(argv):
     #TODO add errors for wrong arguments?
     args = Parser(argv).args
     script_dir = Path(__file__).parent
-    source_dir = args.source_dir#script_dir.joinpath("doc") # this is where the docs are. TODO make dynamic
+
+    source_dir = args.source_dir
     print("Commandline parameter")
     print("source_dir= " + source_dir)
+    print("module_path= " + args.module_path)
     print("TARGET_BRANCH=" + args.target_branch)
     print("PUSH_ORIGIN=" + args.push_origin)
     print("PUSH_ENABLED=" + args.push_enabled)
@@ -142,6 +145,14 @@ def deploy_github_pages(argv):
 
         source_branch = detect_or_verify_source_branch(args.source_branch, current_commit_id.stdout)
         checkout_target_branch_as_worktree(args.target_branch, worktree, args.push_origin)
-        output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir)
+        output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, args.module_path)
         git_commit_and_push(worktree, args.push_origin, args.push_enabled, source_branch, output_dir, current_commit_id.stdout, args.target_branch)
+
+        if Path("_build").exists() and Path("_build").is_dir(): #TODO fix paths
+            print(f"Removing existing output directory _build")
+            shutil.rmtree(Path("_build"))
+        if Path("api").exists() and Path("api").is_dir():
+            print(f"Removing existing output directory api")
+            shutil.rmtree(Path("api"))
+
 
