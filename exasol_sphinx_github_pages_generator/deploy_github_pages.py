@@ -77,12 +77,14 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
 
 def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, module_path):
     print("Build with sphinx")
+    currentworkdir = os.getcwd()
+    print("currentworkdir :" + currentworkdir)
     run(["sphinx-apidoc", "-T", "-d", "1", "--seperate", "-o", "api", module_path ])
     run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir]) # TODO own path for source dir?
     print("Generated HTML Output")
     html_output_dir = build_dir + "/html"
     print(f"Using html_output_dir={html_output_dir}")
-    run(["ls", "-la", html_output_dir])
+    run(["ls", "-la", build_dir])
 
     output_dir = Path(worktree + "/" + source_branch)
     print(f"Using output_dir={output_dir}")
@@ -119,6 +121,7 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
 
 def deploy_github_pages(argv):
     #TODO add errors for wrong arguments?
+    #TODo do we want to auto generte te toctree files? possible? autosummary?
     args = Parser(argv).args
     script_dir = Path(__file__).parent
 
