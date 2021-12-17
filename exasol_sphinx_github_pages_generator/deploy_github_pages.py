@@ -97,7 +97,7 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     for obj in os.listdir(build_dir):
         dest_path = output_dir.joinpath(obj)
         if not dest_path.exists() and not dest_path.is_dir():
-            os.mkdirs(dest_path)
+            dest_path.mkdir(parents=True)
         shutil.copytree(obj, output_dir, dirs_exist_ok=True, symlinks=True)
     # TODO find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
