@@ -94,7 +94,8 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     print(f"(Re)Creating output directory {output_dir}")
     output_dir.mkdir(parents=True)
     print(f"Copying HTML output {build_dir} to the output directory {output_dir}")
-    shutil.move(build_dir + "/", output_dir)
+    for obj in os.listdir(build_dir):
+        shutil.move(obj + "/", output_dir)
     # TODO find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
     os.mkdir(f"{worktree}/.nojekyll")
