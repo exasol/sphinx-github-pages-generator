@@ -82,8 +82,8 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     run(["sphinx-apidoc", "-T", "-d", "1", "--seperate", "-o", "api", module_path ])
     run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir]) # TODO own path for source dir?
     print("Generated HTML Output")
-    html_output_dir = build_dir + "/html"
-    print(f"Using html_output_dir={html_output_dir}")
+    #html_output_dir = build_dir + "/html"
+    print(f"Using html_output_dir={build_dir}")
     run(["ls", "-la", build_dir])
 
     output_dir = Path(worktree + "/" + source_branch)
@@ -93,8 +93,9 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
         shutil.rmtree(output_dir)
     print(f"(Re)Creating output directory {output_dir}")
     output_dir.mkdir(parents=True)
-    print(f"Copying HTML output {html_output_dir} to the output directory {output_dir}")
-    # TODO find "$HTML_OUTPUT_DIR" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
+    print(f"Copying HTML output {build_dir} to the output directory {output_dir}")
+    shutil.move(build_dir + "/", output_dir)
+    # TODO find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
     os.mkdir(f"{worktree}/.nojekyll")
     # touch "$WORKTREE/.nojekyll"
