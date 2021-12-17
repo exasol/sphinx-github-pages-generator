@@ -98,7 +98,7 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
         dest_path = output_dir.joinpath(obj)
         if not dest_path.exists() and not dest_path.is_dir():
             dest_path.mkdir(parents=True)
-        shutil.copytree(build_dir + "/" + str(obj), output_dir, dirs_exist_ok=True, symlinks=True)
+        shutil.move(build_dir + "/" + str(obj), output_dir)
     # TODO find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
     os.mkdir(f"{worktree}/.nojekyll")
