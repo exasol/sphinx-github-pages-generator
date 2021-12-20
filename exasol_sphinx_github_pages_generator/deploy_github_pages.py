@@ -75,7 +75,7 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
         os.chdir(currentworkdir)
         # popd ? TODO
 
-def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, module_path):
+def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, module_path, target_branch):
     print("Build with sphinx")
     currentworkdir = os.getcwd()
     print("currentworkdir :" + currentworkdir)
@@ -86,7 +86,7 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     print(f"Using html_output_dir={build_dir}")
     run(["ls", "-la", build_dir])
 
-    output_dir = Path(worktree + "/" + source_branch) #why source here?
+    output_dir = Path(worktree + "/" + target_branch) #why source here?
     print(f"Using output_dir={output_dir}")
     if output_dir.exists() and output_dir.is_dir():
         print(f"Removing existing output directory {output_dir}")
@@ -119,7 +119,7 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
     run(["git", "status"])
     if push_origin != "" and push_enabled == "push":
         print(f"Git push {push_origin} {target_branch}")
-        run(["git", "push" ,"-v"]) #push_origin, target_branch
+        run(["git", "push", "-v", push_origin, target_branch]) #push_origin, target_branch
     os.chdir(currentworkdir) #Todo do this outside of func?
     #popd
 
@@ -152,7 +152,7 @@ def deploy_github_pages(argv):
 
         source_branch = detect_or_verify_source_branch(args.source_branch, current_commit_id.stdout)
         checkout_target_branch_as_worktree(args.target_branch, worktree, args.push_origin)
-        output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, args.module_path)
+        output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, args.module_path, args.target_branch)
         git_commit_and_push(worktree, args.push_origin, args.push_enabled, source_branch, output_dir, current_commit_id.stdout, args.target_branch)
 
         if Path("_build").exists() and Path("_build").is_dir(): #TODO fix paths(unneecesary is all is in tempdir)
