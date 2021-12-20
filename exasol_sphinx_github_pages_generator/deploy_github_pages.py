@@ -86,7 +86,7 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     print(f"Using html_output_dir={build_dir}")
     run(["ls", "-la", build_dir])
 
-    output_dir = Path(worktree + "/" + source_branch)
+    output_dir = Path(worktree + "/" + source_branch) #why source here?
     print(f"Using output_dir={output_dir}")
     if output_dir.exists() and output_dir.is_dir():
         print(f"Removing existing output directory {output_dir}")
@@ -119,7 +119,7 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
     run(["git", "status"])
     if push_origin != "" and push_enabled == "push":
         print(f"Git push {push_origin} {target_branch}")
-        run(["git", "push", push_origin, target_branch])
+        run(["git", "push" ,"-v"]) #push_origin, target_branch
     os.chdir(currentworkdir) #Todo do this outside of func?
     #popd
 
