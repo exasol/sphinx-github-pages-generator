@@ -114,7 +114,7 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
         file.write(f"BRANCH={source_branch}")
         file.write(f"COMMIT_ID={current_commit_id}")
     run(["git", "status"])
-    run(["git", "add", "."])
+    run(["git", "add", "-v", "."])
     run(["git", "diff-index", "--quiet", "HEAD", "--", "||", "git", "commit", "--no-verify", "-m", f"Update documentation from source branch {source_branch} with commit id {current_commit_id}"])
     run(["git", "status"])
     if push_origin != "" and push_enabled == "push":
