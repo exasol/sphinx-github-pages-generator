@@ -60,7 +60,7 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
         gh_pages_root_branch = "github-pages/root" # is needed to temporarly create a new root commit
         gh_pages_main_branch = "github-pages/main"
         gh_pages_main_branch_exists = run(["git", "show-ref", f"refs/heads/{push_origin}/{gh_pages_main_branch}", "||", "echo"], capture_output=True, text=True)
-        if gh_pages_main_branch_exists.stdout != "":
+        if gh_pages_main_branch_exists.returncode == 0:
             run(["git", "reset",  "--hard", f"{push_origin}/{gh_pages_main_branch}"])
         else:
             print(f"Creating a new empty root commit for the Github Pages in root branch {gh_pages_root_branch}.")
@@ -95,9 +95,6 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     output_dir.mkdir(parents=True)
     print(f"Copying HTML output {build_dir} to the output directory {output_dir}")
     for obj in os.listdir(build_dir):
-        dest_path = output_dir.joinpath(obj)
-        #if not dest_path.exists() and not dest_path.is_dir():
-        #    dest_path.mkdir(parents=True)
         shutil.move(build_dir + "/" + str(obj), output_dir)
     # TODO find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
@@ -111,7 +108,7 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
     print(currentworkdir)
     #pushd "$WORKTREE"
     os.chdir(worktree)
-    print(f"Current directory before commit and push {worktree}") #TODO
+    print(f"Current directory before commit and push {os.getcwd()}") #TODO
     print("Git commit")
     with open(f"{output_dir}/.source", "w+") as file:
         file.write(f"BRANCH={source_branch}")
@@ -156,7 +153,7 @@ def deploy_github_pages(argv):
         output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, args.module_path)
         git_commit_and_push(worktree, args.push_origin, args.push_enabled, source_branch, output_dir, current_commit_id.stdout, args.target_branch)
 
-        if Path("_build").exists() and Path("_build").is_dir(): #TODO fix paths
+        if Path("_build").exists() and Path("_build").is_dir(): #TODO fix paths(unneecesary is all is in tempdir)
             print(f"Removing existing output directory _build")
             shutil.rmtree(Path("_build"))
         if Path("api").exists() and Path("api").is_dir():
