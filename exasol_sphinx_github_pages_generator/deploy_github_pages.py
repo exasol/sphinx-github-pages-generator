@@ -5,15 +5,8 @@ from tempfile import TemporaryDirectory
 from subprocess import run
 import shutil
 import os
-# TODO toml set tass correctly?
-# tODO call the scipts from generator here istead of using them directly
-# TODO change parsing to https://click.palletsprojects.com/en/8.0.x/
-# TODO tests
-# todo chnge conf to be per project, add path param
-
 
 def detect_or_verify_source_branch(source_branch, current_commit_id):
-    # tODO test
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
     if source_branch == "" :
         if current_branch.stdout == "" :
@@ -34,7 +27,7 @@ def detect_or_verify_source_branch(source_branch, current_commit_id):
 def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True, text=True)
     print("target_branch_exists : " + target_branch_exists.stdout + str(target_branch_exists.returncode) + target_branch_exists.stderr)
-    if target_branch_exists.returncode == 0: #TODO better
+    if target_branch_exists.returncode == 0:
         print(f"Create worktree from existing branch {target_branch}")
         run(["git", "worktree", "add", worktree, target_branch])
     else:
@@ -73,7 +66,6 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
             print(f"Delete root branch {gh_pages_root_branch}")
             run(["git", "branch", "-D", gh_pages_root_branch])
         os.chdir(currentworkdir)
-        # popd ? TODO
 
 def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, module_path):
     print("Build with sphinx")
@@ -82,7 +74,6 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     run(["sphinx-apidoc", "-T", "-d", "1", "-e", "-o", "api", module_path])
     run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir]) # TODO own path for source dir?
     print("Generated HTML Output")
-    #html_output_dir = build_dir + "/html"
     print(f"Using html_output_dir={build_dir}")
     run(["ls", "-la", build_dir])
 
@@ -96,9 +87,9 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     print(f"Copying HTML output {build_dir} to the output directory {output_dir}")
     for obj in os.listdir(build_dir):
         shutil.move(build_dir + "/" + str(obj), output_dir)
-    # TODO find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
+    # TODO test correctness of : find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
-    os.mkdir(f"{worktree}/.nojekyll")#todo not working
+    open(f"{worktree}/.nojekyll", "w").close()
     # touch "$WORKTREE/.nojekyll"
     run(["ls", "-la", output_dir])
     return output_dir
@@ -108,7 +99,7 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
     currentworkdir = os.getcwd()
     print(currentworkdir)
     os.chdir(worktree)
-    print(f"Current directory before commit and push {os.getcwd()}") #TODO
+    print(f"Current directory before commit and push {os.getcwd()}")
     print("Git commit")
     with open(f"{output_dir}/.source", "w+") as file:
         file.write(f"BRANCH={source_branch} \n")
@@ -122,14 +113,10 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
     if push_origin != "" and push_enabled == "push":
         print(f"Git push {push_origin} {target_branch}")
         run(["git", "push", push_origin, target_branch])
-    os.chdir(currentworkdir) #Todo do this outside of func?
-    #popd
+    os.chdir(currentworkdir)
 
 def deploy_github_pages(argv):
-    #TODO add errors for wrong arguments?
-    #TODo do we want to auto generte te toctree files? possible? autosummary?
     args = Parser(argv).args
-    script_dir = Path(__file__).parent
 
     source_dir = args.source_dir
     print("Commandline parameter")
@@ -140,7 +127,7 @@ def deploy_github_pages(argv):
     print("PUSH_ENABLED=" + args.push_enabled)
     print("SOURCE_BRANCH=" + args.source_branch + "\n")
 
-    current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True) # TODO gets id of THIS repo. change to other repo(everywhere).
+    current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True)
     with TemporaryDirectory() as tempdir:
         worktree = tempdir + "/worktree"
         build_dir = tempdir + "/build"
@@ -156,12 +143,5 @@ def deploy_github_pages(argv):
         checkout_target_branch_as_worktree(args.target_branch, worktree, args.push_origin)
         output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, args.module_path)
         git_commit_and_push(worktree, args.push_origin, args.push_enabled, source_branch, output_dir, current_commit_id.stdout, args.target_branch)
-
-        if Path("_build").exists() and Path("_build").is_dir(): #TODO fix paths(unneecesary is all is in tempdir)
-            print(f"Removing existing output directory _build")
-            shutil.rmtree(Path("_build"))
-        if Path("api").exists() and Path("api").is_dir():
-            print(f"Removing existing output directory api")
-            shutil.rmtree(Path("api"))
 
 
