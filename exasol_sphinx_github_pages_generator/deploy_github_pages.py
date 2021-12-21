@@ -71,8 +71,14 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     print("Build with sphinx")
     currentworkdir = os.getcwd()
     print("currentworkdir :" + currentworkdir)
-    run(["sphinx-apidoc", "-T", "-d", "1", "-e", "-o", "api", module_path])
-    run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir]) # TODO own path for source dir?
+    # automatically generates Sphinx sources inside the "api" directory that document
+    # the package found in "module_path"
+    # -T: not table of contents
+    # -e: put documentation for ech module on own page
+    run(["sphinx-apidoc", "-T", "-e", "-o", "api", module_path])
+    # Builds the Sphinx documentation. Generates html files inside "build_dir" using "source_dir"
+    # -W: Turns warnings into errors
+    run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir])
     print("Generated HTML Output")
     print(f"Using html_output_dir={build_dir}")
     run(["ls", "-la", build_dir])
