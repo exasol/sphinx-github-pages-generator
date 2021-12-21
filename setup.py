@@ -14,9 +14,9 @@ setup_kwargs = {
     'name': 'exasol-sphinx-github-pages-generator',
     'version': '0.1.0',
     'description': 'Generates Sphinx GitHub pages for a given Git Repository',
-    'long_description': '#####################\nSphinx Github-pages generator\n#####################\n\n********\nOverview\n********\n\nGenerates Sphinx GitHub pages for a given Git Repository.\n\nIn a Nutshell\n=============\n\nPrerequisites\n-------------\n\n- Python 3.6+\n\nInstallation\n-------------\n\nInstall the package from Github via `pip`::\n\n    pip install -e git://github.com/exasol/bucketfs-utils-python.git@{tag name}#egg=exasol-bucketfs-utils-python\n\nDocumentation\n-------------\n\n`Documentation for the latest release <https://exasol.github.io/bucketfs-utils-python/main>`_ is hosted on the Github Pages of this project.\n\nFeatures\n========\n\n* Download or upload files from/to the Exasol BucketFS\n* Supported sources and targets for the uploads and downloads:\n\n  * Files on the local Filesystem\n  * Python file objects\n  * Python Strings\n  * Python objects ((De-)Serialization with [Joblib](https://joblib.readthedocs.io/en/latest/persistence.html))\n\n* Loading an artefact from a public Github Release into the BucketFS\n',
-    'author': 'Marlene Kreß', # tODO update long desc
-    'author_email': 'marlene.kress@exasol.com',
+    'long_description': '#####################\nSphinx Github-pages generator\n#####################\n\n********\nOverview\n********\n\nGenerates Sphinx GitHub pages for a given Git Repository and branch.\n\nIn a Nutshell\n=============\n\nPrerequisites\n-------------\n\n- Python 3.8+\n\nInstallation\n-------------\n\nInstall the package from Github ::\n\n    git = "https://github.com/exasol/sphinx-github-pages-generator", branch = "refactoring/1-Move-Sphinx-Documentation-scripts"\n\nDocumentation\n-------------\n\n`Documentation for the latest release <https://exasol.github.io/sphinx-github-pages-generator/main>`_ is hosted on the Github Pages of this project.\n\nFeatures\n========\n\n* Generate GitHub Pages in your repository for a given branch using Sphinx.\n\n Commit or commit and push them to a specified existing or new documentation-branch.\n ',
+    'author': 'Marlene Kreß, Torsten Kilias',
+    'author_email': 'marlene.kress@exasol.com, torsten.kilias@exasol.com',
     'maintainer': None,
     'maintainer_email': None,
     'url': 'https://github.com/exasol/sphinx-github-pages-generator',
