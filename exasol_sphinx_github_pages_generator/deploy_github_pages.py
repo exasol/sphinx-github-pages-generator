@@ -90,7 +90,6 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     # TODO test correctness of : find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
     open(f"{worktree}/.nojekyll", "w").close()
-    # touch "$WORKTREE/.nojekyll"
     run(["ls", "-la", output_dir])
     return output_dir
 
