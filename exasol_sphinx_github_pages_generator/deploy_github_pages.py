@@ -6,6 +6,8 @@ from subprocess import run
 import shutil
 import os
 
+# TODO remove debug outputs
+
 def detect_or_verify_source_branch(source_branch, current_commit_id):
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
     if source_branch == "" :
@@ -115,9 +117,11 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
     if 1 == changes_exists.returncode:
         print(f"committing changes because changes_exist is {changes_exists.returncode}")
         run(["git", "commit", "--no-verify", "-m", f"Update documentation from source branch {source_branch} with commit id {current_commit_id}"])
-    if push_origin != "" and push_enabled == "push":
-        print(f"Git push {push_origin} {target_branch}")
-        run(["git", "push", push_origin, target_branch])
+        if push_origin != "" and push_enabled == "push":
+            print(f"Git push {push_origin} {target_branch}")
+            run(["git", "push", push_origin, target_branch])
+    else:
+        print("No changes to commit.")
     os.chdir(currentworkdir)
 
 def deploy_github_pages(argv):
