@@ -9,14 +9,14 @@ import os
 # TODO remove debug outputs
 
 def detect_or_verify_source_branch(source_branch, current_commit_id):
-    current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
+    current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)
     if source_branch == "" :
         if current_branch.stdout == "" :
             "Abort. Could not detect current branch and no source branch given."
             # TODO throw error?
             sys.exit() # TODo status
         source_branch = current_branch
-    source_branch_commit_id = run(["git", "rev-parse", source_branch], capture_output=True, text=True)
+    source_branch_commit_id = run(["git", "rev-parse", source_branch], capture_output=True, text=True, check=True)
     if source_branch_commit_id.stdout != current_commit_id:
         print(f"Abort. Current commit id {current_commit_id} and commit id of source branch {source_branch_commit_id}"
               f" are not equal.")
@@ -31,13 +31,13 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
     print("target_branch_exists : " + target_branch_exists.stdout + str(target_branch_exists.returncode) + target_branch_exists.stderr)
     if target_branch_exists.returncode == 0:
         print(f"Create worktree from existing branch {target_branch}")
-        run(["git", "worktree", "add", worktree, target_branch])
+        run(["git", "worktree", "add", worktree, target_branch], check=True)
     else:
         print(f"Create worktree from new branch {target_branch}")
         # We need to create the worktree directly with the TARGET_BRANCH,
         # because every other branch could be already checked out
-        run(["git", "branch", target_branch])
-        run(["git", "worktree", "add", worktree, target_branch])
+        run(["git", "branch", target_branch], check=True)
+        run(["git", "worktree", "add", worktree, target_branch], check=True)
         currentworkdir = os.getcwd()
         print(currentworkdir)
         print(worktree)
@@ -56,34 +56,36 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
         gh_pages_main_branch = "github-pages/main"
         gh_pages_main_branch_exists = run(["git", "show-ref", f"refs/heads/{push_origin}/{gh_pages_main_branch}", "||", "echo"], capture_output=True, text=True)
         if gh_pages_main_branch_exists.returncode == 0:
-            run(["git", "reset",  "--hard", f"{push_origin}/{gh_pages_main_branch}"])
+            run(["git", "reset",  "--hard", f"{push_origin}/{gh_pages_main_branch}"], check=True)
         else:
             print(f"Creating a new empty root commit for the Github Pages in root branch {gh_pages_root_branch}.")
-            run(["git", "checkout", "--orphan", gh_pages_root_branch])
-            run(["git", "reset", "--hard"])
-            run(["git", "commit", "--no-verify", "--allow-empty", "-m", "'Initial empty commit for Github Pages'"])
+            run(["git", "checkout", "--orphan", gh_pages_root_branch], check=True)
+            run(["git", "reset", "--hard"], check=True)
+            run(["git", "commit", "--no-verify", "--allow-empty", "-m", "'Initial empty commit for Github Pages'"], check=True)
             print(f"Reset target branch {target_branch} to root branch {gh_pages_root_branch}")
-            run(["git", "checkout", target_branch])
-            run(["git", "reset", "--hard", gh_pages_root_branch])
+            run(["git", "checkout", target_branch], check=True)
+            run(["git", "reset", "--hard", gh_pages_root_branch], check=True)
             print(f"Delete root branch {gh_pages_root_branch}")
-            run(["git", "branch", "-D", gh_pages_root_branch])
+            run(["git", "branch", "-D", gh_pages_root_branch], check=True)
         os.chdir(currentworkdir)
+
 
 def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, module_path):
     print("Build with sphinx")
     currentworkdir = os.getcwd()
     print("currentworkdir :" + currentworkdir)
+
     # automatically generates Sphinx sources inside the "api" directory that document
     # the package found in "module_path"
     # -T: not table of contents
     # -e: put documentation for ech module on own page
-    run(["sphinx-apidoc", "-T", "-e", "-o", "api", module_path])
+    run(["sphinx-apidoc", "-T", "-e", "-o", "api", module_path], check=True)
     # Builds the Sphinx documentation. Generates html files inside "build_dir" using "source_dir"
     # -W: Turns warnings into errors
-    run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir])
+    run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir], check=True)
     print("Generated HTML Output")
     print(f"Using html_output_dir={build_dir}")
-    run(["ls", "-la", build_dir])
+    run(["ls", "-la", build_dir], check=True)
 
     output_dir = Path(worktree + "/" + source_branch)
     print(f"Using output_dir={output_dir}")
@@ -98,7 +100,7 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     # TODO test correctness of : find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
     open(f"{worktree}/.nojekyll", "w").close()
-    run(["ls", "-la", output_dir])
+    run(["ls", "-la", output_dir], check=True)
     return output_dir
 
 #todo remove debug output
@@ -111,18 +113,23 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
     with open(f"{output_dir}/.source", "w+") as file:
         file.write(f"BRANCH={source_branch} \n")
         file.write(f"COMMIT_ID={current_commit_id}")
-    run(["git", "add", "-v", "."])
-    run(["git", "status"])
+    run(["git", "add", "-v", "."], check=True)
     changes_exists = run(["git", "diff-index", "--quiet", "HEAD", "--"], capture_output=True, text=True)
     if 1 == changes_exists.returncode:
         print(f"committing changes because changes_exist is {changes_exists.returncode}")
-        run(["git", "commit", "--no-verify", "-m", f"Update documentation from source branch {source_branch} with commit id {current_commit_id}"])
+        run(["git", "commit", "--no-verify", "-m", f"Update documentation from source branch {source_branch} with commit id {current_commit_id}"], check=True)
         if push_origin != "" and push_enabled == "push":
             print(f"Git push {push_origin} {target_branch}")
-            run(["git", "push", push_origin, target_branch])
-    else:
+            run(["git", "push", push_origin, target_branch], check=True)
+    elif 0 == changes_exists.returncode:
         print("No changes to commit.")
+    else:
+        print('A Error occurred in run(["git", "diff-index", "--quiet", "HEAD", "--"], capture_output=True, text=True)')
+        print(f" changes_exists.returncode: {changes_exists.returncode}")
+        print(f" changes_exists.stderr: {changes_exists.stderr}")
+        print(f" changes_exists.stdout: {changes_exists.stdout}")
     os.chdir(currentworkdir)
+
 
 def deploy_github_pages(argv):
     args = Parser(argv).args
@@ -136,7 +143,7 @@ def deploy_github_pages(argv):
     print("PUSH_ENABLED=" + args.push_enabled)
     print("SOURCE_BRANCH=" + args.source_branch + "\n")
 
-    current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True)
+    current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
     with TemporaryDirectory() as tempdir:
         worktree = tempdir + "/worktree"
         build_dir = tempdir + "/build"
