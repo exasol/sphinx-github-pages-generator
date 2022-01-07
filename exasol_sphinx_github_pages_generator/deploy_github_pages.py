@@ -7,10 +7,12 @@ import shutil
 import os
 
 # TODO remove debug outputs
+# mynote this expects calling dir to be in source branch.
+# mynote expects there to be only one package to document
 
 def detect_or_verify_source_branch(source_branch, current_commit_id):
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)
-    if source_branch == "" :
+    if source_branch == "":
         if current_branch.stdout == "" :
             "Abort. Could not detect current branch and no source branch given."
             # TODO throw error?
@@ -42,8 +44,6 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
         print(currentworkdir)
         print(worktree)
         os.chdir(worktree)
-        currentworkdir = os.getcwd()
-        print(currentworkdir)
         # We need to set the TARGET_BRANCH to the default branch
         # The default branch from github for pages is gh-pages, but you can change that.
         # Not using the default branch actually has benefits, because the branch gh-pages enforces some things.
@@ -79,7 +79,9 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     # the package found in "module_path"
     # -T: not table of contents
     # -e: put documentation for ech module on own page
-    run(["sphinx-apidoc", "-T", "-e", "-o", "api", module_path], check=True)
+    for module in module_path:
+        #module_name = module.split("/")[-1]
+        run(["sphinx-apidoc", "-T", "-e", "-o", "api", module], check=True)
     # Builds the Sphinx documentation. Generates html files inside "build_dir" using "source_dir"
     # -W: Turns warnings into errors
     run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir], check=True)
@@ -137,7 +139,7 @@ def deploy_github_pages(argv):
     source_dir = args.source_dir
     print("Commandline parameter")
     print("source_dir= " + source_dir)
-    print("module_path= " + args.module_path)
+    print("module_path= " + str(args.module_path))
     print("TARGET_BRANCH=" + args.target_branch)
     print("PUSH_ORIGIN=" + args.push_origin)
     print("PUSH_ENABLED=" + args.push_enabled)

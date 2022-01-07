@@ -18,5 +18,5 @@ class Parser:
                             help='current branch')
         # TODO better defaults
         parser.add_argument('--source_dir', type=str, default="./doc/", help="The doc directory your documentation files and conf.py reside in")
-        parser.add_argument('--module_path', type=str, default="../module_name", help="The path to the module the docu is beeing generated for")
+        parser.add_argument('--module_path', type=list, default=["../module_name"], help="The paths to all the modules the docu is beeing generated for")
         self.args = parser.parse_args(argv)
