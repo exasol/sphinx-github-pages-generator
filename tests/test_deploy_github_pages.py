@@ -38,6 +38,8 @@ def test_remote_branch_creation():
         user_name = os.environ.get("MAuserName")
         run(["git", "clone", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git"], check=True)
         os.chdir("sphinx-github-pages-generator-test")
+        run(["git", "remote", "set-url", "origin", f"https://{user_name}:{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git"], check=True)
+
         #run(["git", "config", "--local", "user.email", "'opensource@exasol.com'"], check=True)
         #run(["git", "config", "--local", "user.name", "'GitHub Action'"], check=True)  # this work? different user?
 
@@ -66,5 +68,5 @@ def test_remote_branch_creation():
                                    text=True)
         assert target_branch_exists.returncode == 0
         # remove remote target branch if exists:
-        if target_branch_exists.returncode == 0:
-            run(["git", "push", "-d", "origin", target_branch], check=True)
+        #if target_branch_exists.returncode == 0:
+            #run(["git", "push", "-d", "origin", target_branch], check=True)
