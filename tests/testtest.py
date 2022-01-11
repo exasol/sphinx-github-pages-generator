@@ -4,6 +4,8 @@ from tempfile import TemporaryDirectory
 import os
 import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
 
+# TODO change to oauth2?
+
 # Tests:
 
 """
