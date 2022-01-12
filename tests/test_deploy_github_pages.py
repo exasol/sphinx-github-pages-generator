@@ -40,10 +40,9 @@ def test_remote_branch_creation():
         os.chdir("sphinx-github-pages-generator-test")
         run(["git", "remote", "set-url", "origin", f"https://{user_name}:{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git"], check=True)
 
-        #run(["git", "config", "--local", "user.email", "'opensource@exasol.com'"], check=True)
-        #run(["git", "config", "--local", "user.name", "'GitHub Action'"], check=True)  # this work? different user?
+        run(["git", "config", "--local", "user.email", f"{user_name}@exasol.com"], check=True)
+        run(["git", "config", "--local", "user.name", user_name], check=True)
 
-        #run(["git", "clone", "https://github.com/exasol/sphinx-github-pages-generator-test.git"], check=True)
         doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         os.chdir(f"{doc_dir.stdout[:-1]}/doc")
         source_branch = "5-add-tests"
@@ -55,7 +54,6 @@ def test_remote_branch_creation():
         # remove remote target branch if exists:
         if target_branch_exists.returncode == 0: #todo fix
             run(["git", "push", "-d", "origin", target_branch], check=True)
-            # run([git branch - d < branchname >], check=True)
 
         cwd = os.getcwd()
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
@@ -67,6 +65,7 @@ def test_remote_branch_creation():
         target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                    text=True)
         assert target_branch_exists.returncode == 0
+
         # remove remote target branch if exists:
-        #if target_branch_exists.returncode == 0:
-            #run(["git", "push", "-d", "origin", target_branch], check=True)
+        if target_branch_exists.returncode == 0:
+            run(["git", "push", "-d", "origin", target_branch], check=True)
