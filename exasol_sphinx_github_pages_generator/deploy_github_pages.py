@@ -7,6 +7,7 @@ import shutil
 import os
 
 # TODO remove debug outputs
+# todo cleanup worktree
 # mynote this expects calling dir to be in source branch.
 # mynote expects there to be only one package to document
 
@@ -98,7 +99,8 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     output_dir.mkdir(parents=True)
     print(f"Copying HTML output {build_dir} to the output directory {output_dir}")
     for obj in os.listdir(build_dir):
-        shutil.move(build_dir + "/" + str(obj), output_dir)
+        if ".doctree" not in str(obj):
+            shutil.move(build_dir + "/" + str(obj), output_dir)
     # TODO test correctness of : find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
     open(f"{worktree}/.nojekyll", "w").close()
