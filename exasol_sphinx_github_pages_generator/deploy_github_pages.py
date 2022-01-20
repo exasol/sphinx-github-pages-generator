@@ -7,14 +7,14 @@ import shutil
 import os
 
 # TODO remove debug outputs
-# todo cleanup worktree
 # mynote this expects calling dir to be in source branch.
 # mynote expects there to be only one package to document
+# mynote creates new empty root branch een is push not set. intentional?
 
 def detect_or_verify_source_branch(source_branch, current_commit_id):
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)
     if source_branch == "":
-        if current_branch.stdout == "" :
+        if current_branch.stdout == "":
             "Abort. Could not detect current branch and no source branch given."
             # TODO throw error?
             sys.exit() # TODo status
@@ -149,6 +149,7 @@ def deploy_github_pages(argv):
 
     current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
     with TemporaryDirectory() as tempdir:
+        # todo add try block here in order to delete worktree before exiting ?
         worktree = tempdir + "/worktree"
         build_dir = tempdir + "/build"
         os.mkdir(build_dir)
