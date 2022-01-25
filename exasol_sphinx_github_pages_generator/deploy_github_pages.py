@@ -7,9 +7,10 @@ import shutil
 import os
 
 # TODO remove debug outputs
+# TODO implement branch selection: need new worktree for different banch. problem when alredy existing worktree -> changes exist in both.
+#  or stage changes, checkout diff branch, generate, check out old branch and unstage?
 # mynote this expects calling dir to be in source branch.
-# mynote expects there to be only one package to document
-# mynote creates new empty root branch een is push not set. intentional?
+# mynote creates new empty root branch een is push not set. intentional? No
 
 def detect_or_verify_source_branch(source_branch, current_commit_id):
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)

@@ -51,13 +51,14 @@ def test_remote_branch_creation():
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--push_origin", "origin",
                                                  "--push_enabled", "push",
-                                                 "--source_branch", "5-add-tests",
+                                                 "--source_branch", source_branch,
                                                  "--source_dir", cwd,
                                                  "--module_path", ["../test_package", "../another_test_package"]])
         target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                    text=True)
         assert target_branch_exists.returncode == 0
         remove_branch(target_branch)
+
 
 def test_pushing_to_existing_docu_branch_same_source():
     with TemporaryDirectory() as tempdir:
@@ -74,7 +75,7 @@ def test_pushing_to_existing_docu_branch_same_source():
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--push_origin", "origin",
                                                  "--push_enabled", "push",
-                                                 "--source_branch", "5-add-tests",
+                                                 "--source_branch", source_branch,
                                                  "--source_dir", cwd,
                                                  "--module_path", ["../test_package", "../another_test_package"]])
         current_commit_id = run(["git", "ls-remote",
@@ -97,7 +98,7 @@ def test_pushing_to_existing_docu_branch_same_source():
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--push_origin", "origin",
                                                  "--push_enabled", "push",
-                                                 "--source_branch", "5-add-tests",
+                                                 "--source_branch", source_branch,
                                                  "--source_dir", cwd,
                                                  "--module_path", ["../test_package", "../another_test_package"]])
         current_commit_id = run(["git", "ls-remote",
@@ -113,8 +114,49 @@ def test_pushing_to_existing_docu_branch_same_source():
 
 
 def test_pushing_to_existing_docu_branch_different_source():
-    # TODO
-    pass
+    with TemporaryDirectory() as tempdir:
+        os.chdir(tempdir)
+        setup_test_repo()
+        doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
+        os.chdir(f"{doc_dir.stdout[:-1]}/doc")
+        source_branch_one = "5-add-tests"
+        run(["git", "checkout", source_branch_one], check=True)
+        target_branch = "test-docu-new-branch"
+        remove_branch(target_branch)
+
+        cwd = os.getcwd()
+        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                                 "--push_origin", "origin",
+                                                 "--push_enabled", "push",
+                                                 "--source_branch", source_branch_one,
+                                                 "--source_dir", cwd,
+                                                 "--module_path", ["../test_package", "../another_test_package"]])
+
+    with TemporaryDirectory() as tempdir2:
+        os.chdir(tempdir2)
+        setup_test_repo()
+        doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
+        os.chdir(f"{doc_dir.stdout[:-1]}/doc")
+        source_branch_two = "refactoring/1-Move-Sphinx-Documentation-scripts" # todo make second test branch
+        run(["git", "checkout", source_branch_two], check=True)
+
+        cwd = os.getcwd()
+        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                                 "--push_origin", "origin",
+                                                 "--push_enabled", "push",
+                                                 "--source_branch", source_branch_two,
+                                                 "--source_dir", cwd,
+                                                 "--module_path", ["../exasol_test_code_source"]])
+        target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
+                                   text=True)
+        assert target_branch_exists.returncode == 0
+        doc_dir_source_one_exists = run(["git", "ls-tree", "-d", f"origin/{target_branch}:{source_branch_one}"],
+                                        capture_output=True, text=True, check=True)
+        assert doc_dir_source_one_exists.returncode == 0
+        doc_dir_source_two_exists = run(["git", "ls-tree", "-d", f"origin/{target_branch}:{source_branch_two}"],
+                                        capture_output=True, text=True, check=True)
+        assert doc_dir_source_two_exists.returncode == 0
+        remove_branch(target_branch)
 
 
 def test_no_new_push_and_commit_if_no_changes():
@@ -132,7 +174,7 @@ def test_no_new_push_and_commit_if_no_changes():
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--push_origin", "origin",
                                                  "--push_enabled", "push",
-                                                 "--source_branch", "5-add-tests",
+                                                 "--source_branch", source_branch,
                                                  "--source_dir", cwd,
                                                  "--module_path", ["../test_package", "../another_test_package"]])
         current_commit_id = run(["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git", target_branch], capture_output=True, check=True)
@@ -150,7 +192,7 @@ def test_no_new_push_and_commit_if_no_changes():
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--push_origin", "origin",
                                                  "--push_enabled", "push",
-                                                 "--source_branch", "5-add-tests",
+                                                 "--source_branch", source_branch,
                                                  "--source_dir", cwd,
                                                  "--module_path", ["../test_package", "../another_test_package"]])
         current_commit_id = run(["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git", target_branch], capture_output=True, check=True)
@@ -164,6 +206,7 @@ def test_no_new_push_and_commit_if_no_changes():
 
 def test_for_existence_of_docu_files():
     # TODO
+    # generate files locally in test, and with generator, look at diff between local files and remote files?
     pass
 
 
@@ -182,7 +225,7 @@ def test_only_commit_dont_push():
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--push_origin", "origin",
                                                  "--push_enabled", "commit",
-                                                 "--source_branch", "5-add-tests",
+                                                 "--source_branch", source_branch,
                                                  "--source_dir", cwd,
                                                  "--module_path", ["../test_package", "../another_test_package"]])
         current_remote_commit_id = run(["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git", target_branch], capture_output=True, check=True)
@@ -201,7 +244,6 @@ def test_only_commit_dont_push():
 
 def test_selection_of_source_branch():
     # at the moment requires you to be on source branch
-    # intended?
-    # TODO
+    # TODO implement once branch selection is implemented
     pass
 
