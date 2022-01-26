@@ -83,18 +83,10 @@ def test_pushing_to_existing_docu_branch_same_source():
                                  target_branch], capture_output=True, check=True)
         commit_id_old = current_commit_id.stdout
 
-    with TemporaryDirectory() as tempdir2:  # neccesary. because worktree points to old non existing tmp folder. TOdo fiy worktree cleanup
-        os.chdir(tempdir2)
-        user_name, user_access_token = setup_test_repo()
-        doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
-        os.chdir(f"{doc_dir.stdout[:-1]}/doc")
-        source_branch = "5-add-tests"
-        run(["git", "checkout", source_branch], check=True)
         # make a change in the docu
         with open("./index.rst", "a") as file:
             file.write("\n\nThis text is a change.")
 
-        cwd = os.getcwd()
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--push_origin", "origin",
                                                  "--push_enabled", "push",
@@ -137,7 +129,7 @@ def test_pushing_to_existing_docu_branch_different_source():
         setup_test_repo()
         doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         os.chdir(f"{doc_dir.stdout[:-1]}/doc")
-        source_branch_two = "refactoring/1-Move-Sphinx-Documentation-scripts" # todo make second test branch
+        source_branch_two = "refactoring/1-Move-Sphinx-Documentation-scripts" # todo make second test branch in remote
         run(["git", "checkout", source_branch_two], check=True)
 
         cwd = os.getcwd()
@@ -180,15 +172,6 @@ def test_no_new_push_and_commit_if_no_changes():
         current_commit_id = run(["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git", target_branch], capture_output=True, check=True)
         commit_id_old = current_commit_id.stdout
 
-    with TemporaryDirectory() as tempdir2: # neccesary. because worktree points to old non existing tmp folder. TOdo fiy worktree cleanup
-        os.chdir(tempdir2)
-        user_name, user_access_token = setup_test_repo()
-        doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
-        os.chdir(f"{doc_dir.stdout[:-1]}/doc")
-        source_branch = "5-add-tests"
-        run(["git", "checkout", source_branch], check=True)
-
-        cwd = os.getcwd()
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--push_origin", "origin",
                                                  "--push_enabled", "push",
@@ -199,6 +182,7 @@ def test_no_new_push_and_commit_if_no_changes():
         commit_id_new = current_commit_id.stdout
 
         # the docu files where not updated, so no new commit should be pushed to the remote
+        assert commit_id_old != 0 #todo also in other tests
         assert commit_id_old == commit_id_new
         assert not commit_id_new == ""
         remove_branch(target_branch)
@@ -237,7 +221,8 @@ def test_only_commit_dont_push():
         assert not current_local_commit_id.stdout == ""
         target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                    text=True)
-        assert not target_branch_exists.returncode == 0 # target branch was not committed, so should not exist on remote
+        # target branch was not committed, so should not exist on remote
+        assert not target_branch_exists.returncode == 0
 
         remove_branch(target_branch)
 

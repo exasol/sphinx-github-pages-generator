@@ -7,10 +7,10 @@ import shutil
 import os
 
 # TODO remove debug outputs
-# TODO implement branch selection: need new worktree for different banch. problem when alredy existing worktree -> changes exist in both.
+# TODO implement branch selection: need new worktree for different branch. problem when already existing worktree
+#  -> changes exist in both.
 #  or stage changes, checkout diff branch, generate, check out old branch and unstage?
 # mynote this expects calling dir to be in source branch.
-# mynote creates new empty root branch een is push not set. intentional? No
 
 def detect_or_verify_source_branch(source_branch, current_commit_id):
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)
@@ -135,6 +135,12 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
         print(f" changes_exists.stdout: {changes_exists.stdout}")
     os.chdir(currentworkdir)
 
+def clean_worktree(worktree):
+    wt = Path(worktree)
+    if wt.exists():
+        print(f"Cleanup git worktree {worktree}")
+        run(["git", "worktree", "remove", "--force", worktree], check=True)
+
 
 def deploy_github_pages(argv):
     args = Parser(argv).args
@@ -151,7 +157,7 @@ def deploy_github_pages(argv):
     current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
     with TemporaryDirectory() as tempdir:
         # todo add try block here in order to delete worktree before exiting ?
-        worktree = tempdir + "/worktree"
+        worktree = tempdir + "/worktree" # todo make path here, make functions have typing?
         build_dir = tempdir + "/build"
         os.mkdir(build_dir)
 
@@ -160,10 +166,12 @@ def deploy_github_pages(argv):
         print("WORKTREE=" + worktree)
         print("BUILD_DIR=" + build_dir)
         print("CURRENT_COMMIT_ID=" + current_commit_id.stdout + "\n")
-
-        source_branch = detect_or_verify_source_branch(args.source_branch, current_commit_id.stdout)
-        checkout_target_branch_as_worktree(args.target_branch, worktree, args.push_origin)
-        output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, args.module_path)
-        git_commit_and_push(worktree, args.push_origin, args.push_enabled, source_branch, output_dir, current_commit_id.stdout, args.target_branch)
-
+        try:
+            source_branch = detect_or_verify_source_branch(args.source_branch, current_commit_id.stdout)
+            checkout_target_branch_as_worktree(args.target_branch, worktree, args.push_origin)
+            output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, args.module_path)
+            git_commit_and_push(worktree, args.push_origin, args.push_enabled, source_branch, output_dir,
+                                current_commit_id.stdout, args.target_branch)
+        finally:
+            clean_worktree(worktree)
 
