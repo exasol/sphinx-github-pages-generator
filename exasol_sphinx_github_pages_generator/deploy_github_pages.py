@@ -8,7 +8,6 @@ import os
 
 # TODO remove debug outputs
 # todo add typing, docu comments
-# mynote this expects calling dir to be in source branch.
 
 def detect_or_verify_source_branch(source_branch, current_commit_id):
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)
@@ -96,13 +95,12 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     for obj in os.listdir(build_dir):
         if ".doctree" not in str(obj):
             shutil.move(build_dir + "/" + str(obj), output_dir)
-    # TODO test correctness of : find "build_dir" -mindepth 1 -maxdepth 1 -exec mv -t "$OUTPUT_DIR" -- {} +
     print(f"Content of output directory {output_dir}")
     open(f"{worktree}/.nojekyll", "w").close()
     run(["ls", "-la", output_dir], check=True)
     return output_dir
 
-#todo remove debug output
+
 def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, output_dir, current_commit_id, target_branch):
     currentworkdir = os.getcwd()
     print(currentworkdir)
@@ -128,6 +126,7 @@ def git_commit_and_push(worktree, push_origin, push_enabled, source_branch, outp
         print(f" changes_exists.stderr: {changes_exists.stderr}")
         print(f" changes_exists.stdout: {changes_exists.stdout}")
     os.chdir(currentworkdir)
+
 
 def clean_worktree(worktree):
     wt = Path(worktree)
