@@ -7,25 +7,19 @@ import shutil
 import os
 
 # TODO remove debug outputs
-# TODO implement branch selection: need new worktree for different branch. problem when already existing worktree
-#  -> changes exist in both.
-#  or stage changes, checkout diff branch, generate, check out old branch and unstage?
+# todo add typing, docu comments
 # mynote this expects calling dir to be in source branch.
 
 def detect_or_verify_source_branch(source_branch, current_commit_id):
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)
     if source_branch == "":
         if current_branch.stdout == "":
-            "Abort. Could not detect current branch and no source branch given."
-            # TODO throw error?
-            sys.exit() # TODo status
+            sys.exit("Abort. Could not detect current branch and no source branch given.")
         source_branch = current_branch
     source_branch_commit_id = run(["git", "rev-parse", source_branch], capture_output=True, text=True, check=True)
     if source_branch_commit_id.stdout != current_commit_id:
-        print(f"Abort. Current commit id {current_commit_id} and commit id of source branch {source_branch_commit_id}"
-              f" are not equal.")
-        # TODO throw error?
-        sys.exit()  # TODo status
+        sys.exit(f"Abort. Current commit id {current_commit_id} and commit id of source "
+                 f"branch {source_branch_commit_id} are not equal.")
     print(f"Detected source branch {source_branch}")
     return source_branch
 
@@ -156,8 +150,7 @@ def deploy_github_pages(argv):
 
     current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
     with TemporaryDirectory() as tempdir:
-        # todo add try block here in order to delete worktree before exiting ?
-        worktree = tempdir + "/worktree" # todo make path here, make functions have typing?
+        worktree = tempdir + "/worktree"
         build_dir = tempdir + "/build"
         os.mkdir(build_dir)
 

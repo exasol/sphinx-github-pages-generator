@@ -1,5 +1,3 @@
-import sys
-
 import pytest
 from subprocess import run
 from tempfile import TemporaryDirectory
@@ -9,8 +7,6 @@ import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github
 # TODO change to oauth2?
 # todo write readme
 # todo change source_branch to main
-
-# Tests:
 
 
 def remove_branch(branch_name):
@@ -189,9 +185,56 @@ def test_no_new_push_and_commit_if_no_changes():
 
 
 def test_for_existence_of_docu_files():
-    # TODO
     # generate files locally in test, and with generator, look at diff between local files and remote files?
-    pass
+    with TemporaryDirectory() as tempdir:
+        os.chdir(tempdir)
+        setup_test_repo()
+        doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
+        os.chdir(f"{doc_dir.stdout[:-1]}/doc")
+        source_branch = "5-add-tests"
+        run(["git", "checkout", source_branch], check=True)
+        target_branch = "test-docu-new-branch"
+        remove_branch(target_branch)
+        source_dir = os.getcwd()
+        module_path = ["../test_package", "../another_test_package"]
+        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                                 "--push_origin", "origin",
+                                                 "--push_enabled", "push",
+                                                 "--source_branch", source_branch,
+                                                 "--source_dir", source_dir,
+                                                 "--module_path", module_path])
+
+        # __________________
+    with TemporaryDirectory() as tempdir:
+        os.chdir(tempdir)
+        user_name, user_access_token = setup_test_repo()
+        doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
+        os.chdir(f"{doc_dir.stdout[:-1]}/doc")
+        source_branch = "5-add-tests"
+        run(["git", "checkout", source_branch], check=True)
+        source_dir = os.getcwd()
+        build_dir = tempdir + "/build"
+        for module in module_path:
+            run(["sphinx-apidoc", "-T", "-e", "-o", "api", module], check=True)
+        run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir], check=True)
+        from pathlib import Path
+        from shutil import rmtree
+        output_dir = Path("./")
+        print(f"Copying HTML output {build_dir} to the output directory {output_dir}")
+        for obj in os.listdir(build_dir):
+            if ".doctree" in str(obj):
+                try:
+                    os.remove(build_dir + "/" + str(obj))
+                except IsADirectoryError:
+                    rmtree(build_dir + "/" + str(obj))
+        print(f"Content of output directory {output_dir}")
+        run(["ls", "-la", output_dir], check=True)
+        run(["git", "checkout", "-b", target_branch], check=True)
+        run(["git", "add", "*"], check=True)
+        status = run(["git", "status"], check=True, capture_output=True, text=True)
+        # checks hat all files do already exist in target branch,
+        # meaning they have been created and successfully pushed by deploy_github_pages.deploy_github_pages
+        assert "nothing to commit, working tree clean" in status.stdout
 
 
 def test_only_commit_dont_push():
