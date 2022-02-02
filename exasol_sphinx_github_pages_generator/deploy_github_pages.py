@@ -9,6 +9,7 @@ import os
 # TODO remove debug outputs
 # todo add typing, docu comments
 
+
 def detect_or_verify_source_branch(source_branch, current_commit_id):
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)
     if source_branch == "":
@@ -65,7 +66,7 @@ def checkout_target_branch_as_worktree(target_branch, worktree, push_origin):
         os.chdir(currentworkdir)
 
 
-def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, module_path):
+def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, module_path, intermediate_dir):
     print("Build with sphinx")
     currentworkdir = os.getcwd()
     print("currentworkdir :" + currentworkdir)
@@ -75,11 +76,10 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     # -T: not table of contents
     # -e: put documentation for ech module on own page
     for module in module_path:
-        #module_name = module.split("/")[-1]
         run(["sphinx-apidoc", "-T", "-e", "-o", "api", module], check=True)
     # Builds the Sphinx documentation. Generates html files inside "build_dir" using "source_dir"
     # -W: Turns warnings into errors
-    run(["sphinx-build", "-b", "html", "-W", source_dir, build_dir], check=True)
+    run(["sphinx-build", "-b", "html", "-d", intermediate_dir, "-W", source_dir, build_dir], check=True)
     print("Generated HTML Output")
     print(f"Using html_output_dir={build_dir}")
     run(["ls", "-la", build_dir], check=True)
@@ -93,8 +93,7 @@ def build_and_copy_documentation(build_dir, worktree, source_branch, source_dir,
     output_dir.mkdir(parents=True)
     print(f"Copying HTML output {build_dir} to the output directory {output_dir}")
     for obj in os.listdir(build_dir):
-        if ".doctree" not in str(obj):
-            shutil.move(build_dir + "/" + str(obj), output_dir)
+        shutil.move(build_dir + "/" + str(obj), output_dir)
     print(f"Content of output directory {output_dir}")
     open(f"{worktree}/.nojekyll", "w").close()
     run(["ls", "-la", output_dir], check=True)
@@ -151,6 +150,7 @@ def deploy_github_pages(argv):
     with TemporaryDirectory() as tempdir:
         worktree = tempdir + "/worktree"
         build_dir = tempdir + "/build"
+        intermediate_dir = tempdir + "/intermediate"
         os.mkdir(build_dir)
 
         print("Using following Directories:")
@@ -161,7 +161,7 @@ def deploy_github_pages(argv):
         try:
             source_branch = detect_or_verify_source_branch(args.source_branch, current_commit_id.stdout)
             checkout_target_branch_as_worktree(args.target_branch, worktree, args.push_origin)
-            output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, args.module_path)
+            output_dir = build_and_copy_documentation(build_dir, worktree, source_branch, source_dir, args.module_path, intermediate_dir)
             git_commit_and_push(worktree, args.push_origin, args.push_enabled, source_branch, output_dir,
                                 current_commit_id.stdout, args.target_branch)
         finally:
