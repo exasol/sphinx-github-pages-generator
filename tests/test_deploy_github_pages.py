@@ -5,8 +5,7 @@ import os
 import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
 
 # TODO change to oauth2?
-# todo write readme
-# todo change source_branch to main
+
 
 
 def remove_branch(branch_name):
@@ -35,7 +34,9 @@ def setup_test_repo():
 def test_remote_branch_creation():
     with TemporaryDirectory() as tempdir:
         os.chdir(tempdir)
-        setup_test_repo()
+        setup_test_repo() # todo make into fixture?
+        # change into the "tmpXXX/../branch_name/doc" directory. This is necessary for Sphinx.
+        # the [:-1] removes the newline from the output
         doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         os.chdir(f"{doc_dir.stdout[:-1]}/doc")
         source_branch = "5-add-tests"
@@ -125,7 +126,7 @@ def test_pushing_to_existing_docu_branch_different_source():
         setup_test_repo()
         doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         os.chdir(f"{doc_dir.stdout[:-1]}/doc")
-        source_branch_two = "refactoring/1-Move-Sphinx-Documentation-scripts" # todo make second test branch in remote
+        source_branch_two = "refactoring/1-Move-Sphinx-Documentation-scripts"
         run(["git", "checkout", source_branch_two], check=True)
 
         cwd = os.getcwd()
@@ -178,13 +179,13 @@ def test_no_new_push_and_commit_if_no_changes():
         commit_id_new = current_commit_id.stdout
 
         # the docu files where not updated, so no new commit should be pushed to the remote
-        assert commit_id_old != 0 #todo also in other tests
+        assert commit_id_old != 0
         assert commit_id_old == commit_id_new
         assert not commit_id_new == ""
         remove_branch(target_branch)
 
 
-def test_for_existence_of_docu_files():
+def test_verify_existence_of_generated_files_on_remote_after_push():
     # generate files locally in test, and with generator, look at diff between local files and remote files?
     with TemporaryDirectory() as tempdir:
         os.chdir(tempdir)
@@ -232,7 +233,7 @@ def test_for_existence_of_docu_files():
         run(["git", "checkout", "-b", target_branch], check=True)
         run(["git", "add", "*"], check=True)
         status = run(["git", "status"], check=True, capture_output=True, text=True)
-        # checks hat all files do already exist in target branch,
+        # checks that all files do already exist in target branch,
         # meaning they have been created and successfully pushed by deploy_github_pages.deploy_github_pages
         assert "nothing to commit, working tree clean" in status.stdout
 
