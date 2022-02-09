@@ -176,7 +176,7 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
         os.chdir("..")
         cwd = os.getcwd()
         with open(".gitignore", mode="w") as file:
-            file.write("__pycache__/n.gitignore/n")
+            file.write("*/__pycache__/n.gitignore/n")
         run(["git", "add", ".gitignore"], check=True)
         run(["git", "commit", "-m", "add gitignore"])
         run(["git", "push"])
