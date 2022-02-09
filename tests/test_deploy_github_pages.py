@@ -167,7 +167,7 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
         source_branch = "5-add-tests"
         run(["git", "checkout", source_branch], check=True)
         cwd = os.getcwd()
-        build_dir = tempdir2 + "/build"
+        build_dir = tempdir2 + "/Spinxbuild"
         intermediate_dir = tempdir2 + "/intermediate"
         for module in module_path:
             run(["sphinx-apidoc", "-T", "-e", "-o", "api", module], check=True)
