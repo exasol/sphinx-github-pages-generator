@@ -175,6 +175,12 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
         run(["git", "checkout", target_branch], check=True)
         os.chdir("..")
         cwd = os.getcwd()
+        with open(".gitignore", mode="w") as file:
+            file.write("__pycache__/n.gitignore/n")
+        run(["git", "add", ".gitignore"], check=True)
+        run(["git", "commit", "-m", "add gitignore"])
+        run(["git", "push"])
+
         target_dir = cwd + "/" + source_branch
         print(f"Copying HTML output {build_dir} to the output directory {target_dir}")
         shutil.copytree(build_dir, target_dir, dirs_exist_ok=True)
