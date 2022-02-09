@@ -31,6 +31,5 @@ def setup_workdir():
     # the [:-1] removes the newline from the output
     doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
     os.chdir(f"{doc_dir.stdout[:-1]}/doc")
-    cwd = os.getcwd()
-    return user_name, user_access_token, cwd
+    return user_name, user_access_token
 

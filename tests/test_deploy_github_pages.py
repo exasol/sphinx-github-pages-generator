@@ -5,14 +5,14 @@ import os
 import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
 from helper_test_functions import remove_branch, setup_workdir
 from fixtures import setup_test_env
-
+import shutil
 # TODO change to oauth2?
 
 
 def test_remote_branch_creation(setup_test_env):
-    _, _, cwd = setup_test_env
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
+    cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
 
@@ -29,9 +29,10 @@ def test_remote_branch_creation(setup_test_env):
 
 
 def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
-    user_name, user_access_token, cwd = setup_test_env
+    user_name, user_access_token = setup_test_env
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
+    cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
 
@@ -69,10 +70,9 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
 
 
 def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
-    _, _, cwd = setup_test_env
-
     source_branch_one = "5-add-tests"
     run(["git", "checkout", source_branch_one], check=True)
+    cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
 
@@ -85,9 +85,10 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
 
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
-        _, _, cwd = setup_workdir()
+        setup_workdir()
         source_branch_two = "refactoring/1-Move-Sphinx-Documentation-scripts"
         run(["git", "checkout", source_branch_two], check=True)
+        cwd = os.getcwd()
 
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--push_origin", "origin",
@@ -108,9 +109,10 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
 
 
 def test_no_new_push_and_commit_if_no_changes(setup_test_env):
-    user_name, user_access_token, cwd = setup_test_env
+    user_name, user_access_token = setup_test_env
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
+    cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
 
@@ -120,7 +122,9 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
                                              "--module_path", ["../test_package", "../another_test_package"]])
-    current_commit_id = run(["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git", target_branch], capture_output=True, check=True)
+    current_commit_id = run(
+        ["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
+         target_branch], capture_output=True, check=True)
     commit_id_old = current_commit_id.stdout
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
@@ -129,7 +133,9 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
                                              "--module_path", ["../test_package", "../another_test_package"]])
-    current_commit_id = run(["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git", target_branch], capture_output=True, check=True)
+    current_commit_id = run(
+        ["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
+         target_branch], capture_output=True, check=True)
     commit_id_new = current_commit_id.stdout
 
     # the docu files where not updated, so no new commit should be pushed to the remote
@@ -140,11 +146,11 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
 
 
 def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env):
-    _, _, cwd = setup_test_env
     # generate files locally in test, and with generator, look at diff between local files and remote files?
 
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
+    cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
     module_path = ["../test_package", "../another_test_package"]
@@ -157,38 +163,65 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
 
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
-        user_name, user_access_token, cwd = setup_workdir()
+        setup_workdir()
         source_branch = "5-add-tests"
         run(["git", "checkout", source_branch], check=True)
+        cwd = os.getcwd()
         build_dir = tempdir2 + "/build"
         intermediate_dir = tempdir2 + "/intermediate"
         for module in module_path:
             run(["sphinx-apidoc", "-T", "-e", "-o", "api", module], check=True)
         run(["sphinx-build", "-b", "html", "-d", intermediate_dir, "-W", cwd, build_dir], check=True)
-        from pathlib import Path
-        from shutil import rmtree
-        output_dir = Path("./")
-        print(f"Copying HTML output {build_dir} to the output directory {output_dir}")
-        for obj in os.listdir(build_dir):
-            if ".doctree" in str(obj):
-                try:
-                    os.remove(build_dir + "/" + str(obj))
-                except IsADirectoryError:
-                    rmtree(build_dir + "/" + str(obj))
-        print(f"Content of output directory {output_dir}")
-        run(["ls", "-la", output_dir], check=True)
-        run(["git", "checkout", "-b", target_branch], check=True)
+        run(["git", "checkout", target_branch], check=True)
+        os.chdir("..")
+        cwd = os.getcwd()
+        target_dir = cwd + "/" + source_branch
+        print(f"Copying HTML output {build_dir} to the output directory {target_dir}")
+        shutil.copytree(build_dir, target_dir, dirs_exist_ok=True)
+        shutil.rmtree(build_dir)
         run(["git", "add", "*"], check=True)
         status = run(["git", "status"], check=True, capture_output=True, text=True)
         # checks that all files do already exist in target branch,
         # meaning they have been created and successfully pushed by deploy_github_pages.deploy_github_pages
         assert "nothing to commit, working tree clean" in status.stdout
+        remove_branch(target_branch)
+
+
+# Make sure none of Sphinx's intermediate .doctree files end up in the target branch
+def test_no_doctree_files_in_remote(setup_test_env):
+    source_branch = "5-add-tests"
+    run(["git", "checkout", source_branch], check=True)
+    cwd = os.getcwd()
+    target_branch = "test-docu-new-branch"
+    remove_branch(target_branch)
+
+    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                             "--push_origin", "origin",
+                                             "--push_enabled", "push",
+                                             "--source_branch", source_branch,
+                                             "--source_dir", cwd,
+                                             "--module_path", ["../test_package", "../another_test_package"]])
+
+    with TemporaryDirectory() as tempdir2:
+        os.chdir(tempdir2)
+        setup_workdir()
+        target_branch = "test-docu-new-branch"
+        os.chdir(os.getcwd() + "/..")
+        run(["git", "checkout", target_branch], check=True)
+        doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
+        repo_path = doc_dir.stdout[:-1]     # -1 to remove newline at end of output
+        for root, subdirs, files in os.walk(repo_path):
+            for file in files:
+                print(file)
+                assert ".doctree" not in str(file)
+        remove_branch(target_branch)
 
 
 def test_only_commit_dont_push(setup_test_env):
-    user_name, user_access_token, cwd = setup_test_env
+    user_name, user_access_token = setup_test_env
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
+    cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
 
@@ -198,7 +231,10 @@ def test_only_commit_dont_push(setup_test_env):
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
                                              "--module_path", ["../test_package", "../another_test_package"]])
-    current_remote_commit_id = run(["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git", target_branch], capture_output=True, check=True)
+    current_remote_commit_id = run(
+        ["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
+         target_branch], capture_output=True, check=True)
+
     remote_commit_id_new = current_remote_commit_id.stdout
 
     current_local_commit_id = run(["git", "rev-parse", target_branch], capture_output=True, check=True)
