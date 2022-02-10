@@ -180,8 +180,6 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
         run(["git", "add", ".gitignore"], check=True)
         run(["git", "commit", "-m", "add gitignore"])
         run(["git", "push"])
-       # run(["git", "fetch", f"https://{user_name}:{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git"])
-       # run(["git", "merge", "FETCH_HEAD"])
         target_dir = cwd + "/" + source_branch
         print(f"Copying HTML output {build_dir} to the output directory {target_dir}")
         shutil.copytree(build_dir, target_dir, dirs_exist_ok=True)
@@ -253,7 +251,7 @@ def test_only_commit_dont_push(setup_test_env):
     # target branch was not committed, so should not exist on remote
     assert not target_branch_exists.returncode == 0
 
-    remove_branch(target_branch)
+    #remove_branch(target_branch)
 
 
 def test_selection_of_source_branch():
