@@ -14,7 +14,7 @@ def test_remote_branch_creation(setup_test_env):
     run(["git", "checkout", source_branch], check=True)
     cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
-    remove_branch(target_branch)
+    #remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                              "--push_origin", "origin",
@@ -34,7 +34,7 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     run(["git", "checkout", source_branch], check=True)
     cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
-    remove_branch(target_branch)
+    #remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                              "--push_origin", "origin",
@@ -74,7 +74,7 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
     run(["git", "checkout", source_branch_one], check=True)
     cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
-    remove_branch(target_branch)
+    #remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                              "--push_origin", "origin",
@@ -114,7 +114,7 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
     run(["git", "checkout", source_branch], check=True)
     cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
-    remove_branch(target_branch)
+    #remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                              "--push_origin", "origin",
@@ -152,7 +152,7 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
     run(["git", "checkout", source_branch], check=True)
     cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
-    remove_branch(target_branch)
+    #remove_branch(target_branch)
     module_path = ["../test_package", "../another_test_package"]
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                              "--push_origin", "origin",
@@ -198,7 +198,7 @@ def test_no_doctree_files_in_remote(setup_test_env):
     run(["git", "checkout", source_branch], check=True)
     cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
-    remove_branch(target_branch)
+    #remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                              "--push_origin", "origin",
@@ -228,7 +228,7 @@ def test_only_commit_dont_push(setup_test_env):
     run(["git", "checkout", source_branch], check=True)
     cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
-    remove_branch(target_branch)
+   # remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                              "--push_origin", "origin",
