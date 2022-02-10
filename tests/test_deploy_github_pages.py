@@ -147,7 +147,7 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
 
 def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env):
     # generate files locally in test, and with generator, look at diff between local files and remote files?
-
+    _ , user_access_token = setup_test_env
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
     cwd = os.getcwd()
@@ -180,6 +180,7 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
         run(["git", "add", ".gitignore"], check=True)
         run(["git", "commit", "-m", "add gitignore"])
         run(["git", "push"])
+        run(["git", "fetch", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git"])
 
         target_dir = cwd + "/" + source_branch
         print(f"Copying HTML output {build_dir} to the output directory {target_dir}")
