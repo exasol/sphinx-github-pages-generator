@@ -25,7 +25,7 @@ def test_remote_branch_creation(setup_test_env):
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
-    remove_branch(target_branch)
+    #remove_branch(target_branch)
 
 
 def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
@@ -66,7 +66,7 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     assert not commit_id_new == ""
     assert not commit_id_old == ""
     assert not commit_id_old == commit_id_new
-    remove_branch(target_branch)
+    #remove_branch(target_branch)
 
 
 def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
@@ -105,7 +105,7 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
         doc_dir_source_two_exists = run(["git", "ls-tree", "-d", f"origin/{target_branch}:{source_branch_two}"],
                                         capture_output=True, text=True, check=True)
         assert doc_dir_source_two_exists.returncode == 0
-        remove_branch(target_branch)
+        #remove_branch(target_branch)
 
 
 def test_no_new_push_and_commit_if_no_changes(setup_test_env):
@@ -142,7 +142,7 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
     assert commit_id_old != 0
     assert commit_id_old == commit_id_new
     assert not commit_id_new == ""
-    remove_branch(target_branch)
+    #remove_branch(target_branch)
 
 
 def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env):
@@ -189,7 +189,7 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
         # checks that all files do already exist in target branch,
         # meaning they have been created and successfully pushed by deploy_github_pages.deploy_github_pages
         assert "nothing to commit, working tree clean" in status.stdout
-        remove_branch(target_branch)
+        #remove_branch(target_branch)
 
 
 # Make sure none of Sphinx's intermediate .doctree files end up in the target branch
@@ -219,7 +219,7 @@ def test_no_doctree_files_in_remote(setup_test_env):
             for file in files:
                 print(file)
                 assert ".doctree" not in str(file)
-        remove_branch(target_branch)
+        #remove_branch(target_branch)
 
 
 def test_only_commit_dont_push(setup_test_env):
