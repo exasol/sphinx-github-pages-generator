@@ -15,8 +15,11 @@ class Parser:
                             help='weather to push or not, set to "commit" or "push"')
         parser.add_argument('--source_branch', type=str,
                             default="main",
-                            help='current branch')
+                            help='The branch you want to generate documentation from. '
+                                 'If empty, defaults to current branch')
         # TODO better defaults
-        parser.add_argument('--source_dir', type=str, default="./doc/", help="The doc directory your documentation files and conf.py reside in")
-        parser.add_argument('--module_path', type=list, default=["../module_name"], help="The paths to all the modules the docu is beeing generated for")
+        parser.add_argument('--source_dir', type=str, default="./doc/",
+                            help="The doc directory your documentation files and conf.py reside in")
+        parser.add_argument('--module_path', type=list, default=["../module_name"],
+                            help="The paths to all the modules the docu is being generated for")
         self.args = parser.parse_args(argv)
