@@ -81,11 +81,12 @@ class GithubPagesDeployer:
     def detect_or_verify_source_branch(self):
         current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)
         print(current_branch.stdout)
+        print(f"source branch before detect: {self.source_branch}")
         if self.source_branch == "":
             if current_branch.stdout == "":
                 sys.exit("Abort. Could not detect current branch and no source branch given.")
-            print(f"No source branch given. Using Current branch {current_branch} as source.")
-            self.source_branch = current_branch.stdout
+            print(f"No source branch given. Using Current branch {current_branch.stdout[:-1]} as source.")
+            self.source_branch = current_branch.stdout[:-1]
             # todo return here
 
         source_branch_commit_id = run(["git", "rev-parse", self.source_branch], capture_output=True, text=True)
@@ -218,6 +219,7 @@ class GithubPagesDeployer:
 
     def clean_worktree(self, original_workdir):
         os.chdir(original_workdir)
+        print(f"set workdir back to {original_workdir}")
         # todo change back to original cuurent workdir
         #run(["git", "checkout", self.current_commit_id], capture_output=True, text=True, check=True) #todo needs branch name
         if self.staged_changes:

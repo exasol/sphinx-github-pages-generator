@@ -14,7 +14,7 @@ class Parser:
                             default="push",
                             help='weather to push or not, set to "commit" or "push"')
         parser.add_argument('--source_branch', type=str,
-                            default="main",
+                            default="",
                             help='The branch you want to generate documentation from. '
                                  'If empty, defaults to current branch')
         # TODO better defaults
