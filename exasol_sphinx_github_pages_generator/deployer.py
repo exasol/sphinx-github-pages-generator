@@ -6,27 +6,26 @@ import shutil
 import os
 
 
-# TODO remove debug outputs
-# todo add typing, docu comments
-
 class GithubPagesDeployer:
-    def __init__(self, source_dir, module_path, target_branch, push_origin, push_enabled, source_branch,
-                 current_commit_id, tempdir):
+    def __init__(self, source_dir, source_branch, current_commit_id, module_path,
+                 target_branch, push_origin, push_enabled,
+                 tempdir):
         self.source_dir = source_dir
+        self.source_branch = source_branch
+        self.current_commit_id = current_commit_id.stdout
         self.module_path = module_path
+
         self.target_branch = target_branch
         self.push_origin = push_origin
         self.push_enabled = push_enabled
-        self.source_branch = source_branch
-        self.current_commit_id = current_commit_id.stdout
+
         self.worktree_paths = {"target_worktree": tempdir + "/worktrees/worktree_target",
                               "source_worktree": tempdir + "/worktrees/worktree_source"}
         self.build_dir = tempdir + "/build"
         self.intermediate_dir = tempdir + "/intermediate"
-        self.staged_changes = False
 
     def check_out_source_branch_as_worktree(self,
-                                            source_branch_commit_id):
+                                            source_branch_exists_locally):
         source_branch_exists_remote = run(["git", "show-branch", f"remotes/origin/{self.source_branch}"],
                                           capture_output=True, text=True)
         print("source_branch_exists_remote : " + str(source_branch_exists_remote))
@@ -42,10 +41,14 @@ class GithubPagesDeployer:
                 current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
                                      check=True)
                 print("new current_branch/detected source branch : " + str(current_branch.stdout))
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as e:
+                print("From git worktree add: ' If <branch> does exist, it will be checked out in the new working tree,"
+                      " if it’s not checked out anywhere else, otherwise the command will refuse to create "
+                      "the working tree (unless --force is used).'")
+                print(f"Error from subprocess: {str(e)}")
                 sys.exit("Problem with adding worktree for source")
 
-        elif source_branch_commit_id.returncode == 0:
+        elif source_branch_exists_locally == 0:
             sys.exit("Source branch exists locally, but not on remote, and source branch is not current branch."
                      "Please push your source branch to remote.")
         else:
@@ -65,11 +68,11 @@ class GithubPagesDeployer:
         # the [:-1] removes the newline from the output
         if current_branch.stdout[:-1] != self.source_branch:
             print("Current branch is not source branch. Need to switch branches")
-            self.check_out_source_branch_as_worktree(source_branch_commit_id)
+            self.check_out_source_branch_as_worktree(source_branch_commit_id.returncode)
             return
         if source_branch_commit_id.stdout != self.current_commit_id:
             sys.exit(f"Abort. Current commit id {self.current_commit_id} and commit id of source "
-                     f"branch {source_branch_commit_id} are not equal. Please commit your changes.")
+                     f"branch {source_branch_commit_id} are not equal. Please push your changes.")
         print(f"Detected source branch {self.source_branch}")
 
     def checkout_target_branch_as_worktree(self):
@@ -182,11 +185,11 @@ class GithubPagesDeployer:
         os.chdir(currentworkdir)
 
     def clean_worktree(self, original_workdir):
+        print("Starting cleanup.")
         os.chdir(original_workdir)
-        print(f"set workdir back to {original_workdir}")
-        for text in self.worktree_paths:
-            print(text)
-            path = Path(self.worktree_paths[text])
+        print(f"Set working directory back to original {original_workdir}")
+        for worktree_path in self.worktree_paths:
+            path = Path(self.worktree_paths[worktree_path])
             if path.exists():
                 print(f"Cleanup git worktree {path}")
                 run(["git", "worktree", "remove", "--force", path], check=True)
