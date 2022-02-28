@@ -8,7 +8,6 @@ import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github
 from helper_test_functions import remove_branch, setup_workdir
 from fixtures import setup_test_env
 import shutil
-# TODO change to oauth2?
 
 
 def test_remote_branch_creation(setup_test_env):

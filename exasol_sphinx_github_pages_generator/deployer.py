@@ -37,7 +37,7 @@ class GithubPagesDeployer:
                 run(["git", "worktree", "add", self.worktree_paths["source_worktree"],
                      self.source_branch, "--force"], check=True)
                 print(f"Successfully added new temp worktree for source branch {self.source_branch}, "
-                      f"and checked out (Local or stashed changes will be ignored in this build).")#todo check if stashed changes exist, abort if yes?
+                      f"and checked out (Local or stashed changes will be ignored in this build).")
                 os.chdir(f"{self.worktree_paths['source_worktree']}/doc")
                 current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
                                      check=True)
@@ -94,7 +94,7 @@ class GithubPagesDeployer:
             # Not using the default branch actually has benefits, because the branch gh-pages enforces some things.
             # We use github-pages/main with separate history for Github Pages,
             # because automated commits to the main branch can cause problems and
-            # we don't want to mix the generated documentation with sources. todo currently it mixes
+            # we don't want to mix the generated documentation with sources.
             # Furthermore, Github Pages expects a certain directory structure in the repository
             # which we only can provide with a separate history.
             gh_pages_root_branch = "github-pages/root"  # is needed to temporarly create a new root commit
