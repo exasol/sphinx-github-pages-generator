@@ -126,7 +126,7 @@ class GithubPagesDeployer:
         # automatically generates Sphinx sources inside the "api" directory that document
         # the package found in "module_path"
         # -T: not table of contents
-        # -e: put documentation for ech module on own page
+        # -e: put documentation for each module on own page
         for module in self.module_path:
             out = run(["sphinx-apidoc", "-T", "-e", "-o", "api", module])
             print(str(out))
