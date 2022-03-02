@@ -8,6 +8,7 @@ import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github
 from helper_test_functions import remove_branch, setup_workdir
 from fixtures import setup_test_env
 import shutil
+from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
 
 
 def test_remote_branch_creation(setup_test_env):
@@ -33,6 +34,9 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     user_name, user_access_token = setup_test_env
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
+    temp_test_branch ="temp-test-branch"
+    run(["git", "checkout", "-B", temp_test_branch], check=True)
+    run(["git", "push", "-u", "origin", temp_test_branch], check=True)
     cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -40,7 +44,7 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                              "--push_origin", "origin",
                                              "--push_enabled", "push",
-                                             "--source_branch", source_branch,
+                                             "--source_branch", temp_test_branch,
                                              "--source_dir", cwd,
                                              "--module_path", ["../test_package", "../another_test_package"]])
     current_commit_id = run(["git", "ls-remote",
@@ -51,11 +55,13 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     # make a change in the docu
     with open("./index.rst", "a") as file:
         file.write("\n\nThis text is a change.")
-
+    run(["git", "add", "*"], check=True)
+    run(["git", "commit", "-m", "test-commit"], check=True)
+    run(["git", "push"], check=True)
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                              "--push_origin", "origin",
                                              "--push_enabled", "push",
-                                             "--source_branch", source_branch,
+                                             "--source_branch", temp_test_branch,
                                              "--source_dir", cwd,
                                              "--module_path", ["../test_package", "../another_test_package"]])
     current_commit_id = run(["git", "ls-remote",
@@ -68,6 +74,7 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     assert not commit_id_old == ""
     assert not commit_id_old == commit_id_new
     remove_branch(target_branch)
+    remove_branch(temp_test_branch)
 
 
 def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
@@ -384,3 +391,111 @@ def test_infer_source_branch(setup_test_env):
     # check if docu for this branch exists in target branch
     assert path.is_dir()
     remove_branch(target_branch)
+
+
+def test_abort_if_given_source_branch_does_not_exist(setup_test_env):
+    source_branch = "this-is-not-a-branch"
+    actual_branch = "5-add-tests"
+    run(["git", "checkout", actual_branch], check=True)
+    cwd = os.getcwd()
+    target_branch = "test-docu-new-branch"
+
+    with pytest.raises(SystemExit) as e:
+        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                                 "--push_origin", "origin",
+                                                 "--push_enabled", "push",
+                                                 "--source_branch", source_branch,
+                                                 "--source_dir", cwd,
+                                                 "--module_path", ["../test_package", "../another_test_package"]])
+    assert e.match(f"source branch {source_branch} does not exist")
+    assert e.type == SystemExit
+
+
+def test_abort_local_uncommitted_changes_exist_in_source_branch(setup_test_env):
+    source_branch = "5-add-tests"
+    run(["git", "checkout", source_branch], check=True)
+    cwd = os.getcwd()
+    # make local changes in source_branch
+    with open("./index.rst", "a") as file:
+        file.write("\n\nThis text is a change.")
+    target_branch = "test-docu-new-branch"
+    remove_branch(target_branch)
+
+    with pytest.raises(SystemExit) as e:
+        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                                 "--push_origin", "origin",
+                                                 "--push_enabled", "push",
+                                                 "--source_branch", source_branch,
+                                                 "--source_dir", cwd,
+                                                 "--module_path", ["../test_package", "../another_test_package"]])
+    assert e.match(f"Abort, you have uncommitted changes in source branch  {source_branch}, "
+                     f"please commit and push the following files:\n .*")
+    assert e.type == SystemExit
+
+
+def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
+    source_branch = "5-add-tests"
+    run(["git", "checkout", source_branch], check=True)
+    cwd = os.getcwd()
+    current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
+    with open("./index.rst", "a") as file:
+        file.write("\n\nThis text is a change.")
+    run(["git", "add", "*"], check=True)
+    run(["git", "commit", "-m", "test-commit"], check=True)
+    new_current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
+    print(current_commit_id)
+    print(new_current_commit_id)
+    target_branch = "test-docu-new-branch"
+
+    with pytest.raises(SystemExit) as e:
+        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                                 "--push_origin", "origin",
+                                                 "--push_enabled", "push",
+                                                 "--source_branch", source_branch,
+                                                 "--source_dir", cwd,
+                                                 "--module_path", ["../test_package", "../another_test_package"]])
+    assert e.match(f"Abort. Local commit id .* and commit id of source "
+                   f"branch remote .* are not equal. Please push your changes.")
+    assert e.type == SystemExit
+
+def test_abort_source_branch_only_exists_locally(setup_test_env):
+    a_branch = "5-add-tests"
+    run(["git", "checkout", a_branch], check=True)
+    temp_test_branch = "temp-test-branch"
+    run(["git", "checkout", "-B", temp_test_branch], check=True)
+    run(["git", "checkout", a_branch], check=True)
+    cwd = os.getcwd()
+    target_branch = "test-docu-new-branch"
+    with pytest.raises(SystemExit) as e:
+        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                                 "--push_origin", "origin",
+                                                 "--push_enabled", "push",
+                                                 "--source_branch", temp_test_branch,
+                                                 "--source_dir", cwd,
+                                                 "--module_path", ["../test_package", "../another_test_package"]])
+
+    assert e.match(f"Source branch exists locally, but not on remote, and source branch is not current branch."
+                   f"Please push your source branch to remote.")
+    assert e.type == SystemExit
+
+
+def test_abort_if_no_source_branch_detected(setup_test_env):
+    source_branch = "5-add-tests"
+    run(["git", "checkout", source_branch], check=True)
+    cwd = os.getcwd()
+    # break the local git repository
+    os.remove("../.git/HEAD")
+    target_branch = "test-docu-new-branch"
+    with pytest.raises(SystemExit) as e:
+        with TemporaryDirectory() as tempdir:
+            thisIsABrokenID = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
+            deployer = GithubPagesDeployer(cwd, "", thisIsABrokenID, ["../test_package", "../another_test_package"],
+                                           target_branch, "origin", "push",
+                                           tempdir)
+            try:
+                deployer.detect_or_verify_source_branch()
+            finally:
+                deployer.clean_worktree(cwd)
+
+    assert e.match(f"Abort. Could not detect current branch and no source branch given.")
+    assert e.type == SystemExit

@@ -3,7 +3,9 @@ from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
 from tempfile import TemporaryDirectory
 from subprocess import run
 import os
+import sys
 from inspect import cleandoc
+
 
 def deploy_github_pages(argv):
     args = Parser(argv).args

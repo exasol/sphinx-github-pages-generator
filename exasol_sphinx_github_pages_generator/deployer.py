@@ -12,7 +12,7 @@ class GithubPagesDeployer:
                  tempdir):
         self.source_dir = source_dir
         self.source_branch = source_branch
-        self.current_commit_id = current_commit_id.stdout
+        self.current_commit_id = current_commit_id.stdout[:-1]
         self.module_path = module_path
 
         self.target_branch = target_branch
@@ -44,7 +44,7 @@ class GithubPagesDeployer:
             except subprocess.CalledProcessError as e:
                 print("From git worktree add: ' If <branch> does exist, it will be checked out in the new working tree,"
                       " if it’s not checked out anywhere else, otherwise the command will refuse to create "
-                      "the working tree (unless --force is used).'")
+                      " the working tree (unless --force is used).'")
                 print(f"Error from subprocess: {str(e)}")
                 sys.exit("Problem with adding worktree for source")
 
@@ -55,24 +55,31 @@ class GithubPagesDeployer:
             sys.exit(f"source branch {self.source_branch} does not exist")
 
     def detect_or_verify_source_branch(self):
-        current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, check=True)
+        current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
         print(current_branch.stdout)
         print(f"source branch before detect: {self.source_branch}")
         if self.source_branch == "":
             if current_branch.stdout == "":
-                sys.exit("Abort. Could not detect current branch and no source branch given.")
+                sys.exit("Abort. Could not detect current branch and no source branch given."
+                         "Please check the state of your local git repository.")
             print(f"No source branch given. Using Current branch {current_branch.stdout[:-1]} as source.")
             self.source_branch = current_branch.stdout[:-1]
-
-        source_branch_commit_id = run(["git", "rev-parse", self.source_branch], capture_output=True, text=True)
+        remote_source_branch_commit_id = run(["git", "rev-parse", f"remotes/origin/{self.source_branch}"], capture_output=True, text=True)
         # the [:-1] removes the newline from the output
         if current_branch.stdout[:-1] != self.source_branch:
             print("Current branch is not source branch. Need to switch branches")
-            self.check_out_source_branch_as_worktree(source_branch_commit_id.returncode)
+            local_source_branch_commit_id = run(["git", "rev-parse", self.source_branch], capture_output=True,
+                                                text=True)
+            self.check_out_source_branch_as_worktree(local_source_branch_commit_id.returncode)
             return
-        if source_branch_commit_id.stdout != self.current_commit_id:
-            sys.exit(f"Abort. Current commit id {self.current_commit_id} and commit id of source "
-                     f"branch {source_branch_commit_id} are not equal. Please push your changes.")
+        if remote_source_branch_commit_id.stdout[:-1] != self.current_commit_id:
+            sys.exit(f"Abort. Local commit id {self.current_commit_id} and commit id of source "
+                     f"branch remote {remote_source_branch_commit_id.stdout[:-1]} are not equal. Please push your changes.")
+        uncommited_changes = run(["git", "status", "--porcelain"], capture_output=True, check=True, text=True)
+        if uncommited_changes.stdout != "":
+            sys.exit(f"Abort, you have uncommitted changes in source branch  {self.source_branch}, "
+                     f"please commit and push the following files:\n"
+                     f"{uncommited_changes.stdout}")
         print(f"Detected source branch {self.source_branch}")
 
     def checkout_target_branch_as_worktree(self):
@@ -164,7 +171,7 @@ class GithubPagesDeployer:
         print("Git commit")
         with open(f"{output_dir}/.source", "w+") as file:
             file.write(f"BRANCH={self.source_branch} \n")
-            file.write(f"COMMIT_ID={self.current_commit_id}")
+            file.write(f"COMMIT_ID={self.current_commit_id} \n")
         run(["git", "add", "-v", "."], check=True)
         changes_exists = run(["git", "diff-index", "--quiet", "HEAD", "--"], capture_output=True, text=True)
         if 1 == changes_exists.returncode:
