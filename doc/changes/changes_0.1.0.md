@@ -14,6 +14,7 @@ Code name: Initial implementation
 
   
 ## Documentation
+  - #7 Added documentation pages
 
 
 ## Refactoring

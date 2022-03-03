@@ -13,7 +13,7 @@ def remove_branch(branch_name):
 def setup_test_repo():
     user_access_token = os.environ.get("MAuserPAT")
     user_name = os.environ.get("MAuserName")
-    run(["git", "clone", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git"],
+    run(["git", "clone", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git"], #todo hide in secret?
         check=True)
     os.chdir("sphinx-github-pages-generator-test")
     run(["git", "remote", "set-url", "origin",

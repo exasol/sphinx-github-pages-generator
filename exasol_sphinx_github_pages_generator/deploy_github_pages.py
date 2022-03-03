@@ -6,8 +6,11 @@ import os
 import sys
 from inspect import cleandoc
 
-
 def deploy_github_pages(argv):
+    """
+    Runs the GithubPagesDeployer inside a temp directory given the command-line options and arguments inside argv.
+    :param argv: Command-line options and arguments, better described in the Parser.
+    """
     args = Parser(argv).args
     original_workdir = os.getcwd()
     source_dir = args.source_dir
@@ -41,3 +44,6 @@ def deploy_github_pages(argv):
         finally:
             deployer.clean_worktree(original_workdir)
 
+
+if __name__ == "__main__":
+    deploy_github_pages(sys.argv[1:])

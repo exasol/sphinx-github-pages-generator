@@ -191,7 +191,6 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
         run(["git", "commit", "-m", "add gitignore"])
         run(["git", "push"])
         target_dir = cwd + "/" + source_branch
-        print(f"Copying HTML output {build_dir} to the output directory {target_dir}")
         shutil.copytree(build_dir, target_dir, dirs_exist_ok=True)
         shutil.rmtree(build_dir)
         run(["git", "add", "*"], check=True)
@@ -386,7 +385,6 @@ def test_infer_source_branch(setup_test_env):
     new_cwd = "/".join(os.getcwd().split("/")[:-1])
     os.chdir(new_cwd)
     run(["git", "checkout", target_branch], check=True)
-    run(["ls", "-la", new_cwd], check=True)
     path = Path(f"./{source_branch}")
     # check if docu for this branch exists in target branch
     assert path.is_dir()
@@ -443,8 +441,6 @@ def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
     run(["git", "add", "*"], check=True)
     run(["git", "commit", "-m", "test-commit"], check=True)
     new_current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
-    print(current_commit_id)
-    print(new_current_commit_id)
     target_branch = "test-docu-new-branch"
 
     with pytest.raises(SystemExit) as e:

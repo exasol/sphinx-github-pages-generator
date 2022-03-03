@@ -7,10 +7,24 @@ import os
 
 
 class GithubPagesDeployer:
-    def __init__(self, source_dir, source_branch, current_commit_id, module_path,
-                 target_branch, push_origin, push_enabled,
-                 tempdir):
-        self.source_dir = source_dir
+    """
+    Builds and deploys GitHub Pages using Sphinx given a branch.
+    """
+    def __init__(self, source_dir: str, source_branch: str, current_commit_id: subprocess.CompletedProcess,
+                 module_path: str,
+                 target_branch: str, push_origin: str, push_enabled: str,
+                 tempdir: str):
+        """
+        :param source_dir: Path to the directory inside the source_branch where the index.rst and conf.py reside in.
+        :param source_branch: The branch the documentation files should be generated for.
+        :param current_commit_id: CommitID of the current branch.
+        :param module_path: List of modules/packages in the source_branch that should be documented.
+        :param target_branch: Branch the documentation should be generated into.
+        :param push_origin: origin of the Git Repository.
+        :param push_enabled: Set to "push" if generated fies should be pushed to the remote, otherwise set to "commit".
+        :param tempdir: Path of the temporary directory this Generator runs in.
+        """
+        self.source_dir = source_dir # todo actually use, test?
         self.source_branch = source_branch
         self.current_commit_id = current_commit_id.stdout[:-1]
         self.module_path = module_path
@@ -20,12 +34,20 @@ class GithubPagesDeployer:
         self.push_enabled = push_enabled
 
         self.worktree_paths = {"target_worktree": tempdir + "/worktrees/worktree_target",
-                              "source_worktree": tempdir + "/worktrees/worktree_source"}
+                               "source_worktree": tempdir + "/worktrees/worktree_source"}
         self.build_dir = tempdir + "/build"
         self.intermediate_dir = tempdir + "/intermediate"
 
     def check_out_source_branch_as_worktree(self,
                                             source_branch_exists_locally):
+        """
+        Creates a separate Git worktree for the source_branch if the existing worktree has a different branch
+        currently checked out. This way, the local current Git Repository is kept in its original state.
+        The new worktree is created at self.worktree_paths["source_worktree"].
+        Exits with Error if source_branch does not exist in the remote repository.
+        :param source_branch_exists_locally: Indicates if the source_branch exists in the local repository.
+        If 0, it exists, else it does not
+        """
         source_branch_exists_remote = run(["git", "show-branch", f"remotes/origin/{self.source_branch}"],
                                           capture_output=True, text=True)
         print("source_branch_exists_remote : " + str(source_branch_exists_remote))
@@ -37,16 +59,20 @@ class GithubPagesDeployer:
                      self.source_branch, "--force"], check=True)
                 print(f"Successfully added new temp worktree for source branch {self.source_branch}, "
                       f"and checked out (Local or stashed changes will be ignored in this build).")
-                os.chdir(f"{self.worktree_paths['source_worktree']}/doc")
+                os.chdir(f"{self.worktree_paths['source_worktree']}/doc") # todo  chmage to sorcedir. also in other places
                 current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
                                      check=True)
-                print("new current_branch/detected source branch : " + str(current_branch.stdout))
+                if source_branch_exists_locally == 0:
+                    # todo check if local and chcked out branches are on same commit?
+                    pass
             except subprocess.CalledProcessError as e:
-                print("From git worktree add: ' If <branch> does exist, it will be checked out in the new working tree,"
-                      " if it’s not checked out anywhere else, otherwise the command will refuse to create "
-                      " the working tree (unless --force is used).'")
-                print(f"Error from subprocess: {str(e)}")
-                sys.exit("Problem with adding worktree for source")
+                sys.exit(f"""
+                        Problem with adding worktree for source.
+                        From git worktree add documentation: ' If <branch> does exist, it will be checked out in the new working tree,
+                        if it’s not checked out anywhere else, otherwise the command will refuse to create 
+                        the working tree (unless --force is used).'
+                        Error from subprocess: {str(e)}"
+                        """)
 
         elif source_branch_exists_locally == 0:
             sys.exit("Source branch exists locally, but not on remote, and source branch is not current branch."
@@ -55,9 +81,14 @@ class GithubPagesDeployer:
             sys.exit(f"source branch {self.source_branch} does not exist")
 
     def detect_or_verify_source_branch(self):
+        """
+        Tries to find a valid source_branch.
+        If source_branch is set, checks if it is equal to the current branch. If not, switches branches.
+        Tries to use the current branch if source_branch is not set. Exits if this fails.
+        Also Fails if the detected source branch has local uncommitted/pushed changes or is not
+        up-to-date with the remote.
+        """
         current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
-        print(current_branch.stdout)
-        print(f"source branch before detect: {self.source_branch}")
         if self.source_branch == "":
             if current_branch.stdout == "":
                 sys.exit("Abort. Could not detect current branch and no source branch given."
@@ -74,19 +105,23 @@ class GithubPagesDeployer:
             return
         if remote_source_branch_commit_id.stdout[:-1] != self.current_commit_id:
             sys.exit(f"Abort. Local commit id {self.current_commit_id} and commit id of source "
-                     f"branch remote {remote_source_branch_commit_id.stdout[:-1]} are not equal. Please push your changes.")
-        uncommited_changes = run(["git", "status", "--porcelain"], capture_output=True, check=True, text=True)
-        if uncommited_changes.stdout != "":
+                     f"branch remote {remote_source_branch_commit_id.stdout[:-1]} are not equal. "
+                     f"Please push your changes or pull new commits from remote.")
+        uncommitted_changes = run(["git", "status", "--porcelain"], capture_output=True, check=True, text=True)
+        if uncommitted_changes.stdout != "":
             sys.exit(f"Abort, you have uncommitted changes in source branch  {self.source_branch}, "
                      f"please commit and push the following files:\n"
-                     f"{uncommited_changes.stdout}")
+                     f"{uncommitted_changes.stdout}")
         print(f"Detected source branch {self.source_branch}")
 
     def checkout_target_branch_as_worktree(self):
+        """
+        Creates a separate worktree for the target branch and checks it out.
+        If the target_branch already exists in remote, it is checked out into a new local worktree.
+        Else, target_branch is added as a new branch with a separate worktree and set as default for GitHub Pages.
+        """
         target_branch_exists = run(["git", "show-branch", f"remotes/origin/{self.target_branch}"], capture_output=True,
                                    text=True)
-        print("target_branch_exists : " + target_branch_exists.stdout + str(
-            target_branch_exists.returncode) + target_branch_exists.stderr)
         if target_branch_exists.returncode == 0:
             print(f"Create worktree from existing branch {self.target_branch}")
             run(["git", "worktree", "add", self.worktree_paths["target_worktree"], self.target_branch], check=True)
@@ -97,7 +132,6 @@ class GithubPagesDeployer:
             run(["git", "branch", self.target_branch], check=True)
             run(["git", "worktree", "add", self.worktree_paths["target_worktree"], self.target_branch], check=True)
             currentworkdir = os.getcwd()
-            print(currentworkdir)
             os.chdir(self.worktree_paths["target_worktree"])
             # We need to set the TARGET_BRANCH to the default branch
             # The default branch from github for pages is gh-pages, but you can change that.
@@ -128,24 +162,25 @@ class GithubPagesDeployer:
             os.chdir(currentworkdir)
 
     def build_and_copy_documentation(self):
+        """
+        Build the html documentation files using "sphinx-apidoc" and "sphinx-build,
+        then copies them into the target branch. If an older version of the files exist for the source branch, on the
+        target_branch, these are deleted first.
+        :returns the path of the generated files inside the target_branch worktree.
+        """
         print("Build with sphinx")
         currentworkdir = os.getcwd()
-        print("currentworkdir :" + currentworkdir)
-        os.chdir(currentworkdir)
-        run(["ls", "-la", currentworkdir], check=True)
         # automatically generates Sphinx sources inside the "api" directory that document
         # the package found in "module_path"
         # -T: not table of contents
         # -e: put documentation for each module on own page
         for module in self.module_path:
             out = run(["sphinx-apidoc", "-T", "-e", "-o", "api", module])
-            print(str(out))
         # Builds the Sphinx documentation. Generates html files inside "build_dir" using "source_dir"
         # -W: Turns warnings into errors
         run(["sphinx-build", "-b", "html", "-d", self.intermediate_dir, "-W", currentworkdir, self.build_dir], check=True)
         print("Generated HTML Output")
         print(f"Using html_output_dir={self.build_dir}")
-        run(["ls", "-la", self.build_dir], check=True)
 
         output_dir = Path(f"{self.worktree_paths['target_worktree']}/{self.source_branch}")
         print(f"Using output_dir={output_dir}")
@@ -157,17 +192,21 @@ class GithubPagesDeployer:
         print(f"Copying HTML output {self.build_dir} to the output directory {output_dir}")
         for obj in os.listdir(self.build_dir):
             shutil.move(self.build_dir + "/" + str(obj), output_dir)
-        print(f"Content of output directory {output_dir}")
         open(f"{self.worktree_paths['target_worktree']}/.nojekyll", "w").close()
+        print(f"Content of output directory {output_dir}")
         run(["ls", "-la", output_dir], check=True)
 
         return output_dir
 
-    def git_commit_and_push(self, output_dir):
+    def git_commit_and_push(self, output_dir: str):
+        """
+        Commits and pushes the generated documentation files to the remote GitHUb repository.
+        Also adds a file describing the source branch and commit of the generated files.
+        Does nothing if no changes occurred.
+        :param output_dir: Path of the generated files inside the target_branch worktree.
+        """
         currentworkdir = os.getcwd()
-        print(currentworkdir)
         os.chdir(self.worktree_paths['target_worktree'])
-        print(f"Current directory before commit and push {os.getcwd()}")
         print("Git commit")
         with open(f"{output_dir}/.source", "w+") as file:
             file.write(f"BRANCH={self.source_branch} \n")
@@ -175,23 +214,31 @@ class GithubPagesDeployer:
         run(["git", "add", "-v", "."], check=True)
         changes_exists = run(["git", "diff-index", "--quiet", "HEAD", "--"], capture_output=True, text=True)
         if 1 == changes_exists.returncode:
-            print(f"committing changes because changes_exist is {changes_exists.returncode}")
+            print(f"committing changes because changes exist.")
             run(["git", "commit", "--no-verify", "-m",
-                 f"Update documentation from source branch {self.source_branch} with commit id {self.current_commit_id}"], check=True)
+                 f"Update documentation from source branch {self.source_branch} with commit id"
+                 f" {self.current_commit_id}"], check=True)
             if self.push_origin != "" and self.push_enabled == "push":
                 print(f"Git push {self.push_origin} {self.target_branch}")
                 run(["git", "push", self.push_origin, self.target_branch], check=True)
         elif 0 == changes_exists.returncode:
             print("No changes to commit.")
         else:
-            print('A Error occurred in run(["git", "diff-index", "--quiet", "HEAD", "--"],'
-                  'capture_output=True, text=True)')
-            print(f" changes_exists.returncode: {changes_exists.returncode}")
-            print(f" changes_exists.stderr: {changes_exists.stderr}")
-            print(f" changes_exists.stdout: {changes_exists.stdout}")
+            sys.exit(f"""A Error occurred in run(["git", "diff-index", "--quiet", "HEAD", "--"]. Nothing was committed.'
+                    'capture_output=True, text=True), 
+                    returncode: {changes_exists.returncode}, 
+                    stderr: {changes_exists.stderr}, 
+                    stdout: {changes_exists.stdout}
+                    """)
         os.chdir(currentworkdir)
 
-    def clean_worktree(self, original_workdir):
+    def clean_worktree(self, original_workdir: str):
+        """
+        Deletes the added worktrees and resets the working directory to the given working directory in order to
+        ensure it points to an existing directory.
+        :param original_workdir: A directory that can be used as the working directory after the Generator finishes.
+        Preferably the original working-directory.
+        """
         print("Starting cleanup.")
         os.chdir(original_workdir)
         print(f"Set working directory back to original {original_workdir}")
