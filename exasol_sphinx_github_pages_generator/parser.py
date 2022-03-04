@@ -24,6 +24,6 @@ class Parser:
         parser.add_argument('--source_dir', type=str, default="./doc/",
                             help="Path to the directory inside the source_branch where the index.rst "
                                  "and conf.py reside in.")
-        parser.add_argument('--module_path', type=list, default=["../module_name"],
+        parser.add_argument('--module_path', nargs='*', default="../module_name",
                             help="The paths to all the modules the docu is being generated for")
         self.args = parser.parse_args(argv)

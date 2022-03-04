@@ -1,5 +1,7 @@
 name: Build and push documentation for main branch
-
+# todo add action for checking if banches still exists and removing docu for deleted branches?
+# todo copy to/use in test-repo
+#todo add ection to poetry build pip package and upload
 on:
   push
 

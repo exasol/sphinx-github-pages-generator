@@ -28,12 +28,6 @@ myst-parser = "^0.14.0"
 
 
 [tool.poe.tasks]
-deploy_pages_main = { shell = """
-                    cd $(git rev-parse --show-toplevel)/doc;
-                    python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py
-                            --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push"
-                            --source_branch "main"  --module_path ['../exasol_sphinx_github_pages_generator']
-                            --source_dir $PWD""" }
+deploy_pages_main = { shell = """cd $(git rev-parse --show-toplevel);declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" --source_dir $PWD""" }
 
 test =  "pytest tests"
-#python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "commit" --source_branch "main"  --module_path "['../exasol_sphinx_github_pages_generator']" --source_dir $PWD

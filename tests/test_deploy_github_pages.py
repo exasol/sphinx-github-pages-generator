@@ -23,7 +23,7 @@ def test_remote_branch_creation(setup_test_env):
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
@@ -46,7 +46,7 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
                                              "--push_enabled", "push",
                                              "--source_branch", temp_test_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
     current_commit_id = run(["git", "ls-remote",
                              f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
                              target_branch], capture_output=True, check=True)
@@ -63,7 +63,7 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
                                              "--push_enabled", "push",
                                              "--source_branch", temp_test_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
     current_commit_id = run(["git", "ls-remote",
                              f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
                              target_branch], capture_output=True, check=True)
@@ -89,7 +89,7 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch_one,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
 
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
@@ -103,7 +103,7 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
                                                  "--push_enabled", "push",
                                                  "--source_branch", source_branch_two,
                                                  "--source_dir", cwd,
-                                                 "--module_path", ["../exasol_test_code_source"]])
+                                                 "--module_path", "../exasol_test_code_source"])
         target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                    text=True)
         assert target_branch_exists.returncode == 0
@@ -129,7 +129,7 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
     current_commit_id = run(
         ["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
          target_branch], capture_output=True, check=True)
@@ -140,7 +140,7 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
     current_commit_id = run(
         ["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
          target_branch], capture_output=True, check=True)
@@ -167,7 +167,7 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", module_path])
+                                             "--module_path", module_path[0], module_path[1]])
 
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
@@ -214,7 +214,7 @@ def test_no_doctree_files_in_remote(setup_test_env):
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
 
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
@@ -241,7 +241,7 @@ def test_no__pycache__files_in_remote(setup_test_env):
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
 
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
@@ -270,7 +270,7 @@ def test_only_commit_dont_push(setup_test_env):
                                              "--push_enabled", "commit",
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
     current_remote_commit_id = run(
         ["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
          target_branch], capture_output=True, check=True)
@@ -304,7 +304,7 @@ def test_select_different_source_branch_which_does_exists_locally(setup_test_env
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
@@ -325,7 +325,7 @@ def test_select_different_source_branch_which_does_not_exists_locally(setup_test
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
@@ -350,7 +350,7 @@ def test_select_different_source_branch_does_not_delete_local_changes(setup_test
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
 
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
                          check=True)
@@ -376,7 +376,7 @@ def test_infer_source_branch(setup_test_env):
                                              "--push_origin", "origin",
                                              "--push_enabled", "push",
                                              "--source_dir", cwd,
-                                             "--module_path", ["../test_package", "../another_test_package"]])
+                                             "--module_path", "../test_package", "../another_test_package"])
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
@@ -404,7 +404,7 @@ def test_abort_if_given_source_branch_does_not_exist(setup_test_env):
                                                  "--push_enabled", "push",
                                                  "--source_branch", source_branch,
                                                  "--source_dir", cwd,
-                                                 "--module_path", ["../test_package", "../another_test_package"]])
+                                                 "--module_path", "../test_package", "../another_test_package"])
     assert e.match(f"source branch {source_branch} does not exist")
     assert e.type == SystemExit
 
@@ -425,7 +425,7 @@ def test_abort_local_uncommitted_changes_exist_in_source_branch(setup_test_env):
                                                  "--push_enabled", "push",
                                                  "--source_branch", source_branch,
                                                  "--source_dir", cwd,
-                                                 "--module_path", ["../test_package", "../another_test_package"]])
+                                                 "--module_path", "../test_package", "../another_test_package"])
     assert e.match(f"Abort, you have uncommitted changes in source branch  {source_branch}, "
                      f"please commit and push the following files:\n .*")
     assert e.type == SystemExit
@@ -449,7 +449,7 @@ def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
                                                  "--push_enabled", "push",
                                                  "--source_branch", source_branch,
                                                  "--source_dir", cwd,
-                                                 "--module_path", ["../test_package", "../another_test_package"]])
+                                                 "--module_path", "../test_package", "../another_test_package"])
     assert e.match(f"Abort. Local commit id .* and commit id of source "
                    f"branch remote .* are not equal. Please push your changes.")
     assert e.type == SystemExit
@@ -468,7 +468,7 @@ def test_abort_source_branch_only_exists_locally(setup_test_env):
                                                  "--push_enabled", "push",
                                                  "--source_branch", temp_test_branch,
                                                  "--source_dir", cwd,
-                                                 "--module_path", ["../test_package", "../another_test_package"]])
+                                                 "--module_path", "../test_package", "../another_test_package"])
 
     assert e.match(f"Source branch exists locally, but not on remote, and source branch is not current branch."
                    f"Please push your source branch to remote.")
