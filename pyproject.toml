@@ -17,17 +17,19 @@ homepage = "https://github.com/exasol/sphinx-github-pages-generator"
 keywords = ['exasol', 'github pages', 'documentaion']
 
 [tool.poetry.dependencies]
-python = ">=3.6.1,<4.0"
-
-
-[tool.poetry.dev-dependencies]
+python = ">=3.8,<4.0"
 Sphinx = "^3.5.3"
 poethepoet = "^0.10.0"
-pytest = "^6.1.1"
 myst-parser = "^0.14.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.1.1"
 
 
 [tool.poe.tasks]
-deploy_pages_main = { shell = """cd $(git rev-parse --show-toplevel);declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" --source_dir $PWD""" }
+commit_pages_main = { shell = """cd $(git rev-parse --show-toplevel);declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "commit" --source_branch "main"  --module_path "${StringArray[@]}" --source_dir $PWD""" }
+commit_pages_current = { shell = """cd $(git rev-parse --show-toplevel);declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "commit" --module_path "${StringArray[@]}" --source_dir $PWD""" }
+push_pages_main = { shell = """cd $(git rev-parse --show-toplevel);declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" --source_dir $PWD""" }
+push_pages_current = { shell = """cd $(git rev-parse --show-toplevel);declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --module_path "${StringArray[@]}" --source_dir $PWD""" }
 
 test =  "pytest tests"

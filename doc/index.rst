@@ -3,14 +3,23 @@
 *****************
 Table of Contents
 *****************
+Information for Users
 
 .. toctree::
    :maxdepth: 1
 
    user_guide/user_guide
-   developer_guide/developer_guide
-   dependencies
    changes/changelog
+
+Information for Contributors
+
+.. toctree::
+   :maxdepth: 1
+   developer_guide/developer_guide
+   system_requirements
+   design
+   dependencies
+
 
 *************
 API Reference
