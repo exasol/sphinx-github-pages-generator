@@ -1,8 +1,8 @@
 .. include:: ../README.rst
 
-*****************
 Table of Contents
 *****************
+
 Information for Users
 
 .. toctree::
@@ -15,15 +15,15 @@ Information for Contributors
 
 .. toctree::
    :maxdepth: 1
+
    developer_guide/developer_guide
    system_requirements
    design
    dependencies
 
 
-*************
 API Reference
-*************
+=============
 
 .. autosummary::
    :toctree: api

@@ -2,63 +2,60 @@
 User Guide
 **********
 
-# add beispiele?
-# wie muss repo aufgebaut sein um generated zu nutzen (link to shpinx )
-
 This user guide provides you with usage examples for this repository.
 For a detailed explanation of the API, please refer to our :doc:`API Documentation </api/exasol_sphinx_github_pages_generator>`
 
+Examples:
 
-- need for sphinx: 
-* conf.py
-* index.rst
+===========================
+Needed Repository structure
+===========================
+
+This Project uses Sphinx for the generation of the documentation. Therefore, all files you want to use as a
+source for your documenation have to be compatible with Spinx. You can find Shpinx's
+documentation `here <https://www.sphinx-doc.org/en/master/>`_.
+
+In general:
+
+You will need a base directory for your documentation source files. We use "repository_root/doc",
+but you can set it to another folder. #todo check if true
+Inside the documentation root directory, you need at least a minimal "conf.py" to configure
+Sphinx and a "index.rst"
+for Sphinx to use as a root for your documentation. You can use :code:`sphinx-quickstart` to generate stubs for these.
+Inside the index.rst you can linc to other parts of your documentation using the :code:`toctree` directive.
+#todo example
+You can also include plain text, or documentation for specific functions or objects by using the
+:code:`autosummary`,
+:code:`automodule`,
+:code:`autoclass` and
+:code:`autoexception` directives, which will import the docstring for the given objects automatically.
+Here is the code from te index,rst of this project, which genrates the documentation if the api. To see the
+generated pages see `this link <#todo add link>`_.
+
+.. code:: rst
+
+    .. autosummary::
+       :toctree: api
+
+       exasol_sphinx_github_pages_generator
 
 
-
-**********************************************
-Überschrift
-**********************************************
-
-explanation
-
- * :doc:`Upload API </api/exasol_bucketfs_utils_python.upload>` link to file
-
-
-################################################
-unter überschrift
-################################################
-
-
-Example:
-
-.. literalinclude:: upload_download_file.py
-   :language: python3 codebeispiiel
-
-#######################################################
-Uploading and downloading data from and to file-objects
-#######################################################
-
-A more sophisticated version of the previous function allows you
-to upload from or download into a
-`file-object <https://docs.python.org/3/glossary.html#term-file-object>`_.
-:py:func:`open` function or
-:py:class:`io.BytesIO`.
-:py:meth:`socket.socket.makefile()`
-
-**************************
+===========================
 Building the Documentation
-**************************
+===========================
 
 We are using Sphinx for generating the documentation,
 because it is the default documentation tool for Python projects.
 Sphinx supports API documentation generation for Python and with plugins also for other languages.
 Furthermore, it supports reStructuredText with proper cross-document references.
 
-########################
+===========================
 Call the Sphinx generator
-########################
+===========================
 
 Once Sphinx generator is installed in your environment, you can import and use it in a python script like this:
+
+.. code:: py
 
     import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
     import sys
@@ -68,10 +65,14 @@ Once Sphinx generator is installed in your environment, you can import and use i
 
 Then call the Script using command line parameters like this:
 
+.. code:: bash
+
     declare -a StringArray=("../package/module-path1" "../package/module-path2")
     python3 your_caller_script.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" --source_dir $PWD
 
 Alternatively you can also pass the parameters directly in the python script:
+
+.. code:: py
 
     deploy_github_pages.deploy_github_pages(["--target_branch", "target_branch",
                                              "--push_origin", "origin",
@@ -79,9 +80,10 @@ Alternatively you can also pass the parameters directly in the python script:
                                              "--source_branch", "source_branch",
                                              "--source_dir", cwd,
                                              "--module_path", "../package/module-path1", "../package/module-path2"])
-#######
+
+===========================
 Options
-#######
+===========================
 
 Calling the module with "-h" will print the help page for the generator.
 
@@ -89,15 +91,15 @@ Calling the module with "-h" will print the help page for the generator.
 
 Parameters:
 
-.. currentmodule:: exasol_sphinx_github_pages_generator/deployer.py
+.. currentmodule:: exasol_sphinx_github_pages_generator
 .. autofunction:: __init__
 
 For a closer look see:
-:doc:`Generator documentation </api/deployer.py>`
+:doc`Generator documentation </api/deployer.py>` TODO
 
-######################################################
+======================================================
 Building the Documentation interactively during coding
-######################################################
+======================================================
 
 We defined several commands in the project.toml in poethepoet
 which allow you to build the documentation during coding::
@@ -117,9 +119,9 @@ All three build commands use the generated documentation located in /doc/_build/
 which is excluded in gitignore. If you want to build the documentation for other formats than HTML,
 you find a Makefile in /doc which allows you to run the sphinx build with other goals.
 
-####################################
+======================================================
 Building the Documentation in the CI
-####################################
+======================================================
 
 Building the documentation in the CI is a bit different to the steps you can use during coding,
 because it also contains the preparations for publishing. At the moment, we publish
@@ -138,7 +140,7 @@ we add a directory to the root directory of the github-pages/main branch.
 With each merge into the main branch the CI updates the documentation for the main branch in github-pages/main.
 For feature branches the CI checks this deployment process by creating a branch github-pages/<feature-branch-name>.
 but it removes the branch directly after pushing it. However, you can run this also locally for testing purposes or
-checking the branch with Github Pages in a fork of the main repostory.
+checking the branch with Github Pages in a fork of the main repository.
 The scripts which are responsible for the deployment are::
 
     deploy-to-github-pages-current # creates or updates github-pages/<current-branch-name>

@@ -170,6 +170,7 @@ class GithubPagesDeployer:
         """
         print("Build with sphinx")
         currentworkdir = os.getcwd()
+        print(currentworkdir)
         # automatically generates Sphinx sources inside the "api" directory that document
         # the package found in "module_path"
         # -T: not table of contents

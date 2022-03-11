@@ -1,9 +1,9 @@
 Sphinx GitHub Pages Generator
-=============
+*****************************
 
 
 Overview
---------
+========
 
 
 
@@ -35,5 +35,6 @@ Features
 ========
 
 * Build html documentation files using Sphinx
+* Choose which remote branch to generate the documentation from
 * Choose between automatically committing or committing and pushing the generated files to your GitHub Pages branch.
 * Works with multiple packages in one Repository.
