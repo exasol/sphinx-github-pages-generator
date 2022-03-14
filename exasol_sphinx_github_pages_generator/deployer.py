@@ -9,21 +9,21 @@ import os
 class GithubPagesDeployer:
     """
     Builds and deploys GitHub Pages using Sphinx given a branch.
+
+    :param source_dir: Path to the directory inside the source_branch where the index.rst and conf.py reside in.
+    :param source_branch: The branch the documentation files should be generated for.
+    :param current_commit_id: CommitID of the current branch.
+    :param module_path: List of modules/packages in the source_branch that should be documented.
+    :param target_branch: Branch the documentation should be generated into.
+    :param push_origin: origin of the Git Repository.
+    :param push_enabled: Set to "push" if generated fies should be pushed to the remote, otherwise set to "commit".
+    :param tempdir: Path of the temporary directory this Generator runs in.
+
     """
     def __init__(self, source_dir: str, source_branch: str, current_commit_id: subprocess.CompletedProcess,
                  module_path: str,
                  target_branch: str, push_origin: str, push_enabled: str,
                  tempdir: str):
-        """
-        :param source_dir: Path to the directory inside the source_branch where the index.rst and conf.py reside in.
-        :param source_branch: The branch the documentation files should be generated for.
-        :param current_commit_id: CommitID of the current branch.
-        :param module_path: List of modules/packages in the source_branch that should be documented.
-        :param target_branch: Branch the documentation should be generated into.
-        :param push_origin: origin of the Git Repository.
-        :param push_enabled: Set to "push" if generated fies should be pushed to the remote, otherwise set to "commit".
-        :param tempdir: Path of the temporary directory this Generator runs in.
-        """
         self.source_dir = source_dir # todo actually use, test?
         self.source_branch = source_branch
         self.current_commit_id = current_commit_id.stdout[:-1]

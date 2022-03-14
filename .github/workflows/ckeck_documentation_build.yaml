@@ -1,11 +1,10 @@
-name: Build and push documentation for main branch
-# todo add action for checking if banches still exists and removing docu for deleted branches?
-# todo copy to/use in test-repo
-#todo add ection to poetry build pip package and upload
+name: Check the documentation build
+
 on:
   push:
-    branches:
+    branches-ignore:
       - main
+      - github-pages/*
 
 jobs:
   create_github_pages_docs:
@@ -33,4 +32,6 @@ jobs:
         git config --local user.email "opensource@exasol.com"
         git config --local user.name "GitHub Action"
         git fetch
-        poetry run poe push_pages_main
+        poetry run poe push_pages_current
+    - name: Cleanup delete target branch
+      run: git push -d origin "github-pages/"$(git branch --show-current)""
