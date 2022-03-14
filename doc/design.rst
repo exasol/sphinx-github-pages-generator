@@ -13,7 +13,7 @@ This project uses a lot of github calls. Since not all of the are present in PyG
 Generate documentation
 ######################
 
-The Documentatin is generated and build using
+The Documentation is generated and build using
 
 .. code::
 
@@ -21,7 +21,8 @@ The Documentatin is generated and build using
     sphinx-build -b html -d intermediate_dir -W currentworkdir build_dir
 
 
-The intermediate .doctree files are generated into a temporary :code: ´intermediate_dir´ and are not copied into
+The intermediate .doctree files are generated into a temporary :code: ´intermediate_dir´ and are not
+copied into
 the resulting documentation.
 
 
@@ -30,7 +31,7 @@ the resulting documentation.
 Generate Apidoc
 ###############
 
-:code: ´sphinx-apidoc´ is used to auomatically generate api documentation in to the "doc/api" directory
+The :code: ´sphinx-apidoc´ is used to automatically generate api documentation in to the "doc/api" directory
 for all packages which are listed in the module_path parameter.
 The resulting html files are generated from the signatures and comments in the package source-files.
 
