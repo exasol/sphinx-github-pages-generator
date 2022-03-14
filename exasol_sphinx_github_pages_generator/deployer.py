@@ -24,7 +24,7 @@ class GithubPagesDeployer:
                  module_path: str,
                  target_branch: str, push_origin: str, push_enabled: str,
                  tempdir: str):
-        self.source_dir = source_dir # todo actually use, test?
+        self.source_dir = source_dir
         self.source_branch = source_branch
         self.current_commit_id = current_commit_id.stdout[:-1]
         self.module_path = module_path

@@ -6,46 +6,74 @@ Design Decisions:
 Use GitHub
 ##########
 
-* use subprocess to call git
+This project uses a lot of github calls. Since not all of the are present in PyGitHub, we decided to use
+:code: ´subprocess.run´ for all of them, in order to keep the git calls consistent.
 
-###########################################
-Generate documentation(move to user guide?)
-###########################################
+######################
+Generate documentation
+######################
 
-* use shpinx
-* use newly check out version of branch(check if remote is up-to-date with local repo first)
-* describe expected file structure?
-* html
-* how remove unnecessary files
-* sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator
-* sphinx-build -b html -W ~/PycharmProjects/sphinx-github-pages-generator/doc .build
+The Documentatin is generated and build using
+
+.. code::
+
+    sphinx-apidoc -T -e -o api module_path
+    sphinx-build -b html -d intermediate_dir -W currentworkdir build_dir
 
 
-#####################################
-Generate Apidoc (move to user guide?)
-#####################################
-* describe expected file structure?
-* generated from the signatures and comments in the package source-files.
-* sphinx-apidoc/autodoc
+The intermediate .doctree files are generated into a temporary :code: ´intermediate_dir´ and are not copied into
+the resulting documentation.
 
-#####################################
-Add generated documentation to GitHub
-#####################################
-(The generated documentation files should be added to a GitHub branch in a format that can be used 
-with GitHub-Pages. If no such branch exists, one should be created. It should be possible to decide to directly push 
-the generated documentation to the remote, or not.)
+
+
+###############
+Generate Apidoc
+###############
+
+:code: ´sphinx-apidoc´ is used to auomatically generate api documentation in to the "doc/api" directory
+for all packages which are listed in the module_path parameter.
+The resulting html files are generated from the signatures and comments in the package source-files.
+
 
 #############################
 Work in an isolated workspace
 #############################
-(The Generator should be working in an isolated temporary workspace, so no used repository folders get corrupted
-or unnecessarily cluttered.)
-* (use worktrees)
+
+This is archived by using separate added worktrees for any branch which needs to be checked out and/or
+changed during the build of the documentation. These are then deleted before termination of the process. This ensures
+the local repository stays clean.
+Additionally, the whole task runs in a temporary folder.
 
 ################
 Branch selection
 ################
-(It should be possible to select which branch to generate the documentation on. Generated documentation should include
-information as to where it was generated from.)
 
-## Tests Repository
+The parameter "source_branch" can be set to the name of the branch the documentation should be generated for.
+If it is not set, the current branch is used as a source branch. If the source branch is not the current branch, the
+source branch is temporarily checked out into a separate worktree, so the documentation can be build without having
+to deal with uncommitted changes on the current branch.
+Each Documentation pushed to GitHub contains a file ".source" which contains the branch name and commit id.
+
+################
+Tests Repository
+################
+
+The tests for this project use a private `test repository <https://github.com/exasol/sphinx-github-pages-generator-test>`_
+This is done in order to make the tests similar to a real use case. The test repository is private as to not be
+confusing to users.
+
+############
+GitHUb Pages
+############
+
+To publish to GitHub Pages, we need to build the HTML from the documentation source and commit it.
+However, Github Pages expects a specific directory structure to find the HTML.
+
+Since code directory structure often doesn't fit these requirements, we decided to create
+a new Git root commit and initially set github-pages/main branch to this commit.
+We then add new commits to this branch to update existing or add new versions of the documentation.
+
+This also avoid having automatic commits to the source branch.
+For each branch or tag for which we build the documentation in the CI
+we add a directory to the root directory of the github-pages/main branch.
+#todo umsetzten in ticket https://github.com/exasol/sphinx-github-pages-generator/issues/11

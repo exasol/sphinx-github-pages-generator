@@ -15,7 +15,12 @@ Documentation
 
 This repository also uses itself to generate the documentation for the Generator. The Source Files for the documentation
 can be found in the [doc folder]. Here are the [Documentation Pages].
-To build the documentation, use TODO
+To build the documentation manually for testing, you can use:
+
+.. code:: bash
+
+    sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator
+    sphinx-build -b html -W PathToProject/sphinx-github-pages-generator/doc .build
 
 #####
 Tests
