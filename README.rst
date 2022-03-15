@@ -1,11 +1,10 @@
 Sphinx GitHub Pages Generator
 *****************************
 
+.. _docu_start:
 
 Overview
 ========
-
-
 
 This project provides a python library for accessing automatic generation of sphinx GitHub pages 
 for a given repository. It is intended for th use with a Continuous Integration solutions.
@@ -28,8 +27,8 @@ Install the package from Github via `pip`:: #todo make pip package
 
 Documentation
 -------------
-#todo change link
-`Documentation for the latest release <https://exasol.github.io/bucketfs-utils-python/main>`_ is hosted on the Github Pages of this project.
+
+`Documentation for the latest release <https://exasol.github.io/sphinx-github-pages-generator/main>`_ is hosted on the Github Pages of this project.
 
 Features
 ========

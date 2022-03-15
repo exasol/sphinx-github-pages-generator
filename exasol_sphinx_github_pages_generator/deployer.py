@@ -11,7 +11,8 @@ class GithubPagesDeployer:
     Builds and deploys GitHub Pages using Sphinx given a branch.
 
     :param source_dir: Path to the directory inside the source_branch where the index.rst and conf.py reside in.
-    :param source_branch: The branch the documentation files should be generated for.
+    :param source_branch: The branch the documentation files should be generated for. Will use remote branch
+           for generation. Local unpushed changes will cause program exit or be ignored.
     :param current_commit_id: CommitID of the current branch.
     :param module_path: List of modules/packages in the source_branch that should be documented.
     :param target_branch: Branch the documentation should be generated into.
@@ -44,6 +45,7 @@ class GithubPagesDeployer:
         Creates a separate Git worktree for the source_branch if the existing worktree has a different branch
         currently checked out. This way, the local current Git Repository is kept in its original state.
         The new worktree is created at self.worktree_paths["source_worktree"].
+        !! Uses remote branch for generating the documentation, all stashed or unpushed changes will be ignored !!
         Exits with Error if source_branch does not exist in the remote repository.
         :param source_branch_exists_locally: Indicates if the source_branch exists in the local repository.
         If 0, it exists, else it does not
@@ -59,12 +61,9 @@ class GithubPagesDeployer:
                      self.source_branch, "--force"], check=True)
                 print(f"Successfully added new temp worktree for source branch {self.source_branch}, "
                       f"and checked out (Local or stashed changes will be ignored in this build).")
-                os.chdir(f"{self.worktree_paths['source_worktree']}/doc") # todo  chmage to sorcedir. also in other places
+                os.chdir(f"{self.worktree_paths['source_worktree']}/doc")
                 current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
                                      check=True)
-                if source_branch_exists_locally == 0:
-                    # todo check if local and chcked out branches are on same commit?
-                    pass
             except subprocess.CalledProcessError as e:
                 sys.exit(f"""
                         Problem with adding worktree for source.
@@ -98,7 +97,7 @@ class GithubPagesDeployer:
         remote_source_branch_commit_id = run(["git", "rev-parse", f"remotes/origin/{self.source_branch}"], capture_output=True, text=True)
         # the [:-1] removes the newline from the output
         if current_branch.stdout[:-1] != self.source_branch:
-            print("Current branch is not source branch. Need to switch branches")
+            print("Current branch is not source branch. Need to switch branches.")
             local_source_branch_commit_id = run(["git", "rev-parse", self.source_branch], capture_output=True,
                                                 text=True)
             self.check_out_source_branch_as_worktree(local_source_branch_commit_id.returncode)

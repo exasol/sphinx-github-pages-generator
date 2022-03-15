@@ -77,4 +77,4 @@ We then add new commits to this branch to update existing or add new versions of
 This also avoid having automatic commits to the source branch.
 For each branch or tag for which we build the documentation in the CI
 we add a directory to the root directory of the github-pages/main branch.
-#todo umsetzten in ticket https://github.com/exasol/sphinx-github-pages-generator/issues/11
+

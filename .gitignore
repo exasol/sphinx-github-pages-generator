@@ -10,7 +10,8 @@ __pycache__/
 docs/_build/
 doc/_build
 doc/.build
-dc/api/**
+.build
+doc/api/**
 .doctrees/
 
 # pyenv

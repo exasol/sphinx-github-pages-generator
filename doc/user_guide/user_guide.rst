@@ -6,6 +6,8 @@ This user guide provides you with usage examples for this repository.
 For a detailed explanation of the API, please refer to our :doc:`API Documentation </api/exasol_sphinx_github_pages_generator>`
 
 
+
+
 ===========================
 Building the Documentation
 ===========================
@@ -16,9 +18,9 @@ Sphinx supports API documentation generation for Python and with plugins also fo
 Furthermore, it supports reStructuredText with proper cross-document references.
 
 
-===========================
+---------------------------
 Needed Repository structure
-===========================
+---------------------------
 
 This Project uses Sphinx for the generation of the documentation. Therefore, all files you want to use as a
 source for your documenation have to be compatible with Spinx. You can find Shpinx's
@@ -27,19 +29,19 @@ documentation `here <https://www.sphinx-doc.org/en/master/>`_.
 In general:
 
 You will need a base directory for your documentation source files. We use "repository_root/doc",
-but you can set it to another folder. #todo check if true
+but you can set it to another folder.
 Inside the documentation root directory, you need at least a minimal "conf.py" to configure
 Sphinx and a "index.rst"
 for Sphinx to use as a root for your documentation. You can use :code:`sphinx-quickstart` to generate stubs for these.
 Inside the index.rst you can linc to other parts of your documentation using the :code:`toctree` directive.
-#todo example
+
 You can also include plain text, or documentation for specific functions or objects by using the
 :code:`autosummary`,
 :code:`automodule`,
 :code:`autoclass` and
 :code:`autoexception` directives, which will import the docstring for the given objects automatically.
-Here is the code from te index,rst of this project, which genrates the documentation if the api. To see the
-generated pages see `this link <#todo add link>`_.
+Here is the code from te index.rst of this project, which generates the documentation if the api. To see the
+generated pages see :ref:`api_ref_target`.
 
 .. code:: rst
 
@@ -49,9 +51,9 @@ generated pages see `this link <#todo add link>`_.
        exasol_sphinx_github_pages_generator
 
 
-===========================
+-----------------------------
 Call the Sphinx generator
-===========================
+-----------------------------
 
 Once Sphinx generator is installed in your environment, you can import and use it in a
 python script like this:
@@ -82,11 +84,11 @@ Alternatively you can also pass the parameters directly in the python script:
                                              "--source_dir", cwd,
                                              "--module_path", "../package/module-path1", "../package/module-path2"])
 
-The generator hase to be called from the working directory containing the index.rst file #todo fix
+The generator has to be called from the working directory containing the index.rst file.
 
-===========================
+-------
 Options
-===========================
+-------
 
 Calling the module with "-h" will print the help page for the generator.
 

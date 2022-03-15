@@ -292,7 +292,7 @@ def test_only_commit_dont_push(setup_test_env):
 def test_select_different_source_branch_which_does_exists_locally(setup_test_env):
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
-    local_branch = "refactoring/1-Move-Sphinx-Documentation-scripts" # todo make second test branch in remote
+    local_branch = "refactoring/1-Move-Sphinx-Documentation-scripts"
 
     run(["git", "checkout", local_branch], check=True)
     cwd = os.getcwd()
@@ -312,7 +312,7 @@ def test_select_different_source_branch_which_does_exists_locally(setup_test_env
 
 
 def test_select_different_source_branch_which_does_not_exists_locally(setup_test_env):
-    local_branch = "refactoring/1-Move-Sphinx-Documentation-scripts" # todo make second test branch in remote
+    local_branch = "refactoring/1-Move-Sphinx-Documentation-scripts"
     source_branch = "5-add-tests"
 
     run(["git", "checkout", local_branch], check=True)
@@ -335,7 +335,7 @@ def test_select_different_source_branch_which_does_not_exists_locally(setup_test
 def test_select_different_source_branch_does_not_delete_local_changes(setup_test_env):
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
-    local_branch = "refactoring/1-Move-Sphinx-Documentation-scripts"  # todo make second test branch in remote
+    local_branch = "refactoring/1-Move-Sphinx-Documentation-scripts"
     run(["git", "checkout", local_branch], check=True)
     current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
     cwd = os.getcwd()
