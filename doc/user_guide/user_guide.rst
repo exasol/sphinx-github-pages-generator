@@ -33,7 +33,7 @@ but you can set it to another folder.
 Inside the documentation root directory, you need at least a minimal "conf.py" to configure
 Sphinx and a "index.rst"
 for Sphinx to use as a root for your documentation. You can use :code:`sphinx-quickstart` to generate stubs for these.
-Inside the index.rst you can linc to other parts of your documentation using the :code:`toctree` directive.
+Inside the index.rst you can link to other parts of your documentation using the :code:`toctree` directive.
 
 You can also include plain text, or documentation for specific functions or objects by using the
 :code:`autosummary`,
@@ -66,7 +66,7 @@ python script like this:
     if __name__ == "__main__":
         deploy_github_pages.deploy_github_pages(sys.argv[1:])
 
-Then call the Script using command line parameters like this:
+Then call the script using command line parameters like this:
 
 .. code:: bash
 
@@ -112,7 +112,7 @@ Building the Documentation interactively during coding
 Building the Documentation in the CI
 ======================================================
 
-The documentation for this project is build in GitHub Actions using this project. We will use the process as an example here.
+The documentation for this project is built on GitHub Actions using this project. We will use the process as an example here.
 
 There are two actions, one for updating the documentation for the main branch, and one for validating the build of the
 documentation for each push not on the main branch or on documentation branches.

@@ -16,9 +16,9 @@ with GitHub-Pages. If no such branch exists, one should be created. It should be
 the generated documentation to the remote, or not.
 
 ## Work in an isolated workspace
-The Generator should be working in an isolated temporary workspace, so no used repository folders get corrupted
+The generator should be working in an isolated temporary workspace, so no used repository folders get corrupted
 or unnecessarily cluttered.
 
 ## Branch selection
-It should be possible to select which branch to generate the documentation on. Generated documentation should include
+It should be possible to select which branch to generate the documentation from. Generated documentation should include
 information as to where it was generated from.
