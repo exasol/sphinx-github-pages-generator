@@ -7,7 +7,7 @@ Overview
 ========
 
 This project provides a python library for accessing automatic generation of sphinx GitHub pages 
-for a given repository. It is intended for th use with a Continuous Integration solutions.
+for a given repository. It is intended for the use with a Continuous Integration solution.
 Developed using GitHub Actions.
 
 In a Nutshell
@@ -36,4 +36,4 @@ Features
 * Build html documentation files using Sphinx
 * Choose which remote branch to generate the documentation from
 * Choose between automatically committing or committing and pushing the generated files to your GitHub Pages branch.
-* Works with multiple packages in one Repository.
+* Works with multiple packages in one repository.

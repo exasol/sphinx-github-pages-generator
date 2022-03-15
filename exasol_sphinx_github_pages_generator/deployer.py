@@ -17,7 +17,7 @@ class GithubPagesDeployer:
     :param module_path: List of modules/packages in the source_branch that should be documented.
     :param target_branch: Branch the documentation should be generated into.
     :param push_origin: origin of the Git Repository.
-    :param push_enabled: Set to "push" if generated fies should be pushed to the remote, otherwise set to "commit".
+    :param push_enabled: Set to "push" if generated files should be pushed to the remote, otherwise set to "commit".
     :param tempdir: Path of the temporary directory this Generator runs in.
 
     """
@@ -46,7 +46,7 @@ class GithubPagesDeployer:
         currently checked out. This way, the local current Git Repository is kept in its original state.
         The new worktree is created at self.worktree_paths["source_worktree"].
         !! Uses remote branch for generating the documentation, all stashed or unpushed changes will be ignored !!
-        Exits with Error if source_branch does not exist in the remote repository.
+        Exits with error if source_branch does not exist in the remote repository.
         :param source_branch_exists_locally: Indicates if the source_branch exists in the local repository.
         If 0, it exists, else it does not
         """
@@ -84,7 +84,7 @@ class GithubPagesDeployer:
         Tries to find a valid source_branch.
         If source_branch is set, checks if it is equal to the current branch. If not, switches branches.
         Tries to use the current branch if source_branch is not set. Exits if this fails.
-        Also Fails if the detected source branch has local uncommitted/pushed changes or is not
+        Also fails if the detected source branch has local uncommitted/pushed changes or is not
         up-to-date with the remote.
         """
         current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
@@ -162,7 +162,7 @@ class GithubPagesDeployer:
 
     def build_and_copy_documentation(self):
         """
-        Build the html documentation files using "sphinx-apidoc" and "sphinx-build,
+        Build the html documentation files using "sphinx-apidoc" and "sphinx-build",
         then copies them into the target branch. If an older version of the files exist for the source branch, on the
         target_branch, these are deleted first.
         :returns the path of the generated files inside the target_branch worktree.
@@ -224,7 +224,7 @@ class GithubPagesDeployer:
         elif 0 == changes_exists.returncode:
             print("No changes to commit.")
         else:
-            sys.exit(f"""A Error occurred in run(["git", "diff-index", "--quiet", "HEAD", "--"]. Nothing was committed.'
+            sys.exit(f"""An error occurred in run(["git", "diff-index", "--quiet", "HEAD", "--"]. Nothing was committed.'
                     'capture_output=True, text=True), 
                     returncode: {changes_exists.returncode}, 
                     stderr: {changes_exists.stderr}, 
@@ -234,9 +234,9 @@ class GithubPagesDeployer:
 
     def clean_worktree(self, original_workdir: str):
         """
-        Deletes the added worktrees and resets the working directory to the given working directory in order to
+        Deletes the temporary worktrees and resets the working directory to the given working directory in order to
         ensure it points to an existing directory.
-        :param original_workdir: A directory that can be used as the working directory after the Generator finishes.
+        :param original_workdir: A directory that can be used as the working directory after the generator finishes.
         Preferably the original working-directory.
         """
         print("Starting cleanup.")
