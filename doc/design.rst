@@ -6,7 +6,7 @@ Design Decisions:
 Use GitHub
 ##########
 
-This project uses a lot of github calls. Since not all of the are present in PyGitHub, we decided to use
+This project uses a lot of git calls. Since not all of the are present in PyGitHub, we decided to use
 :code: ´subprocess.run´ for all of them, in order to keep the git calls consistent.
 
 ######################
@@ -55,13 +55,6 @@ source branch is temporarily checked out into a separate worktree, so the docume
 to deal with uncommitted changes on the current branch.
 Each Documentation pushed to GitHub contains a file ".source" which contains the branch name and commit id.
 
-################
-Tests Repository
-################
-
-The tests for this project use a private `test repository <https://github.com/exasol/sphinx-github-pages-generator-test>`_
-This is done in order to make the tests similar to a real use case. The test repository is private as to not be
-confusing to users.
 
 ############
 GitHUb Pages

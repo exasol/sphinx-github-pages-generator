@@ -40,8 +40,7 @@ You can also include plain text, or documentation for specific functions or obje
 :code:`automodule`,
 :code:`autoclass` and
 :code:`autoexception` directives, which will import the docstring for the given objects automatically.
-Here is the code from te index.rst of this project, which generates the documentation if the api. To see the
-generated pages see :ref:`api_ref_target`.
+Here is the code from te index.rst of this project, which generates the documentation if the api:
 
 .. code:: rst
 
@@ -50,6 +49,7 @@ generated pages see :ref:`api_ref_target`.
 
        exasol_sphinx_github_pages_generator
 
+To see the generated pages see :ref:`api_ref_target`.
 
 -----------------------------
 Call the Sphinx generator

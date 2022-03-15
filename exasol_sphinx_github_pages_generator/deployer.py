@@ -21,13 +21,13 @@ class GithubPagesDeployer:
     :param tempdir: Path of the temporary directory this Generator runs in.
 
     """
-    def __init__(self, source_dir: str, source_branch: str, current_commit_id: subprocess.CompletedProcess,
+    def __init__(self, source_dir: str, source_branch: str, current_commit_id: str,
                  module_path: str,
                  target_branch: str, push_origin: str, push_enabled: str,
                  tempdir: str):
         self.source_dir = source_dir
         self.source_branch = source_branch
-        self.current_commit_id = current_commit_id.stdout[:-1]
+        self.current_commit_id = current_commit_id
         self.module_path = module_path
 
         self.target_branch = target_branch
@@ -103,8 +103,8 @@ class GithubPagesDeployer:
             self.check_out_source_branch_as_worktree(local_source_branch_commit_id.returncode)
             return
         if remote_source_branch_commit_id.stdout[:-1] != self.current_commit_id:
-            sys.exit(f"Abort. Local commit id {self.current_commit_id} and commit id of source "
-                     f"branch remote {remote_source_branch_commit_id.stdout[:-1]} are not equal. "
+            sys.exit(f"Abort. Local commit id {self.current_commit_id} and commit id of remote "
+                     f"source branch {remote_source_branch_commit_id.stdout[:-1]} are not equal. "
                      f"Please push your changes or pull new commits from remote.")
         uncommitted_changes = run(["git", "status", "--porcelain"], capture_output=True, check=True, text=True)
         if uncommitted_changes.stdout != "":

@@ -30,7 +30,8 @@ Tests are located in the `tests folder`_. Run them with
 
     poetry run pytest tests
 
-The tests use a test-repository with a Machine user which is private in order not to confuse users. In order to run them,
+The tests use a `test repository <https://github.com/exasol/sphinx-github-pages-generator-test>`_
+with a Machine user which is private in order not to confuse users. In order to run them,
 the environment variables "MAuserPAT" and "MAuserName" have to be set to the Machine Users Personal Access Token and
 Name respectively. If you need to change the names of these environment variables you can do so in `setup_test_repo`_, but don't commit
 these changes in order not to break the CI tests.

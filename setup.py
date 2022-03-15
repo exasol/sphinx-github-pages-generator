@@ -8,22 +8,24 @@ package_data = \
 {'': ['*']}
 
 install_requires = \
-[]
+['Sphinx>=3.5.3,<4.0.0',
+ 'myst-parser>=0.14.0,<0.15.0',
+ 'poethepoet>=0.10.0,<0.11.0']
 
 setup_kwargs = {
     'name': 'exasol-sphinx-github-pages-generator',
     'version': '0.1.0',
     'description': 'Generates Sphinx GitHub pages for a given Git Repository',
-    'long_description': '#####################\nSphinx Github-pages generator\n#####################\n\n********\nOverview\n********\n\nGenerates Sphinx GitHub pages for a given Git Repository and branch.\n\nIn a Nutshell\n=============\n\nPrerequisites\n-------------\n\n- Python 3.8+\n\nInstallation\n-------------\n\nInstall the package from Github ::\n\n    git = "https://github.com/exasol/sphinx-github-pages-generator", branch = "refactoring/1-Move-Sphinx-Documentation-scripts"\n\nDocumentation\n-------------\n\n`Documentation for the latest release <https://exasol.github.io/sphinx-github-pages-generator/main>`_ is hosted on the Github Pages of this project.\n\nFeatures\n========\n\n* Generate GitHub Pages in your repository for a given branch using Sphinx.\n\n Commit or commit and push them to a specified existing or new documentation-branch.\n ',
-    'author': 'Marlene Kreß, Torsten Kilias',
-    'author_email': 'marlene.kress@exasol.com, torsten.kilias@exasol.com',
+    'long_description': 'Sphinx GitHub Pages Generator\n*****************************\n\n.. _docu_start:\n\nOverview\n========\n\nThis project provides a python library for accessing automatic generation of sphinx GitHub pages \nfor a given repository. It is intended for th use with a Continuous Integration solutions.\nDeveloped using GitHub Actions.\n\nIn a Nutshell\n=============\n\nPrerequisites\n-------------\n\n- Python 3.8+\n\nInstallation\n-------------\n#todo fix link\nInstall the package from Github via `pip`:: #todo make pip package\n\n    pip install -e git://github.com/exasol/bucketfs-utils-python.git@{tag name}#egg=exasol-bucketfs-utils-python\n\nDocumentation\n-------------\n\n`Documentation for the latest release <https://exasol.github.io/sphinx-github-pages-generator/main>`_ is hosted on the Github Pages of this project.\n\nFeatures\n========\n\n* Build html documentation files using Sphinx\n* Choose which remote branch to generate the documentation from\n* Choose between automatically committing or committing and pushing the generated files to your GitHub Pages branch.\n* Works with multiple packages in one Repository.',
+    'author': 'Marlene Kreß',
+    'author_email': 'marlene.kress@exasol.com',
     'maintainer': None,
     'maintainer_email': None,
     'url': 'https://github.com/exasol/sphinx-github-pages-generator',
     'packages': packages,
     'package_data': package_data,
     'install_requires': install_requires,
-    'python_requires': '>=3.6.1,<4.0',
+    'python_requires': '>=3.8,<4.0',
 }
 
 
