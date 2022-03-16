@@ -450,8 +450,8 @@ def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
                                                  "--source_branch", source_branch,
                                                  "--source_dir", cwd,
                                                  "--module_path", "../test_package", "../another_test_package"])
-    assert e.match(f"Abort. Local commit id .* and commit id of source "
-                   f"branch remote .* are not equal. Please push your changes.")
+    assert e.match(f"Abort. Local commit id .* and commit id of remote source branch"
+                   f" .* are not equal. Please push your changes or pull new commits from remote.")
     assert e.type == SystemExit
 
 def test_abort_source_branch_only_exists_locally(setup_test_env):

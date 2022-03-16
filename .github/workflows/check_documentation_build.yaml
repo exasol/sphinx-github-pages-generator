@@ -33,5 +33,5 @@ jobs:
         git fetch
         poetry run poe push_pages_current
     - name: Cleanup delete target branch
-      if: not contains(github.ref, 'main')
+      if: !contains(github.ref, 'main')
       run: git push -d origin "github-pages/"$(git branch --show-current)""
