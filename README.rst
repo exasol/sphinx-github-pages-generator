@@ -35,5 +35,5 @@ Features
 
 * Build html documentation files using Sphinx
 * Choose which remote branch to generate the documentation from
-* Choose between automatically committing or committing and pushing the generated files to your GitHub Pages branch.
+* Choose whether to automatically push the generated and committed documentation or not.
 * Works with multiple packages in one repository.
