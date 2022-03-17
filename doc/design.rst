@@ -60,7 +60,7 @@ Each documentation pushed to GitHub contains a file ".source" which contains the
 GitHub Pages
 ############
 
-To publish to GitHub Pages, we need to build the HTML from the documentation source and commit it.
+To publish to GitHub Pages, we need to build the HTML from the documentation source files and the source code and commit it.
 However, Github Pages expects a specific directory structure to find the HTML.
 
 Since code directory structure often doesn't fit these requirements, we decided to create

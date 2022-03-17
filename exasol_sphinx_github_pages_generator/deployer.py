@@ -40,7 +40,7 @@ class GithubPagesDeployer:
         self.intermediate_dir = tempdir + "/intermediate"
 
     def check_out_source_branch_as_worktree(self,
-                                            source_branch_exists_locally):
+                                            source_branch_exists_locally: int) -> None:
         """
         Creates a separate Git worktree for the source_branch if the existing worktree has a different branch
         currently checked out. This way, the local current Git Repository is kept in its original state.
@@ -79,7 +79,7 @@ class GithubPagesDeployer:
         else:
             sys.exit(f"source branch {self.source_branch} does not exist")
 
-    def detect_or_verify_source_branch(self):
+    def detect_or_verify_source_branch(self) -> None:
         """
         Tries to find a valid source_branch.
         If source_branch is set, checks if it is equal to the current branch. If not, switches branches.
@@ -113,7 +113,7 @@ class GithubPagesDeployer:
                      f"{uncommitted_changes.stdout}")
         print(f"Detected source branch {self.source_branch}")
 
-    def checkout_target_branch_as_worktree(self):
+    def checkout_target_branch_as_worktree(self) -> None:
         """
         Creates a separate worktree for the target branch and checks it out.
         If the target_branch already exists in remote, it is checked out into a new local worktree.
@@ -160,7 +160,7 @@ class GithubPagesDeployer:
                 run(["git", "branch", "-D", gh_pages_root_branch], check=True)
             os.chdir(currentworkdir)
 
-    def build_and_copy_documentation(self):
+    def build_and_copy_documentation(self) -> Path:
         """
         Build the html documentation files using "sphinx-apidoc" and "sphinx-build",
         then copies them into the target branch. If an older version of the files exist for the source branch, on the
@@ -198,7 +198,7 @@ class GithubPagesDeployer:
 
         return output_dir
 
-    def git_commit_and_push(self, output_dir: str):
+    def git_commit_and_push(self, output_dir: Path) -> None:
         """
         Commits and pushes the generated documentation files to the remote GitHUb repository.
         Also adds a file describing the source branch and commit of the generated files.
@@ -232,7 +232,7 @@ class GithubPagesDeployer:
                     """)
         os.chdir(currentworkdir)
 
-    def clean_worktree(self, original_workdir: str):
+    def clean_worktree(self, original_workdir: str) -> None:
         """
         Deletes the temporary worktrees and resets the working directory to the given working directory in order to
         ensure it points to an existing directory.
