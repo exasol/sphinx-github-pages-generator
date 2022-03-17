@@ -94,16 +94,17 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
         setup_workdir()
-        source_branch_two = "refactoring/1-Move-Sphinx-Documentation-scripts"
+        os.chdir("../")
+        source_branch_two = "branch-with-different-docu-source-dir"
         run(["git", "checkout", source_branch_two], check=True)
+        os.chdir("./documentation/")
         cwd = os.getcwd()
-
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--push_origin", "origin",
                                                  "--push_enabled", "push",
                                                  "--source_branch", source_branch_two,
                                                  "--source_dir", cwd,
-                                                 "--module_path", "../exasol_test_code_source"])
+                                                 "--module_path", "../test_package", "../another_test_package"])
         target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                    text=True)
         assert target_branch_exists.returncode == 0
@@ -292,9 +293,10 @@ def test_only_commit_dont_push(setup_test_env):
 def test_select_different_source_branch_which_does_exists_locally(setup_test_env):
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
-    local_branch = "refactoring/1-Move-Sphinx-Documentation-scripts"
+    local_branch = "branch-with-different-docu-source-dir"
 
     run(["git", "checkout", local_branch], check=True)
+    os.chdir("../documentation/")
     cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -312,10 +314,11 @@ def test_select_different_source_branch_which_does_exists_locally(setup_test_env
 
 
 def test_select_different_source_branch_which_does_not_exists_locally(setup_test_env):
-    local_branch = "refactoring/1-Move-Sphinx-Documentation-scripts"
+    local_branch = "branch-with-different-docu-source-dir"
     source_branch = "5-add-tests"
 
     run(["git", "checkout", local_branch], check=True)
+    os.chdir("../documentation/")
     cwd = os.getcwd()
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -335,21 +338,25 @@ def test_select_different_source_branch_which_does_not_exists_locally(setup_test
 def test_select_different_source_branch_does_not_delete_local_changes(setup_test_env):
     source_branch = "5-add-tests"
     run(["git", "checkout", source_branch], check=True)
-    local_branch = "refactoring/1-Move-Sphinx-Documentation-scripts"
+    local_branch = "branch-with-different-docu-source-dir"
     run(["git", "checkout", local_branch], check=True)
+    os.chdir("../documentation/")
     current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
-    cwd = os.getcwd()
+
     # make local changes is local_branch
     with open("./index.rst", "a") as file:
         file.write("\n\nThis text is a change.")
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
-
+    # removes last directory from current working dir, because int does not exist in the target branch,
+    # resulting in file_not_found error in os.getcwd() after checkout
+    source_dir = "/".join(os.getcwd().split("/")[:-1])
+    source_dir += "/doc/"
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                              "--push_origin", "origin",
                                              "--push_enabled", "push",
                                              "--source_branch", source_branch,
-                                             "--source_dir", cwd,
+                                             "--source_dir", source_dir,
                                              "--module_path", "../test_package", "../another_test_package"])
 
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,

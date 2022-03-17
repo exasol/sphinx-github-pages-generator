@@ -176,6 +176,8 @@ class GithubPagesDeployer:
         # -e: put documentation for each module on own page
         for module in self.module_path:
             out = run(["sphinx-apidoc", "-T", "-e", "-o", "api", module])
+            print(module)
+            print(out)
         # Builds the Sphinx documentation. Generates html files inside "build_dir" using "source_dir"
         # -W: Turns warnings into errors
         run(["sphinx-build", "-b", "html", "-d", self.intermediate_dir, "-W", currentworkdir, self.build_dir], check=True)
