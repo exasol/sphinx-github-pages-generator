@@ -27,9 +27,9 @@ def setup_test_repo():
 
 def setup_workdir():
     user_name, user_access_token = setup_test_repo()
-    # change into the "tmpXXX/../branch_name/doc" directory. This is necessary for Sphinx.
+    # change into the "tmpXXX/../branch_name" directory.
     # the [:-1] removes the newline from the output
     doc_dir = run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
-    os.chdir(f"{doc_dir.stdout[:-1]}/doc")
+    os.chdir(f"{doc_dir.stdout[:-1]}")
     return user_name, user_access_token
 

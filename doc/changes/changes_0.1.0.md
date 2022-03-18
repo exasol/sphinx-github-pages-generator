@@ -12,12 +12,16 @@ Code name: Initial implementation
 
 ## Bug Fixes
 
+
+ - #12: Fixed incorrect usage of source_dir parameter
   
 ## Documentation
+
   - #7 Added documentation pages
 
 
 ## Refactoring
+
   - #1: Rewrote .sh script in Python
 
 ## Security

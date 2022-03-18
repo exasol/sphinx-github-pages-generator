@@ -20,15 +20,17 @@ Prerequisites
 
 Installation
 -------------
-#todo fix link
-Install the package from Github via `pip`:: #todo make pip package
+..
+    _This: todo fix installation description
+
+Install the package from Github via `pip`::
 
     pip install -e git://github.com/exasol/bucketfs-utils-python.git@{tag name}#egg=exasol-bucketfs-utils-python
 
 Documentation
 -------------
 
-`Documentation for the latest release <https://exasol.github.io/sphinx-github-pages-generator/main>`_ is hosted on the Github Pages of this project.
+`Documentation for the latest release <https://exasol.github.io/sphinx-github-pages-generator/main/>`_ is hosted on the Github Pages of this project.
 
 Features
 ========
