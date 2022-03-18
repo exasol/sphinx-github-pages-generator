@@ -1,6 +1,7 @@
 name: run_tests
 
 on:
+  workflow_call:
   push:
   # This way it only triggers on branch pushes,
   # and ignores releases that push a tag.
