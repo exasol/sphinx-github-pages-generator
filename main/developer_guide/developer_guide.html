@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Developer Guide &#8212; Exasol Github Pages Generator  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Requirements this Software aims to fulfill:" href="../system_requirements.html" />
+    <link rel="prev" title="Sphinx GitHub Pages Generator 0.1.0, released X-X-X" href="../changes/changes_0.1.0.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="developer-guide">
+<h1>Developer Guide<a class="headerlink" href="#developer-guide" title="Permalink to this headline">¶</a></h1>
+<p>In this developer guide we explain how you can build this project, build the documentation and run the tests.</p>
+<div class="section" id="installation-and-build-setup-move-copy-to-user">
+<h2>Installation and Build/Setup (move/copy to user?)<a class="headerlink" href="#installation-and-build-setup-move-copy-to-user" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>uses poetry</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>This repository also uses itself to generate the documentation for the Generator. The Source Files for the documentation
+can be found in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/tree/main/doc">doc folder</a>. Here is the <a class="reference internal" href="../index.html#docu-start"><span class="std std-ref">generated documentation</span></a> (You are already here ;) ).
+To build the documentation manually for testing, you can use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator
+sphinx-build -b html -W PathToProject/sphinx-github-pages-generator/doc .build
+</pre></div>
+</div>
+</div>
+<div class="section" id="tests">
+<h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
+<p>Tests are located in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/tree/main/tests">tests folder</a>. Run them with</p>
+<blockquote>
+<div><p>poetry run pytest tests</p>
+</div></blockquote>
+<p>The tests use a <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator-test">test repository</a>
+with a Machine user which is private in order not to confuse users. In order to run them,
+the environment variables “MAuserPAT” and “MAuserName” have to be set to the Machine Users Personal Access Token and
+Name respectively. If you need to change the names of these environment variables you can do so in <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/blob/7235e9577531bb3992425ffd200004dc4a7fee32/tests/helper_test_functions.py#L13">setup_test_repo</a>, but don’t commit
+these changes in order not to break the CI tests.</p>
+<p>For running your own tests, you can change the tests Repository, User and Password in <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/blob/7235e9577531bb3992425ffd200004dc4a7fee32/tests/helper_test_functions.py#L13">setup_test_repo</a>.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Exasol Github Pages Generator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changes/changelog.html">Changes</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_requirements.html">Requirements this Software aims to fulfill:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design Decisions:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.html">exasol_sphinx_github_pages_generator package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../changes/changes_0.1.0.html" title="previous chapter">Sphinx GitHub Pages Generator 0.1.0, released X-X-X</a></li>
+      <li>Next: <a href="../system_requirements.html" title="next chapter">Requirements this Software aims to fulfill:</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Exasol.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/developer_guide/developer_guide.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

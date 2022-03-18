@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Requirements this Software aims to fulfill: &#8212; Exasol Github Pages Generator  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Design Decisions:" href="design.html" />
+    <link rel="prev" title="Developer Guide" href="developer_guide/developer_guide.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="requirements-this-software-aims-to-fulfill">
+<h1>Requirements this Software aims to fulfill:<a class="headerlink" href="#requirements-this-software-aims-to-fulfill" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="generate-documentation">
+<h2>Generate documentation<a class="headerlink" href="#generate-documentation" title="Permalink to this headline">¶</a></h2>
+<p>Generate documentation using the Python documentation Generator Sphinx.
+The Generated files should be html files, and unnecessary intermediate or source files should not be included
+in the documentation.</p>
+</div>
+<div class="section" id="generate-apidoc">
+<h2>Generate Apidoc<a class="headerlink" href="#generate-apidoc" title="Permalink to this headline">¶</a></h2>
+<p>Use sphinx-apidoc/autodoc to Generate apidoc sources for automatic documentation of the package
+generated from the signatures and comments in the package source-files.</p>
+</div>
+<div class="section" id="add-generated-documentation-to-github">
+<h2>Add generated documentation to GitHub<a class="headerlink" href="#add-generated-documentation-to-github" title="Permalink to this headline">¶</a></h2>
+<p>The generated documentation files should be added to a GitHub branch in a format that can be used
+with GitHub-Pages. If no such branch exists, one should be created. It should be possible to decide to directly push
+the generated documentation to the remote, or not.</p>
+</div>
+<div class="section" id="work-in-an-isolated-workspace">
+<h2>Work in an isolated workspace<a class="headerlink" href="#work-in-an-isolated-workspace" title="Permalink to this headline">¶</a></h2>
+<p>The generator should be working in an isolated temporary workspace, so no used repository folders get corrupted
+or unnecessarily cluttered.</p>
+</div>
+<div class="section" id="branch-selection">
+<h2>Branch selection<a class="headerlink" href="#branch-selection" title="Permalink to this headline">¶</a></h2>
+<p>It should be possible to select which branch to generate the documentation from. Generated documentation should include
+information as to where it was generated from.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Exasol Github Pages Generator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes/changelog.html">Changes</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Requirements this Software aims to fulfill:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design Decisions:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/exasol_sphinx_github_pages_generator.html">exasol_sphinx_github_pages_generator package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="developer_guide/developer_guide.html" title="previous chapter">Developer Guide</a></li>
+      <li>Next: <a href="design.html" title="next chapter">Design Decisions:</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Exasol.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/system_requirements.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

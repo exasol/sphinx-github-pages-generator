@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Guide &#8212; Exasol Github Pages Generator  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Changes" href="../changes/changelog.html" />
+    <link rel="prev" title="Sphinx GitHub Pages Generator" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="user-guide">
+<h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+<p>This user guide provides you with usage examples for this repository.
+For a detailed explanation of the API, please refer to our <a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.html"><span class="doc">API Documentation</span></a></p>
+<div class="section" id="building-the-documentation">
+<h2>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h2>
+<p>We are using Sphinx for generating the documentation,
+because it is the default documentation tool for Python projects.
+Sphinx supports API documentation generation for Python and with plugins also for other languages.
+Furthermore, it supports reStructuredText with proper cross-document references.</p>
+<div class="section" id="needed-repository-structure">
+<h3>Needed Repository structure<a class="headerlink" href="#needed-repository-structure" title="Permalink to this headline">¶</a></h3>
+<p>This Project uses Sphinx for the generation of the documentation. Therefore, all files you want to use as a
+source for your documenation have to be compatible with Spinx. You can find Shpinx’s
+documentation <a class="reference external" href="https://www.sphinx-doc.org/en/master/">here</a>.</p>
+<p>In general:</p>
+<p>You will need a base directory for your documentation source files. We use “repository_root/doc”,
+but you can set it to another folder.
+Inside the documentation root directory, you need at least a minimal “conf.py” to configure
+Sphinx and a “index.rst”
+for Sphinx to use as a root for your documentation. You can use <code class="code docutils literal notranslate"><span class="pre">sphinx-quickstart</span></code> to generate stubs for these.
+Inside the index.rst you can link to other parts of your documentation using the <code class="code docutils literal notranslate"><span class="pre">toctree</span></code> directive.</p>
+<p>You can also include plain text, or documentation for specific functions or objects by using the
+<code class="code docutils literal notranslate"><span class="pre">autosummary</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">automodule</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">autoclass</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">autoexception</span></code> directives, which will import the docstring for the given objects automatically.
+Here is the code from te index.rst of this project, which generates the documentation if the api:</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">autosummary</span><span class="p">::</span>
+   <span class="nc">:toctree:</span> api
+
+   exasol_sphinx_github_pages_generator
+</pre></div>
+</div>
+<p>To see the generated pages see <a class="reference internal" href="../index.html#api-ref-target"><span class="std std-ref">API Reference</span></a>.</p>
+</div>
+<div class="section" id="call-the-sphinx-generator">
+<h3>Call the Sphinx generator<a class="headerlink" href="#call-the-sphinx-generator" title="Permalink to this headline">¶</a></h3>
+<p>Once Sphinx generator is installed in your environment, you can import and use it in a
+python script like this:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">exasol_sphinx_github_pages_generator.deploy_github_pages</span> <span class="k">as</span> <span class="nn">deploy_github_pages</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">deploy_github_pages</span><span class="o">.</span><span class="n">deploy_github_pages</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+</pre></div>
+</div>
+<p>Then call the script using command line parameters like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">declare</span> -a <span class="nv">StringArray</span><span class="o">=(</span><span class="s2">&quot;../package/module-path1&quot;</span> <span class="s2">&quot;../package/module-path2&quot;</span><span class="o">)</span>
+python3 your_caller_script.py --target_branch <span class="s2">&quot;github-pages/main&quot;</span> --push_origin <span class="s2">&quot;origin&quot;</span> --push_enabled <span class="s2">&quot;push&quot;</span> --source_branch <span class="s2">&quot;main&quot;</span>  --module_path <span class="s2">&quot;</span><span class="si">${</span><span class="nv">StringArray</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span> --source_dir <span class="nv">$PWD</span>
+</pre></div>
+</div>
+<p>Alternatively you can also pass the parameters directly in the python script:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">deploy_github_pages</span><span class="o">.</span><span class="n">deploy_github_pages</span><span class="p">([</span><span class="s2">&quot;--target_branch&quot;</span><span class="p">,</span> <span class="s2">&quot;target_branch&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;--push_origin&quot;</span><span class="p">,</span> <span class="s2">&quot;origin&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;--push_enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;push&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;--source_branch&quot;</span><span class="p">,</span> <span class="s2">&quot;source_branch&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;--source_dir&quot;</span><span class="p">,</span> <span class="n">cwd</span><span class="p">,</span>
+                                         <span class="s2">&quot;--module_path&quot;</span><span class="p">,</span> <span class="s2">&quot;../package/module-path1&quot;</span><span class="p">,</span> <span class="s2">&quot;../package/module-path2&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The generator has to be called from the working directory containing the index.rst file.</p>
+</div>
+<div class="section" id="options">
+<h3>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h3>
+<p>Calling the module with “-h” will print the help page for the generator.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">deploy_github_pages</span><span class="o">.</span><span class="n">deploy_github_pages</span><span class="p">([</span><span class="s2">&quot;-h&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Parameters:</p>
+<dl class="py class">
+<dt id="exasol_sphinx_github_pages_generator.deploy_github_pages.GithubPagesDeployer">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">exasol_sphinx_github_pages_generator.deploy_github_pages.</span></code><code class="sig-name descname"><span class="pre">GithubPagesDeployer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_branch</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_commit_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_branch</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_origin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_enabled</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tempdir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deploy_github_pages.GithubPagesDeployer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds and deploys GitHub Pages using Sphinx given a branch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dir</strong> – Path to the directory inside the source_branch where the index.rst and conf.py reside in.</p></li>
+<li><p><strong>source_branch</strong> – The branch the documentation files should be generated for. Will use remote branch
+for generation. Local unpushed changes will cause program exit or be ignored.</p></li>
+<li><p><strong>current_commit_id</strong> – CommitID of the current branch.</p></li>
+<li><p><strong>module_path</strong> – List of modules/packages in the source_branch that should be documented.</p></li>
+<li><p><strong>target_branch</strong> – Branch the documentation should be generated into.</p></li>
+<li><p><strong>push_origin</strong> – origin of the Git Repository.</p></li>
+<li><p><strong>push_enabled</strong> – Set to “push” if generated files should be pushed to the remote, otherwise set to “commit”.</p></li>
+<li><p><strong>tempdir</strong> – Path of the temporary directory this Generator runs in.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="building-the-documentation-interactively-during-coding">
+<h2>Building the Documentation interactively during coding<a class="headerlink" href="#building-the-documentation-interactively-during-coding" title="Permalink to this headline">¶</a></h2>
+<p># todo should we add this again? otherwise people can just use the sphinx commands</p>
+</div>
+<div class="section" id="building-the-documentation-in-the-ci">
+<h2>Building the Documentation in the CI<a class="headerlink" href="#building-the-documentation-in-the-ci" title="Permalink to this headline">¶</a></h2>
+<p>The documentation for this project is built on GitHub Actions using this project. We will use the process as an example here.</p>
+<p>There are two actions, one for updating the documentation for the main branch, and one for validating the build of the
+documentation for each push not on the main branch or on documentation branches.
+Both use basically the same process, but the validation Action uses a different targen branch github-pages/&lt;feature-branch-name&gt;,
+and deletes it immediately after. Your can find the yaml files for these actions in
+“.github/workflows/generate_pages.yaml” and “.github/workflows/check_documentation_build.yaml”.</p>
+<p>The GitHub Actions use poethepoet task which we describe in the pyproject.toml:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">poe</span><span class="o">.</span><span class="n">tasks</span><span class="p">]</span>
+    <span class="n">commit_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)/doc&quot;;declare -a StringArray=(&quot;../exasol_sphinx_github_pages_generator&quot; ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch &quot;github-pages/main&quot; --push_origin &quot;origin&quot; --push_enabled &quot;commit&quot; --source_branch &quot;main&quot;  --module_path &quot;$</span><span class="si">{StringArray[@]}</span><span class="s2">&quot; --source_dir $PWD&quot;&quot;&quot;</span> <span class="p">}</span>
+    <span class="n">commit_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)/doc&quot;;declare -a StringArray=(&quot;../exasol_sphinx_github_pages_generator&quot; ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch &quot;github-pages/&quot;$(git branch --show-current)&quot;&quot; --push_origin &quot;origin&quot; --push_enabled &quot;commit&quot; --module_path &quot;$</span><span class="si">{StringArray[@]}</span><span class="s2">&quot; --source_dir $PWD&quot;&quot;&quot;</span> <span class="p">}</span>
+    <span class="n">push_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)/doc&quot;;declare -a StringArray=(&quot;../exasol_sphinx_github_pages_generator&quot; ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch &quot;github-pages/main&quot; --push_origin &quot;origin&quot; --push_enabled &quot;push&quot; --source_branch &quot;main&quot;  --module_path &quot;$</span><span class="si">{StringArray[@]}</span><span class="s2">&quot; --source_dir $PWD&quot;&quot;&quot;</span> <span class="p">}</span>
+    <span class="n">push_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)/doc&quot;;declare -a StringArray=(&quot;../exasol_sphinx_github_pages_generator&quot; ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch &quot;github-pages/&quot;$(git branch --show-current)&quot;&quot; --push_origin &quot;origin&quot; --push_enabled &quot;push&quot; --module_path &quot;$</span><span class="si">{StringArray[@]}</span><span class="s2">&quot; --source_dir $PWD&quot;&quot;&quot;</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>#todo does calling package work like this everywhere else?</p>
+<p>These are used in the GitHub Actions like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Deploy</span> <span class="n">documentation</span> <span class="n">to</span> <span class="n">github</span><span class="o">-</span><span class="n">pages</span><span class="o">-</span><span class="n">main</span> <span class="n">branch</span>
+  <span class="n">run</span><span class="p">:</span> <span class="o">|</span>
+    <span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">local</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">&lt;</span><span class="n">e</span><span class="o">-</span><span class="n">mail</span><span class="o">&gt;</span>
+    <span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">local</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="o">&lt;</span><span class="n">user</span><span class="o">&gt;</span>
+    <span class="n">git</span> <span class="n">fetch</span>
+    <span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_current</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Exasol Github Pages Generator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changes/changelog.html">Changes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_requirements.html">Requirements this Software aims to fulfill:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design Decisions:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.html">exasol_sphinx_github_pages_generator package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">Sphinx GitHub Pages Generator</a></li>
+      <li>Next: <a href="../changes/changelog.html" title="next chapter">Changes</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Exasol.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/user_guide/user_guide.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
