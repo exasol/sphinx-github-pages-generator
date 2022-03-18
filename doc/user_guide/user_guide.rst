@@ -101,13 +101,6 @@ Parameters:
 .. autoclass:: exasol_sphinx_github_pages_generator.deploy_github_pages.GithubPagesDeployer
 
 
-
-======================================================
-Building the Documentation interactively during coding
-======================================================
-
-# todo should we add this again? otherwise people can just use the sphinx commands
-
 ======================================================
 Building the Documentation in the CI
 ======================================================
@@ -130,8 +123,8 @@ The GitHub Action uses poethepoet task which we describe in the pyproject.toml:
         push_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" """ }
         push_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "push" --module_path "${StringArray[@]}" """ }
 
-
-#todo does calling package work like this everywhere else?
+..
+    _This: todo does calling package work like this everywhere else?
 
 These are used in the GitHub Actions like this:
 
