@@ -107,9 +107,9 @@ Building the Documentation in the CI
 
 The documentation for this project is built on GitHub Actions using this project. We will use the process as an example here.
 
-There is on action, both for updating the documentation for the main branch, and for validating the build of the
+There is an action, both for updating the documentation for the main branch, and for validating the build of the
 documentation for each push not on the main branch or on documentation branches.
-It uses the targen branch github-pages/<feature-branch-name>,
+It uses the target branch github-pages/<feature-branch-name>,
 and if the branch is not "main", the target branch is deleted immediately after generation. Your can find the yaml file
 for this action in ".github/workflows/check_documentation_build.yaml".
 
