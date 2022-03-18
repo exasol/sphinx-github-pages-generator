@@ -28,7 +28,7 @@ Install the package from Github via `pip`:: #todo make pip package
 Documentation
 -------------
 
-`Documentation for the latest release <https://exasol.github.io/sphinx-github-pages-generator/main>`_ is hosted on the Github Pages of this project.
+`Documentation for the latest release <https://exasol.github.io/sphinx-github-pages-generator/main/>`_ is hosted on the Github Pages of this project.
 
 Features
 ========

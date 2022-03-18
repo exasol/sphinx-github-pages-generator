@@ -23,13 +23,13 @@ Needed Repository structure
 ---------------------------
 
 This Project uses Sphinx for the generation of the documentation. Therefore, all files you want to use as a
-source for your documenation have to be compatible with Spinx. You can find Shpinx's
+source for your documentation have to be compatible with Spinx. You can find Sphinx's
 documentation `here <https://www.sphinx-doc.org/en/master/>`_.
 
 In general:
 
 You will need a base directory for your documentation source files. We use "repository_root/doc",
-but you can set it to another folder.
+but you can set it to another folder (Please set the source_dir parameter accordingly. It defaults to /doc/).
 Inside the documentation root directory, you need at least a minimal "conf.py" to configure
 Sphinx and a "index.rst"
 for Sphinx to use as a root for your documentation. You can use :code:`sphinx-quickstart` to generate stubs for these.
@@ -71,7 +71,7 @@ Then call the script using command line parameters like this:
 .. code:: bash
 
     declare -a StringArray=("../package/module-path1" "../package/module-path2")
-    python3 your_caller_script.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" --source_dir $PWD
+    python3 your_caller_script.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" --source_dir "/doc/"
 
 Alternatively you can also pass the parameters directly in the python script:
 
@@ -81,7 +81,7 @@ Alternatively you can also pass the parameters directly in the python script:
                                              "--push_origin", "origin",
                                              "--push_enabled", "push",
                                              "--source_branch", "source_branch",
-                                             "--source_dir", cwd,
+                                             "--source_dir", "/doc/",
                                              "--module_path", "../package/module-path1", "../package/module-path2"])
 
 The generator has to be called from the working directory containing the index.rst file.
@@ -114,21 +114,22 @@ Building the Documentation in the CI
 
 The documentation for this project is built on GitHub Actions using this project. We will use the process as an example here.
 
-There are two actions, one for updating the documentation for the main branch, and one for validating the build of the
+There is on action, both for updating the documentation for the main branch, and for validating the build of the
 documentation for each push not on the main branch or on documentation branches.
-Both use basically the same process, but the validation Action uses a different targen branch github-pages/<feature-branch-name>,
-and deletes it immediately after. Your can find the yaml files for these actions in
-".github/workflows/generate_pages.yaml" and ".github/workflows/check_documentation_build.yaml".
+It uses the targen branch github-pages/<feature-branch-name>,
+and if the branch is not "main", the target branch is deleted immediately after generation. Your can find the yaml file
+for this action in ".github/workflows/check_documentation_build.yaml".
 
-The GitHub Actions use poethepoet task which we describe in the pyproject.toml:
+The GitHub Action uses poethepoet task which we describe in the pyproject.toml:
 
 .. code::
 
     [tool.poe.tasks]
-        commit_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "commit" --source_branch "main"  --module_path "${StringArray[@]}" --source_dir $PWD""" }
-        commit_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "commit" --module_path "${StringArray[@]}" --source_dir $PWD""" }
-        push_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" --source_dir $PWD""" }
-        push_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "push" --module_path "${StringArray[@]}" --source_dir $PWD""" }
+        commit_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "commit" --source_branch "main"  --module_path "${StringArray[@]}" """ }
+        commit_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "commit" --module_path "${StringArray[@]}" """ }
+        push_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" """ }
+        push_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "push" --module_path "${StringArray[@]}" """ }
+
 
 #todo does calling package work like this everywhere else?
 

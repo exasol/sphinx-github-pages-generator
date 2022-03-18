@@ -7,7 +7,7 @@ In this developer guide we explain how you can build this project, build the doc
 #################################################
 Installation and Build/Setup (move/copy to user?)
 #################################################
- - uses poetry
+ - uses poetry # TODO
 
 #############
 Documentation

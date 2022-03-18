@@ -22,7 +22,7 @@ class GithubPagesDeployer:
 
     """
     def __init__(self, source_dir: str, source_branch: str, current_commit_id: str,
-                 module_path: str,
+                 module_path: list,
                  target_branch: str, push_origin: str, push_enabled: str,
                  tempdir: str):
         self.source_dir = source_dir
@@ -61,7 +61,8 @@ class GithubPagesDeployer:
                      self.source_branch, "--force"], check=True)
                 print(f"Successfully added new temp worktree for source branch {self.source_branch}, "
                       f"and checked out (Local or stashed changes will be ignored in this build).")
-                os.chdir(f"{self.worktree_paths['source_worktree']}/doc")
+                # change into documentation source dir
+                os.chdir(f"{self.worktree_paths['source_worktree']}{self.source_dir}")
                 current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
                                      check=True)
             except subprocess.CalledProcessError as e:
@@ -109,8 +110,9 @@ class GithubPagesDeployer:
         uncommitted_changes = run(["git", "status", "--porcelain"], capture_output=True, check=True, text=True)
         if uncommitted_changes.stdout != "":
             sys.exit(f"Abort, you have uncommitted changes in source branch  {self.source_branch}, "
-                     f"please commit and push the following files:\n"
+                     f"please commit and push the following files:\n "
                      f"{uncommitted_changes.stdout}")
+        os.chdir(f".{self.source_dir}")
         print(f"Detected source branch {self.source_branch}")
 
     def checkout_target_branch_as_worktree(self) -> None:

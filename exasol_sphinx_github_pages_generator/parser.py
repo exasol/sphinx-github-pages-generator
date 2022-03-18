@@ -20,7 +20,7 @@ class Parser:
                             default="",
                             help='The branch you want to generate documentation from. '
                                  'If empty, defaults to current branch')
-        parser.add_argument('--source_dir', type=str, default="./doc/",
+        parser.add_argument('--source_dir', type=str, default="/doc/",
                             help="Path to the directory inside the source_branch where the index.rst "
                                  "and conf.py reside in.")
         parser.add_argument('--module_path', nargs='*', default="",
