@@ -8,6 +8,10 @@ from inspect import cleandoc
 
 
 def deploy_github_pages(argv):
+    """
+    Runs the GithubPagesDeployer inside a temp directory given the command-line options and arguments inside argv.
+    :param argv: Command-line options and arguments, better described in the parser.
+    """
     args = Parser(argv).args
     original_workdir = os.getcwd()
     source_dir = args.source_dir
@@ -22,7 +26,7 @@ def deploy_github_pages(argv):
                    SOURCE_BRANCH= {args.source_branch}""") + "\n")
 
     with TemporaryDirectory() as tempdir:
-        deployer = GithubPagesDeployer(source_dir, args.source_branch, current_commit_id, args.module_path,
+        deployer = GithubPagesDeployer(source_dir, args.source_branch, current_commit_id.stdout[:-1], args.module_path,
                                        args.target_branch, args.push_origin, args.push_enabled,
                                        tempdir)
         os.mkdir(deployer.build_dir)
@@ -41,3 +45,6 @@ def deploy_github_pages(argv):
         finally:
             deployer.clean_worktree(original_workdir)
 
+
+if __name__ == "__main__":
+    deploy_github_pages(sys.argv[1:])

@@ -1,1 +1,0 @@
-Automatic generation of sphinx GitHub pages for a given repository.
