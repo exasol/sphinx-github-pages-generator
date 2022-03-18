@@ -5,9 +5,27 @@ Developer Guide
 In this developer guide we explain how you can build this project, build the documentation and run the tests.
 
 #################################################
-Installation and Build/Setup (move/copy to user?)
+Installation and Build/Setup
 #################################################
- - uses poetry
+First, you need to clone the Repository:
+
+.. code::
+
+    git clone https://github.com/exasol/sphinx-github-pages-generator.git
+
+Then, got to the project root and use poetry to install your dependencies:
+
+.. code::
+
+    poetry install
+    poetry update
+
+Now, you can run the project using the poethepoet task defined in the `pyproject.toml`_:
+
+.. code::
+
+    poetry run poe commit_pages_current
+
 
 #############
 Documentation
@@ -38,7 +56,7 @@ these changes in order not to break the CI tests.
 
 For running your own tests, you can change the tests Repository, User and Password in `setup_test_repo`_.
 
-
+.. _pyproject.toml: https://github.com/exasol/sphinx-github-pages-generator/blob/main/pyproject.toml
 .. _doc folder: https://github.com/exasol/sphinx-github-pages-generator/tree/main/doc
 .. _tests folder: https://github.com/exasol/sphinx-github-pages-generator/tree/main/tests
 .. _setup_test_repo: https://github.com/exasol/sphinx-github-pages-generator/blob/7235e9577531bb3992425ffd200004dc4a7fee32/tests/helper_test_functions.py#L13
