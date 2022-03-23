@@ -4,8 +4,9 @@ from pathlib import Path
 from subprocess import run
 import shutil
 import os
+from exasol_sphinx_github_pages_generator.generate_index import gen_index
 
-
+# todo fix if currentbranch used it is not isolated into tmp folder
 class GithubPagesDeployer:
     """
     Builds and deploys GitHub Pages using Sphinx given a branch.
@@ -38,6 +39,8 @@ class GithubPagesDeployer:
                                "source_worktree": tempdir + "/worktrees/worktree_source"}
         self.build_dir = tempdir + "/build"
         self.intermediate_dir = tempdir + "/intermediate"
+        self.target_branch_exists = run(["git", "show-branch", f"remotes/origin/{self.target_branch}"],
+                                        capture_output=True, text=True)
 
     def check_out_source_branch_as_worktree(self,
                                             source_branch_exists_locally: int) -> None:
@@ -68,7 +71,8 @@ class GithubPagesDeployer:
             except subprocess.CalledProcessError as e:
                 sys.exit(f"""
                         Problem with adding worktree for source.
-                        From git worktree add documentation: ' If <branch> does exist, it will be checked out in the new working tree,
+                        From git worktree add documentation: ' If <branch> does exist, it will be checked out in the 
+                        new working tree,
                         if it’s not checked out anywhere else, otherwise the command will refuse to create 
                         the working tree (unless --force is used).'
                         Error from subprocess: {str(e)}"
@@ -121,9 +125,8 @@ class GithubPagesDeployer:
         If the target_branch already exists in remote, it is checked out into a new local worktree.
         Else, target_branch is added as a new branch with a separate worktree and set as default for GitHub Pages.
         """
-        target_branch_exists = run(["git", "show-branch", f"remotes/origin/{self.target_branch}"], capture_output=True,
-                                   text=True)
-        if target_branch_exists.returncode == 0:
+
+        if self.target_branch_exists.returncode == 0:
             print(f"Create worktree from existing branch {self.target_branch}")
             run(["git", "worktree", "add", self.worktree_paths["target_worktree"], self.target_branch], check=True)
         else:
@@ -197,6 +200,10 @@ class GithubPagesDeployer:
         for obj in os.listdir(self.build_dir):
             shutil.move(self.build_dir + "/" + str(obj), output_dir)
         open(f"{self.worktree_paths['target_worktree']}/.nojekyll", "w").close()
+
+        gen_index(self.target_branch, target_worktree=Path(self.worktree_paths["target_worktree"]),
+                  source_branch=self.source_branch, target_branch_exists_remote=self.target_branch_exists)
+
         print(f"Content of output directory {output_dir}")
         run(["ls", "-la", output_dir], check=True)
 

@@ -21,6 +21,7 @@ python = ">=3.8,<4.0"
 Sphinx = "^3.5.3"
 poethepoet = "^0.10.0"
 myst-parser = "^0.14.0"
+Jinja2 = "^3.0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1.1"

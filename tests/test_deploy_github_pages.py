@@ -14,7 +14,7 @@ from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
 
 
 def test_remote_branch_creation(setup_test_env):
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -33,7 +33,7 @@ def test_remote_branch_creation(setup_test_env):
 
 def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     user_name, user_access_token = setup_test_env
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     temp_test_branch ="temp-test-branch"
     run(["git", "checkout", "-B", temp_test_branch], check=True)
@@ -76,7 +76,7 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
 
 
 def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
-    source_branch_one = "5-add-tests"
+    source_branch_one = "main"
     run(["git", "checkout", source_branch_one], check=True)
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -113,7 +113,7 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
 
 def test_no_new_push_and_commit_if_no_changes(setup_test_env):
     user_name, user_access_token = setup_test_env
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -148,7 +148,7 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
 def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env):
     # generate files locally in test, and with generator, look at diff between local files and remote files?
     user_name , user_access_token = setup_test_env
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -162,7 +162,7 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
         setup_workdir()
-        source_branch = "5-add-tests"
+        source_branch = "main"
         run(["git", "checkout", source_branch], check=True)
         os.chdir("./doc/")
         cwd = os.getcwd()
@@ -194,7 +194,7 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
 
 # Make sure none of Sphinx's intermediate .doctree files end up in the target branch
 def test_no_doctree_files_in_remote(setup_test_env):
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -219,7 +219,7 @@ def test_no_doctree_files_in_remote(setup_test_env):
 
 
 def test_no__pycache__files_in_remote(setup_test_env):
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -245,7 +245,7 @@ def test_no__pycache__files_in_remote(setup_test_env):
 
 def test_only_commit_dont_push(setup_test_env):
     user_name, user_access_token = setup_test_env
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -274,7 +274,7 @@ def test_only_commit_dont_push(setup_test_env):
 
 
 def test_select_different_source_branch_which_does_exists_locally(setup_test_env):
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     local_branch = "branch-with-different-docu-source-dir"
 
@@ -295,7 +295,7 @@ def test_select_different_source_branch_which_does_exists_locally(setup_test_env
 
 def test_select_different_source_branch_which_does_not_exists_locally(setup_test_env):
     local_branch = "branch-with-different-docu-source-dir"
-    source_branch = "5-add-tests"
+    source_branch = "main"
 
     run(["git", "checkout", local_branch], check=True)
     target_branch = "test-docu-new-branch"
@@ -313,7 +313,7 @@ def test_select_different_source_branch_which_does_not_exists_locally(setup_test
 
 
 def test_select_different_source_branch_does_not_delete_local_changes(setup_test_env):
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     local_branch = "branch-with-different-docu-source-dir"
     run(["git", "checkout", local_branch], check=True)
@@ -344,7 +344,7 @@ def test_select_different_source_branch_does_not_delete_local_changes(setup_test
 
 
 def test_infer_source_branch(setup_test_env):
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
@@ -365,7 +365,7 @@ def test_infer_source_branch(setup_test_env):
 
 def test_abort_if_given_source_branch_does_not_exist(setup_test_env):
     source_branch = "this-is-not-a-branch"
-    actual_branch = "5-add-tests"
+    actual_branch = "main"
     run(["git", "checkout", actual_branch], check=True)
     target_branch = "test-docu-new-branch"
 
@@ -380,7 +380,7 @@ def test_abort_if_given_source_branch_does_not_exist(setup_test_env):
 
 
 def test_abort_local_uncommitted_changes_exist_in_source_branch(setup_test_env):
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     # make local changes in source_branch
     with open("./index.rst", "a") as file:
@@ -400,7 +400,7 @@ def test_abort_local_uncommitted_changes_exist_in_source_branch(setup_test_env):
 
 
 def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
     with open("./index.rst", "a") as file:
@@ -420,8 +420,9 @@ def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
                    f" .* are not equal. Please push your changes or pull new commits from remote.")
     assert e.type == SystemExit
 
+
 def test_abort_source_branch_only_exists_locally(setup_test_env):
-    a_branch = "5-add-tests"
+    a_branch = "main"
     run(["git", "checkout", a_branch], check=True)
     temp_test_branch = "temp-test-branch"
     run(["git", "checkout", "-B", temp_test_branch], check=True)
@@ -440,7 +441,7 @@ def test_abort_source_branch_only_exists_locally(setup_test_env):
 
 
 def test_abort_if_no_source_branch_detected(setup_test_env):
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     os.chdir("./doc/")
     cwd = os.getcwd()
@@ -481,7 +482,7 @@ def test_use_different_source_dir(setup_test_env):
 
 
 def test_abort_if_invalid_source_dir(setup_test_env):
-    source_branch = "5-add-tests"
+    source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)

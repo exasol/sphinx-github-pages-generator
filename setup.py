@@ -5,10 +5,11 @@ packages = \
 ['exasol_sphinx_github_pages_generator']
 
 package_data = \
-{'': ['*']}
+{'': ['*'], 'exasol_sphinx_github_pages_generator': ['templates/*']}
 
 install_requires = \
-['Sphinx>=3.5.3,<4.0.0',
+['Jinja2>=3.0.3,<4.0.0',
+ 'Sphinx>=3.5.3,<4.0.0',
  'myst-parser>=0.14.0,<0.15.0',
  'poethepoet>=0.10.0,<0.11.0']
 
