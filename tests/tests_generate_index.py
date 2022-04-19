@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 from subprocess import run
 from tempfile import TemporaryDirectory, NamedTemporaryFile
@@ -22,9 +24,10 @@ with open("./test_src/meta_lines_correct") as file:
 with open("./test_src/input_index.html") as file:
     input_index_html = file.readlines()
 
-correct_releases = [{'release': 'test', 'release_path': 'test/index.html'},
-                        {'release': 'feature/some_dir', 'release_path': 'feature/some_dir/index.html'},
-                        {'release': 'branch_name', 'release_path': 'branch_name/index.html'}]
+correct_releases = [{'release': 'latest', 'release_path': 'branch_name/index.html'},
+                     {'release': 'test', 'release_path': 'test/index.html'},
+                     {'release': 'feature-some_dir', 'release_path': 'feature-some_dir/index.html'}]
+
 
 correct_footer =('<div class="footer">'
                     '&copy;2021, Exasol.'
@@ -102,7 +105,7 @@ def test_generate_release_dicts_include_sources():
     source_branch = "branch_name"
     target_worktree = "t_worktree"
     target_branch = "t_branch"
-    release_list_target = [("test", target_branch), ("feature/some_dir", target_branch), ("_sources", target_branch)]
+    release_list_target = [("test", target_branch), ("feature-some_dir", target_branch), ("_sources", target_branch)]
     release_list = [item[0] for item in release_list_target]
     others = [(source_branch, target_worktree)]
     with TemporaryDirectory() as tempdir:
@@ -121,7 +124,7 @@ def test_generate_release_dicts_include_source_branch():
     source_branch = "branch_name"
     target_worktree = "t_worktree"
     target_branch = "t_branch"
-    release_list_target = [("test", target_branch), ("feature/some_dir", target_branch), (source_branch, target_branch)]
+    release_list_target = [("test", target_branch), ("feature-some_dir", target_branch), (source_branch, target_branch)]
     release_list = [item[0] for item in release_list_target]
     others = [("_sources", target_branch), (source_branch, target_worktree)]
 
@@ -142,7 +145,7 @@ def test_generate_release_dict_include_only_unkown_dirs():
     source_branch = "branch_name"
     target_worktree = "t_worktree"
     target_branch = "t_branch"
-    release_list_target = [("test", target_branch), ("feature/some_dir", target_branch)]
+    release_list_target = [("test", target_branch), ("feature-some_dir", target_branch)]
     release_list = [item[0] for item in release_list_target]
     others = [("_sources", target_branch), (source_branch, target_worktree)]
     with TemporaryDirectory() as tempdir:
@@ -173,22 +176,40 @@ def test_generate_release_dicts_no_releases():
         os.chdir(target_branch)
         releases = generate_release_dicts(release_list, source_branch, target_worktree)
 
-    assert releases == [{'release': 'branch_name', 'release_path': 'branch_name/index.html'}]
+    assert releases == [{'release':  "latest", 'release_path': f'{ source_branch}/index.html'}]
 
 
-def test_get_releases(setup_index_tests_target_branch): #todo fix
+def test_get_releases(setup_index_tests_target_branch):
     target_branch, source_branch = setup_index_tests_target_branch
 
     Path(f"target_worktree/{source_branch}/").mkdir(parents=True)
     open(f"target_worktree/{source_branch}/index.html", 'a').close()
     releases = get_releases(target_branch, True, source_branch, Path(f"target_worktree").absolute())
-    assert releases == [{'release': 'another_branch', 'release_path': 'another_branch/index.html'},
-                        {'release': 'feature/some-feature', 'release_path': 'feature/some-feature/index.html'},
-                        {'release': source_branch, 'release_path': f'{source_branch}/index.html'}]
+    assert releases == [{'release': "latest", 'release_path': f'{source_branch}/index.html'},
+                        {'release': 'feature-some-feature', 'release_path': 'feature-some-feature/index.html'},
+                        {'release': 'another_branch', 'release_path': 'another_branch/index.html'}]
+
+
+def test_get_releases_no_target_branch():
+    target_branch, source_branch = "t_branch", "s_branch"
+    with TemporaryDirectory() as dir:
+
+        Path(f"{dir}/target_worktree/{source_branch}/").mkdir(parents=True)
+        open(f"{dir}/target_worktree/{source_branch}/index.html", 'a').close()
+        releases = get_releases(target_branch, False, source_branch, Path(f"{dir}/target_worktree"))
+        print(releases)
+        assert releases == [{'release': "latest", 'release_path': f'{source_branch}/index.html'}]
+
+
+def test_get_releases_empty_target_branch(): #todo would need empty test branch or generation and deletion of empty test branch
+    pass
+
 
 
 def test_get_footer():
     index_path = Path("test_src/input_index.html")
+    print(os.getcwd()) #/home/marlene/PycharmProjects/sphinx-github-pages-generator/tests
+    #/tmp/pytest-of-marlene/pytest-74/test_get_releases0/sphinx-github-pages-generator-test
     footer = get_footer(index_path)
     feet = "".join(map(lambda foot: (foot.replace("\n", "")).strip(), footer))
 
@@ -203,16 +224,13 @@ def test_get_footer():
                             '</div>')
 
 
-def test_no_footer(): # todo makes endles loop
+def test_no_footer():
     with NamedTemporaryFile("a+") as i_file:
-        i_file.write("")
+        i_file.write("some text")
         i_file.flush()
         index_path = Path(i_file.name)
-        print(index_path)
-        pass
         footer = get_footer(index_path)
         feet = "".join(map(lambda foot: (foot.replace("\n", "")).strip(), footer))
-
     assert feet.strip() == ''
 
 
@@ -246,40 +264,58 @@ def test_alter_mea_line(): #todo
 
     assert altered_lines == correct_altered_lines
 
-def test_gen_index(setup_test_env):
-    source_branch = "main"
-    run(["git", "checkout", source_branch], check=True)
-    target_branch = "test-docu-new-branch-"
-    with TemporaryDirectory("dir") as tempdir:
-        Path(f"{tempdir}/{source_branch}/").mkdir(parents=True)
-        with open(f"{tempdir}/{source_branch}/index.html", "w+") as i_file:
-            for line in input_index_html:
-                i_file.write(line)
-            i_file.flush()
-        #todo
-            gen_index(target_branch, tempdir, source_branch, target_branch_exists_remote = True)
-    #todo asserts
 
-def test_gen_index_wrong_target_branch(setup_test_env):
+def test_gen_index(setup_index_tests_integration):
+    target_branch, source_branch, target_branch_exists, target_worktree = setup_index_tests_integration
+    gen_index(target_branch, Path(target_worktree), source_branch, target_branch_exists_remote = True)
+
+    with open(f"{target_worktree}/index.html") as index_file:
+        index_content = index_file.readlines()
+    for i in range(0, len(correct_content)):
+        assert correct_content[i].strip() == index_content[i].strip()
+
+
+def test_abort_gen_index_wrong_target_branch(setup_index_tests_integration):
+    _, source_branch, target_branch_exists, target_worktree = setup_index_tests_integration
     target_branch_exists_remote = True
-    target_branch = "not_an_existing_branch"
-    pass
+    target_branch_wrong = "not_an_existing_branch"
+    with pytest.raises(SystemExit) as e:
+        gen_index(target_branch_wrong, Path(target_worktree), source_branch, target_branch_exists_remote = True)
 
-def test_gen_index_worktree_not_a_dir(setup_test_env):
-    pass
+    regex = r"""checking out target_branch .* failed, although given.*
+                     'target_branch_exists_remote' was 'True'. Check if target_branch really exists on remote?.*
+                     received Error:.*
+                        returncode: .*
+                        stderr: .*
+                        stdout: .*"""
+    comp_regex = re.compile(regex, flags=re.DOTALL)
+    assert e.match(comp_regex)
+    assert e.type == SystemExit
 
-def test_gen_index_source_branch_not_exists(setup_test_env):
-    pass
 
-def test_gen_index_target_branch_not_exists(setup_test_env):
-    source_branch = "main"
-    run(["git", "checkout", source_branch], check=True)
-    target_branch = "another_new_branch"
-    with TemporaryDirectory("dir") as tempdir:
-        #todo
-        gen_index(target_branch, tempdir, source_branch, target_branch_exists_remote=True)
-    #todo asserts
+def test_abort_gen_index_worktree_not_a_dir(setup_index_tests_integration):
+    target_branch, source_branch, target_branch_exists, _ = setup_index_tests_integration
+    not_target_worktree = "not_a_dir"
+    with pytest.raises(FileNotFoundError) as e:
+        gen_index(target_branch, Path(not_target_worktree), source_branch, target_branch_exists_remote = True)
 
+    assert e.match(f"No such file or directory: '{not_target_worktree}'")
+    assert e.type == FileNotFoundError
+
+def test_abort_gen_index_source_branch_not_exists(setup_index_tests_integration):
+    target_branch, _, target_branch_exists, target_worktree = setup_index_tests_integration
+    not_source_branch = "not_a_branch"
+    with pytest.raises(SystemExit) as e:
+        gen_index(target_branch, Path(target_worktree), not_source_branch, target_branch_exists_remote = True)
+
+    assert e.match(f".* not currently checked out. Please Check out branch .*"
+                   f" before calling gen_index.")
+    assert e.type == SystemExit
+
+def test_gen_index_target_branch_not_exists(setup_index_tests_integration):
+    _, source_branch, target_branch_exists, target_worktree = setup_index_tests_integration
+    target_branch_new = "new_target"
+    gen_index(target_branch_new, Path(target_worktree), source_branch, target_branch_exists_remote = False)
 
 def test_gen_index_abort_missing_index_file(setup_test_env):
     source_branch = "main"
@@ -295,8 +331,7 @@ def test_gen_index_abort_missing_index_file(setup_test_env):
 
 
 
-def test_no_existing_releases(setup_test_env): #todo move these tests
-    #todo
+def test_index_no_existing_releases(setup_test_env): #todo move these tests
     source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch-"
@@ -322,18 +357,7 @@ def test_no_existing_releases(setup_test_env): #todo move these tests
 
 def test_exsiting_releases(setup_test_env):
     # - replaces index.html
-    #todo this would require an additional branch in the test repo
+    #todo first add index.html to test-branch
     pass
 
 
-def test_existing_target_branch_with_only_source_branch_docu(setup_test_env): #todo move these tests
-    source_branch = "main"
-    run(["git", "checkout", source_branch], check=True)
-    target_branch = "6-test-branch-for-gen-index"
-
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--push_enabled", "commit",
-                                             "--module_path", "../test_package", "../another_test_package"])
-    # todo this only checks if everything runs. i think the correctness of the generated
-    #  file is covered in the other tests. Do we need to check the correctness here again?

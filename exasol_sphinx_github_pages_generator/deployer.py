@@ -189,7 +189,10 @@ class GithubPagesDeployer:
         print("Generated HTML Output")
         print(f"Using html_output_dir={self.build_dir}")
 
-        output_dir = Path(f"{self.worktree_paths['target_worktree']}/{self.source_branch}")
+        # remove slashes from branch-name, this makes parsing the release-names for the release-index much easier
+        simple_source_branch_name = self.source_branch.replace("/", "-")
+        output_dir = Path(f"{self.worktree_paths['target_worktree']}/{simple_source_branch_name}")
+
         print(f"Using output_dir={output_dir}")
         if output_dir.exists() and output_dir.is_dir():
             print(f"Removing existing output directory {output_dir}")

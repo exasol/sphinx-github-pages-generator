@@ -60,3 +60,4 @@ For running your own tests, you can change the tests Repository, User and Passwo
 .. _doc folder: https://github.com/exasol/sphinx-github-pages-generator/tree/main/doc
 .. _tests folder: https://github.com/exasol/sphinx-github-pages-generator/tree/main/tests
 .. _setup_test_repo: https://github.com/exasol/sphinx-github-pages-generator/blob/7235e9577531bb3992425ffd200004dc4a7fee32/tests/helper_test_functions.py#L13
+

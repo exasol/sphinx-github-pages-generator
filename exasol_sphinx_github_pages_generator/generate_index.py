@@ -8,7 +8,7 @@ from subprocess import run
 from jinja2 import Environment, PackageLoader, select_autoescape
 import inspect
 
-from typing import List, Dict, Union
+from typing import List, Dict
 
 import exasol_sphinx_github_pages_generator
 
@@ -17,16 +17,7 @@ import exasol_sphinx_github_pages_generator
 
 def find_index(target_worktree: Path, source_branch: str) -> Path:
     cwd = os.getcwd()
-    print("_______________________-")
-    print(target_worktree)
-    import subprocess
-    subprocess.run(["ls", "-a"])
     os.chdir(target_worktree)
-    print(os.getcwd())
-    print("_____________")
-    subprocess.run(["ls", "-a", source_branch])
-    # index_list = glob.glob('*/index.html') # todo this finds existig index files(if not sllash in rbanch name), use instaed of get releases?
-   # index_list = glob.glob(f'{source_branch}//index.html')
     index_list = glob.glob(f'{source_branch}/**/index.html', recursive=True)
     print(f"index_list : {index_list}")  # todo in actions does not find index
     if len(index_list) != 1:
@@ -44,14 +35,13 @@ def generate_release_dicts(release_list: List[str], source_branch: str, target_w
         -> List[Dict[str, str]]:
     if "_sources" in release_list:
         release_list.remove("_sources")
-    release_list_dicts = []
+    release_list_dicts = [{"release": "latest",
+                           "release_path": f"{find_index(target_worktree, source_branch)}"}]
     for release in release_list:
         if release is not source_branch:
             release_list_dicts.append({"release": release,
-                                   "release_path": f"{find_index('.', release)}"})  #todo use find index here?
+                                       "release_path": f"{find_index('.', release)}"})
 
-    release_list_dicts.append({"release": source_branch, # todo "latest"?
-                                   "release_path": f"{find_index(target_worktree, source_branch)}"})
     print(f"release_list_dicts {release_list_dicts}")
     return release_list_dicts
 
@@ -59,25 +49,33 @@ def generate_release_dicts(release_list: List[str], source_branch: str, target_w
 def get_releases(target_branch: str, target_branch_exists_remote: bool, source_branch: str, target_worktree: Path) \
         -> List[Dict[str, str]]:
     cwd = os.getcwd()
-    release_list = []
     if target_branch_exists_remote:
         find_index_worktree_path = os.path.join(cwd, "target-branch-for-index/")
-        run(["git", "worktree", "add", find_index_worktree_path,
-             target_branch, "--force"], check=True)
+        completed = run(["git", "worktree", "add", find_index_worktree_path,
+             target_branch, "--force"])
+        if completed.returncode != 0:
+            sys.exit(f"""checking out target_branch {target_branch} failed, although given 
+                     'target_branch_exists_remote' was 'True'. Check if target_branch really exists on remote?
+                     received Error:
+                        returncode: {completed.returncode},
+                        stderr: {completed.stderr},
+                        stdout: {completed.stdout}"""
+                     )
+
         os.chdir(find_index_worktree_path)
         current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
                              check=True)
         print(f"current_branch {current_branch.stdout} in find_index_worktree_path {find_index_worktree_path}.")
-
-        release_list = [name for name in os.listdir(find_index_worktree_path) #todo does not work if release branch name contains slash
+        # does not work if release branch name contains slash
+        release_list = [name for name in os.listdir(find_index_worktree_path)
                         if os.path.isdir(os.path.join(find_index_worktree_path, name))]
-        print(release_list)
+
         release_list_dicts = generate_release_dicts(release_list, source_branch, target_worktree)#target_worktree)
         print(f"release_list {release_list}")
         run(["git", "worktree", "remove", "--force", find_index_worktree_path], check=True)
         os.chdir(cwd)
-    else: #todo
-        pass
+    else:
+        release_list_dicts = generate_release_dicts([], source_branch, target_worktree)  # target_worktree)
 
     return release_list_dicts
 
@@ -110,16 +108,12 @@ def get_meta_lines(index_path: Path, source_branch: str) -> List[str]:
     print("get_meta_lines")
     if not source_branch:
         raise ValueError("No source branch was given to get_meta_lines")
-    print(os.getcwd())
-    import subprocess
-    subprocess.run(["ls", "-a"])
     with open(index_path) as file:
         meta_lines = []
         for line in file.readlines():
             if "_static" in line or "<meta" in line: # todo get keywords from conf.py "html_static_path"
                 line = alter_meta_line(line, source_branch)
                 meta_lines.append(line)
-    print(meta_lines)
     return meta_lines
 
 
@@ -130,6 +124,8 @@ def get_footer(index_path: Path) -> List[str]:
     with open(index_path) as file:
         while True:
             line = file.readline()
+            if line == "":
+                break
             if '<div class="footer">' in line:
                 lines.append(line)
                 open_divs += 1
@@ -148,10 +144,16 @@ def get_footer(index_path: Path) -> List[str]:
     print(lines)
     return lines
 
+# todo add cleanup-trap?
 
+# todo note somweher about slaches in branch names
 def gen_index(target_branch: str, target_worktree: Path, source_branch: str, target_branch_exists_remote: bool):
     print("s_branch " + source_branch)
-    #todo check if sourcebranch exists? or don care?
+    local_source_branch_commit_id = run(["git", "rev-parse", source_branch], capture_output=True,
+                                        text=True)
+    if local_source_branch_commit_id.returncode != 0:
+        sys.exit(f"{source_branch} not currently checked out. Please Check out branch {source_branch}"
+                 f" before calling gen_index.")
     env = Environment(
         loader=PackageLoader("exasol_sphinx_github_pages_generator"),
         autoescape=select_autoescape()
@@ -159,9 +161,9 @@ def gen_index(target_branch: str, target_worktree: Path, source_branch: str, tar
     template = env.get_template("index_template.html.jinja2")
     print(os.getcwd())
     index_path = find_index(target_worktree, source_branch)
-    meta = get_meta_lines(index_path, source_branch)
+    meta = get_meta_lines(target_worktree.joinpath(index_path), source_branch)
     releases = get_releases(target_branch, target_branch_exists_remote, source_branch, target_worktree)
-    footer = get_footer(index_path)
+    footer = get_footer(target_worktree.joinpath(index_path))
     with open(f"{target_worktree}/index.html", "w+") as file:
         file.write(template.render(meta_list=meta, releases=releases, footer=footer))
     run(["ls", "-la", ".."], check=True)
