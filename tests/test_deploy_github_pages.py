@@ -13,23 +13,19 @@ import shutil
 from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
 
 
-def test_remote_branch_creation(setup_test_env):
+def test_remote_branch_creation(setup_test_env):#todo restore
     source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
-    target_branch = "test-docu-new-branch"
-    remove_branch(target_branch)
-
+    target_branch = "feature/6-test-branch-for-gen-index"#"test-docu-new-branch"
+    #remove_branch(target_branch)
+    print(os.getcwd())
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch,
-                                             "--source_dir", "/doc/",
-                                             "--module_path", "../test_package", "../another_test_package"])
+                                             "--module_path", "../test_package"])#, "../another_test_package"])
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
-    remove_branch(target_branch)
-
+    #remove_branch(target_branch)
 
 def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     user_name, user_access_token = setup_test_env
@@ -42,8 +38,6 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", temp_test_branch,
                                              "--module_path", "../test_package", "../another_test_package"])
     current_commit_id = run(["git", "ls-remote",
@@ -58,8 +52,6 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     run(["git", "commit", "-m", "test-commit"], check=True)
     run(["git", "push"], check=True)
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", temp_test_branch,
                                              "--module_path", "../test_package", "../another_test_package"])
     current_commit_id = run(["git", "ls-remote",
@@ -82,8 +74,6 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch_one,
                                              "--module_path", "../test_package", "../another_test_package"])
 
@@ -94,8 +84,6 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
         run(["git", "checkout", source_branch_two], check=True)
 
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--push_origin", "origin",
-                                                 "--push_enabled", "push",
                                                  "--source_branch", source_branch_two,
                                                  "--source_dir", "/documentation/",
                                                  "--module_path", "../test_package", "../another_test_package"])
@@ -119,8 +107,6 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--module_path", "../test_package", "../another_test_package"])
     current_commit_id = run(
@@ -129,8 +115,6 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
     commit_id_old = current_commit_id.stdout
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--module_path", "../test_package", "../another_test_package"])
     current_commit_id = run(
@@ -154,8 +138,6 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
     remove_branch(target_branch)
     module_path = ["../test_package", "../another_test_package"]
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--module_path", module_path[0], module_path[1]])
 
@@ -200,8 +182,6 @@ def test_no_doctree_files_in_remote(setup_test_env):
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--module_path", "../test_package", "../another_test_package"])
 
@@ -225,8 +205,6 @@ def test_no__pycache__files_in_remote(setup_test_env):
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--module_path", "../test_package", "../another_test_package"])
 
@@ -251,8 +229,6 @@ def test_only_commit_dont_push(setup_test_env):
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "commit",
                                              "--source_branch", source_branch,
                                              "--module_path", "../test_package", "../another_test_package"])
     current_remote_commit_id = run(
@@ -283,8 +259,6 @@ def test_select_different_source_branch_which_does_exists_locally(setup_test_env
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--module_path", "../test_package", "../another_test_package"])
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
@@ -302,8 +276,6 @@ def test_select_different_source_branch_which_does_not_exists_locally(setup_test
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--module_path", "../test_package", "../another_test_package"])
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
@@ -325,8 +297,6 @@ def test_select_different_source_branch_does_not_delete_local_changes(setup_test
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--module_path", "../test_package", "../another_test_package"])
 
@@ -350,8 +320,6 @@ def test_infer_source_branch(setup_test_env):
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--module_path", "../test_package", "../another_test_package"])
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
@@ -371,8 +339,6 @@ def test_abort_if_given_source_branch_does_not_exist(setup_test_env):
 
     with pytest.raises(SystemExit) as e:
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--push_origin", "origin",
-                                                 "--push_enabled", "push",
                                                  "--source_branch", source_branch,
                                                  "--module_path", "../test_package", "../another_test_package"])
     assert e.match(f"source branch {source_branch} does not exist")
@@ -390,8 +356,6 @@ def test_abort_local_uncommitted_changes_exist_in_source_branch(setup_test_env):
 
     with pytest.raises(SystemExit) as e:
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--push_origin", "origin",
-                                                 "--push_enabled", "push",
                                                  "--source_branch", source_branch,
                                                  "--module_path", "../test_package", "../another_test_package"])
     assert e.match(f"Abort, you have uncommitted changes in source branch  {source_branch}, "
@@ -412,8 +376,6 @@ def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
 
     with pytest.raises(SystemExit) as e:
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--push_origin", "origin",
-                                                 "--push_enabled", "push",
                                                  "--source_branch", source_branch,
                                                  "--module_path", "../test_package", "../another_test_package"])
     assert e.match(f"Abort. Local commit id .* and commit id of remote source branch"
@@ -430,8 +392,6 @@ def test_abort_source_branch_only_exists_locally(setup_test_env):
     target_branch = "test-docu-new-branch"
     with pytest.raises(SystemExit) as e:
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--push_origin", "origin",
-                                                 "--push_enabled", "push",
                                                  "--source_branch", temp_test_branch,
                                                  "--module_path", "../test_package", "../another_test_package"])
 
@@ -470,8 +430,6 @@ def test_use_different_source_dir(setup_test_env):
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
                                              "--source_branch", source_branch,
                                              "--source_dir", "/documentation/",
                                              "--module_path", "../test_package", "../another_test_package"])
@@ -488,8 +446,6 @@ def test_abort_if_invalid_source_dir(setup_test_env):
     remove_branch(target_branch)
     with pytest.raises(FileNotFoundError) as e:
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--push_origin", "origin",
-                                                 "--push_enabled", "push",
                                                  "--source_branch", source_branch,
                                                  "--source_dir", "/not_a_source_dir/",
                                                  "--module_path", "../test_package", "../another_test_package"])

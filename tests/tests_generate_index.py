@@ -1,20 +1,339 @@
 import pytest
-#todo
+from subprocess import run
+from tempfile import TemporaryDirectory, NamedTemporaryFile
+import os
+import re
+from pathlib import Path
+from jinja2 import Environment, PackageLoader, select_autoescape
+
+import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
+from helper_test_functions import remove_branch
+from fixtures import setup_test_env, setup_index_tests_target_branch, setup_index_tests_integration
+from exasol_sphinx_github_pages_generator.generate_index import find_index, get_meta_lines, \
+    get_footer, get_releases, generate_release_dicts, alter_meta_line, gen_index
 
 
-def test_build_index_file():
-    - file exists
-    - sorce exists
-    - file content match template
+with open(
+        "./test_src/correct_index_file_main_branch.html") as file:
+    correct_content = file.readlines()
+with open("./test_src/meta_lines_correct") as file:
+    correct_meta_lines = file.readlines()
 
-def test_missing_index_file():
+with open("./test_src/input_index.html") as file:
+    input_index_html = file.readlines()
 
+correct_releases = [{'release': 'test', 'release_path': 'test/index.html'},
+                        {'release': 'feature/some_dir', 'release_path': 'feature/some_dir/index.html'},
+                        {'release': 'branch_name', 'release_path': 'branch_name/index.html'}]
 
-def test_no_meta_lines():
-def test_no_footer():
-def test_no_existing_releases():
-def test_exsiting_releases():
-    - replaces index.html
-def test_existing_targetbranch_with_only_source_branc_docu():
+correct_footer =('<div class="footer">'
+                    '&copy;2021, Exasol.'
+                    '|'
+                    'Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>'
+                    '&amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>'
+                    '|'
+                    '<a href="_sources/index_template.jinja.txt"'
+                    'rel="nofollow">Page source</a>'
+                    '</div>')
+
+env = Environment(
+        loader=PackageLoader("exasol_sphinx_github_pages_generator"),
+        autoescape=select_autoescape()
+    )
+template = env.get_template("index_template.html.jinja2")
+
 
 # todo test for failures?
+
+def test_find_index():
+    source_branch = "main"
+    with TemporaryDirectory("dir") as tempdir:
+        Path(f"{tempdir}/{source_branch}/").mkdir(parents=True)
+        with open(f"{tempdir}/{source_branch}/index.html", "w+") as i_file:
+            for line in input_index_html:
+                i_file.write(line)
+            i_file.flush()
+        index_path = find_index(Path(tempdir), source_branch)
+        assert index_path == (f"{source_branch}/index.html")
+
+
+def test_get_meta_lines():
+    source_branch = "main"
+    import subprocess
+    subprocess.run(["ls"])
+    meta = get_meta_lines(Path("./test_src/input_index.html"), source_branch)
+    print(meta)
+    for i in range(0, len(correct_meta_lines)):
+        assert correct_meta_lines[i].strip() == meta[i].strip()
+
+
+def test_get_meta_lines_no_meta_lines():
+    source_branch = "main"
+    input_path = NamedTemporaryFile()
+    with open(input_path.name, "w") as meta_input:
+        meta_input.write("These are\n some lines \n of text. \n "
+                         "not including any \n lines detected by \n get_meta_lines\n")
+        meta = get_meta_lines(Path(input_path.name), source_branch)
+    assert meta == []
+
+
+def test_get_meta_lines_wrong_path():
+    wrong_path = Path("./test_src/this_is_not_an_existing_file")
+    with pytest.raises(FileNotFoundError) as e:
+        get_meta_lines(wrong_path, "main")
+    e.match(str(wrong_path))
+
+
+def test_get_meta_lines_no_source_branch():
+    with pytest.raises(ValueError) as e:
+        get_meta_lines(Path("./test_src/correct_index_file_main_branch.html"), "")
+    e.match("No source branch was given to get_meta_lines")
+
+
+def test_render_template_no_meta_lines():
+    meta = []
+    releases = correct_releases
+    footer = correct_footer
+
+    index_content = template.render(meta_list=meta, releases=releases, footer=footer)  # todo test if valid html?
+
+
+def test_generate_release_dicts_include_sources():
+    source_branch = "branch_name"
+    target_worktree = "t_worktree"
+    target_branch = "t_branch"
+    release_list_target = [("test", target_branch), ("feature/some_dir", target_branch), ("_sources", target_branch)]
+    release_list = [item[0] for item in release_list_target]
+    others = [(source_branch, target_worktree)]
+    with TemporaryDirectory() as tempdir:
+        os.chdir(tempdir)
+        for item in release_list_target + others:
+            Path(f"{item[1]}/{item[0]}").mkdir(parents=True)
+            open(f"{item[1]}/{item[0]}/index.html", 'a').close()
+        target_worktree = Path(target_worktree).absolute()
+        os.chdir(target_branch)
+        releases = generate_release_dicts(release_list, source_branch, Path(target_worktree).absolute())
+
+    assert releases == correct_releases
+
+
+def test_generate_release_dicts_include_source_branch():
+    source_branch = "branch_name"
+    target_worktree = "t_worktree"
+    target_branch = "t_branch"
+    release_list_target = [("test", target_branch), ("feature/some_dir", target_branch), (source_branch, target_branch)]
+    release_list = [item[0] for item in release_list_target]
+    others = [("_sources", target_branch), (source_branch, target_worktree)]
+
+    with TemporaryDirectory() as tempdir:
+        os.chdir(tempdir)
+        for item in release_list_target + others:
+            print(item)
+            Path(f"{item[1]}/{item[0]}").mkdir(parents=True)
+            open(f"{item[1]}/{item[0]}/index.html", 'a').close()
+        target_worktree = Path(target_worktree).absolute()
+        os.chdir(target_branch)
+        releases = generate_release_dicts(release_list, source_branch, target_worktree)
+
+    assert releases == correct_releases
+
+
+def test_generate_release_dict_include_only_unkown_dirs():
+    source_branch = "branch_name"
+    target_worktree = "t_worktree"
+    target_branch = "t_branch"
+    release_list_target = [("test", target_branch), ("feature/some_dir", target_branch)]
+    release_list = [item[0] for item in release_list_target]
+    others = [("_sources", target_branch), (source_branch, target_worktree)]
+    with TemporaryDirectory() as tempdir:
+        os.chdir(tempdir)
+        for item in release_list_target + others:
+            print(item)
+            Path(f"{item[1]}/{item[0]}").mkdir(parents=True)
+            open(f"{item[1]}/{item[0]}/index.html", 'a').close()
+
+        target_worktree = Path(target_worktree).absolute()
+        os.chdir(target_branch)
+        releases = generate_release_dicts(release_list, source_branch, target_worktree)
+    assert releases == correct_releases
+
+
+def test_generate_release_dicts_no_releases():
+    source_branch = "branch_name"
+    target_worktree = "t_worktree"
+    target_branch = "t_branch"
+    release_list = []
+    others = [("_sources", target_branch), (source_branch, target_worktree)]
+    with TemporaryDirectory() as tempdir:
+        os.chdir(tempdir)
+        for item in release_list + others:
+            Path(f"{item[1]}/{item[0]}").mkdir(parents=True)
+            open(f"{item[1]}/{item[0]}/index.html", 'a').close()
+        target_worktree = Path(target_worktree).absolute()
+        os.chdir(target_branch)
+        releases = generate_release_dicts(release_list, source_branch, target_worktree)
+
+    assert releases == [{'release': 'branch_name', 'release_path': 'branch_name/index.html'}]
+
+
+def test_get_releases(setup_index_tests_target_branch): #todo fix
+    target_branch, source_branch = setup_index_tests_target_branch
+
+    Path(f"target_worktree/{source_branch}/").mkdir(parents=True)
+    open(f"target_worktree/{source_branch}/index.html", 'a').close()
+    releases = get_releases(target_branch, True, source_branch, Path(f"target_worktree").absolute())
+    assert releases == [{'release': 'another_branch', 'release_path': 'another_branch/index.html'},
+                        {'release': 'feature/some-feature', 'release_path': 'feature/some-feature/index.html'},
+                        {'release': source_branch, 'release_path': f'{source_branch}/index.html'}]
+
+
+def test_get_footer():
+    index_path = Path("test_src/input_index.html")
+    footer = get_footer(index_path)
+    feet = "".join(map(lambda foot: (foot.replace("\n", "")).strip(), footer))
+
+    assert feet.strip() == ('<div class="footer">'
+                            '&copy;2021, Exasol.'
+                            '|'
+                            'Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>'
+                            '&amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>'
+                            '|'
+                            '<a href="_sources/index_template.jinja.txt"'
+                            'rel="nofollow">Page source</a>'
+                            '</div>')
+
+
+def test_no_footer(): # todo makes endles loop
+    with NamedTemporaryFile("a+") as i_file:
+        i_file.write("")
+        i_file.flush()
+        index_path = Path(i_file.name)
+        print(index_path)
+        pass
+        footer = get_footer(index_path)
+        feet = "".join(map(lambda foot: (foot.replace("\n", "")).strip(), footer))
+
+    assert feet.strip() == ''
+
+
+def test_alter_mea_line(): #todo
+    source_branch = "source_branch"
+    original_lines = [
+        'some text ="_static/doctools.js" some more text ',
+        'some text ="_static/doctools.js" some more text containing "quotes" ',
+        'some text containing "quotes" ="_static/doctools.js" some more text ',
+        'some text containing "quotes" ="_static/doctools.js" some more text containing "quotes" ',
+        'some text containing "quotes" ="another_dict/_static/doctools.js" some more text containing "quotes" ',
+        'just some text not containing the keyword',
+        'just some text not containing the keyword but with "quotes"',
+        '"this whole line is in quotes"',
+        '',
+        ' this text contains "_static" multiple times because "_static" is a keyword'
+    ]
+    correct_altered_lines =[
+        'some text ="source_branch/_static/doctools.js" some more text ',
+        'some text ="source_branch/_static/doctools.js" some more text containing "quotes" ',
+        'some text containing "quotes" ="source_branch/_static/doctools.js" some more text ',
+        'some text containing "quotes" ="source_branch/_static/doctools.js" some more text containing "quotes" ',
+        'some text containing "quotes" ="source_branch/another_dict/_static/doctools.js" some more text containing "quotes" ',
+        'just some text not containing the keyword',
+        'just some text not containing the keyword but with "quotes"',
+        '"this whole line is in quotes"',
+        '',
+        ' this text contains "source_branch/_static" multiple times because "source_branch/_static" is a keyword'
+    ]
+    altered_lines = [alter_meta_line(original_line, source_branch) for original_line in original_lines]
+
+    assert altered_lines == correct_altered_lines
+
+def test_gen_index(setup_test_env):
+    source_branch = "main"
+    run(["git", "checkout", source_branch], check=True)
+    target_branch = "test-docu-new-branch-"
+    with TemporaryDirectory("dir") as tempdir:
+        Path(f"{tempdir}/{source_branch}/").mkdir(parents=True)
+        with open(f"{tempdir}/{source_branch}/index.html", "w+") as i_file:
+            for line in input_index_html:
+                i_file.write(line)
+            i_file.flush()
+        #todo
+            gen_index(target_branch, tempdir, source_branch, target_branch_exists_remote = True)
+    #todo asserts
+
+def test_gen_index_wrong_target_branch(setup_test_env):
+    target_branch_exists_remote = True
+    target_branch = "not_an_existing_branch"
+    pass
+
+def test_gen_index_worktree_not_a_dir(setup_test_env):
+    pass
+
+def test_gen_index_source_branch_not_exists(setup_test_env):
+    pass
+
+def test_gen_index_target_branch_not_exists(setup_test_env):
+    source_branch = "main"
+    run(["git", "checkout", source_branch], check=True)
+    target_branch = "another_new_branch"
+    with TemporaryDirectory("dir") as tempdir:
+        #todo
+        gen_index(target_branch, tempdir, source_branch, target_branch_exists_remote=True)
+    #todo asserts
+
+
+def test_gen_index_abort_missing_index_file(setup_test_env):
+    source_branch = "main"
+    run(["git", "checkout", source_branch], check=True)
+    target_branch = "test-docu-new-branch-"
+    with TemporaryDirectory("dir") as tempdir:
+        with pytest.raises(SystemExit) as e: #todo
+            gen_index(target_branch, tempdir, source_branch, target_branch_exists_remote=True)
+
+        regex = r""".*Your generated documentation does not include the right amount of index.html files.*Instead it includes 0 in path.*"""
+        comp_regex = re.compile(regex, flags=re.DOTALL)
+        assert e.match(comp_regex)
+
+
+
+def test_no_existing_releases(setup_test_env): #todo move these tests
+    #todo
+    source_branch = "main"
+    run(["git", "checkout", source_branch], check=True)
+    target_branch = "test-docu-new-branch-"
+    remove_branch(target_branch)
+
+    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                             "--source_branch", source_branch,
+                                             "--module_path", "../test_package", "../another_test_package"])
+    index_exists = run(["git", "ls-tree", "-d", f"origin/{target_branch}", "index.html"],
+                                    capture_output=True, text=True, check=True)
+    assert index_exists.returncode == 0
+    index_source_exists = run(["git", "ls-tree", "-d", f"origin/{target_branch}", "_sources/index_template.jinja"],
+                                    capture_output=True, text=True, check=True)
+    assert index_source_exists.returncode == 0
+
+    run(["git", "checkout", target_branch], check=True)
+    with open("index.html") as index_file:
+        index_content = index_file.readlines()
+    for i in range(0, len(correct_content)):
+        assert correct_content[i].strip() == index_content[i].strip()
+    remove_branch(target_branch)
+
+
+def test_exsiting_releases(setup_test_env):
+    # - replaces index.html
+    #todo this would require an additional branch in the test repo
+    pass
+
+
+def test_existing_target_branch_with_only_source_branch_docu(setup_test_env): #todo move these tests
+    source_branch = "main"
+    run(["git", "checkout", source_branch], check=True)
+    target_branch = "6-test-branch-for-gen-index"
+
+    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                             "--source_branch", source_branch,
+                                             "--push_enabled", "commit",
+                                             "--module_path", "../test_package", "../another_test_package"])
+    # todo this only checks if everything runs. i think the correctness of the generated
+    #  file is covered in the other tests. Do we need to check the correctness here again?
