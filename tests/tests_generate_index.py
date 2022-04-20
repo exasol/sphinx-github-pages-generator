@@ -45,9 +45,6 @@ env = Environment(
     )
 template = env.get_template("index_template.html.jinja2")
 
-
-# todo test for failures?
-
 def test_find_index():
     source_branch = "main"
     with TemporaryDirectory("dir") as tempdir:
@@ -98,7 +95,7 @@ def test_render_template_no_meta_lines():
     releases = correct_releases
     footer = correct_footer
 
-    index_content = template.render(meta_list=meta, releases=releases, footer=footer)  # todo test if valid html?
+    index_content = template.render(meta_list=meta, releases=releases, footer=footer)
 
 
 def test_generate_release_dicts_include_sources():
@@ -322,7 +319,7 @@ def test_gen_index_abort_missing_index_file(setup_test_env):
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch-"
     with TemporaryDirectory("dir") as tempdir:
-        with pytest.raises(SystemExit) as e: #todo
+        with pytest.raises(SystemExit) as e:
             gen_index(target_branch, tempdir, source_branch, target_branch_exists_remote=True)
 
         regex = r""".*Your generated documentation does not include the right amount of index.html files.*Instead it includes 0 in path.*"""

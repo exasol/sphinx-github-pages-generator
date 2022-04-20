@@ -19,13 +19,12 @@ def find_index(target_worktree: Path, source_branch: str) -> Path:
     cwd = os.getcwd()
     os.chdir(target_worktree)
     index_list = glob.glob(f'{source_branch}/**/index.html', recursive=True)
-    print(f"index_list : {index_list}")  # todo in actions does not find index
+    print(f"index_list : {index_list}")
     if len(index_list) != 1:
         sys.exit(f"""
                 Your generated documentation does not include the right amount of index.html files (1). 
                 Instead it includes {len(index_list)} in path {target_worktree}
                 """)
-    # todo check if file is empty?
     index_path = index_list[0]#target_worktree.joinpath(index_list[0])  # todo just take the one closest to root if multiple?
     os.chdir(cwd)
     return index_path
@@ -73,6 +72,9 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
         release_list_dicts = generate_release_dicts(release_list, source_branch, target_worktree)#target_worktree)
         print(f"release_list {release_list}")
         run(["git", "worktree", "remove", "--force", find_index_worktree_path], check=True)
+        # todo which branch are we on now?
+        print(run(["git", "rev-parse", "--abbrev-ref", "HEAD"]))
+
         os.chdir(cwd)
     else:
         release_list_dicts = generate_release_dicts([], source_branch, target_worktree)  # target_worktree)
@@ -82,7 +84,7 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
 
 def find_quote_pos(static_pos: int, double_quote_list: List[int]) -> int:
     """
-    find the occurence of " closest to "_static" from the left
+    find the occurrence of " closest to "_static" from the left
     :return: found position
     """
     found_pos = 0
@@ -171,7 +173,7 @@ def gen_index(target_branch: str, target_worktree: Path, source_branch: str, tar
     generator_init_path = inspect.getfile(exasol_sphinx_github_pages_generator)
     sources_dir = f"{os.path.dirname(generator_init_path)}/templates"
     target_path = Path(f"{target_worktree}/_sources")
-    target_path.mkdir(parents=True)
+    if not target_path.is_dir(): #todo tis should not be the case. move preivious generation a dir up?
+        target_path.mkdir(parents=True)
     shutil.copy(f"{sources_dir}/index_template.html.jinja2",
                 f"{target_path}/index_template.jinja.txt")
-

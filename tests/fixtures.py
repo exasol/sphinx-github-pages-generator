@@ -10,20 +10,31 @@ from pathlib import Path
 
 
 
-@pytest.fixture
-def setup_test_env(tmp_path):
+@pytest.fixture()
+def setup_test_env(tmp_path, request):
     os.chdir(tmp_path)
     user_name, user_access_token = setup_workdir()
-    return user_name, user_access_token
+    used_branches = ["1"]
+    yield used_branches, user_name, user_access_token,
+
+    print("clean")
+    for branch in used_branches:
+        remove_branch(branch) #todo also remove brnch locally? or extra funk fot that
+
+
+
+
 
 @pytest.fixture
 def setup_index_tests_integration(setup_test_env):
+    branches_to_delete_in_cleanup, _,_ = setup_test_env
     original_workdir = os.getcwd()
     source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
     remove_branch(target_branch)
     current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
+    branches_to_delete_in_cleanup += [target_branch]
 
     with TemporaryDirectory() as tempdir:
         deployer = GithubPagesDeployer("/doc/", source_branch, current_commit_id.stdout[:-1], ["../test_package"],

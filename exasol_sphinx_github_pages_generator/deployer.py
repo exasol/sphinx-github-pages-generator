@@ -204,8 +204,9 @@ class GithubPagesDeployer:
             shutil.move(self.build_dir + "/" + str(obj), output_dir)
         open(f"{self.worktree_paths['target_worktree']}/.nojekyll", "w").close()
 
-        gen_index(self.target_branch, target_worktree=Path(self.worktree_paths["target_worktree"]),
-                  source_branch=self.source_branch, target_branch_exists_remote=self.target_branch_exists)
+        #print("Start generating release_index.html")
+        #gen_index(self.target_branch, target_worktree=Path(self.worktree_paths["target_worktree"]),
+        #          source_branch=self.source_branch, target_branch_exists_remote=self.target_branch_exists)
 
         print(f"Content of output directory {output_dir}")
         run(["ls", "-la", output_dir], check=True)
@@ -228,6 +229,10 @@ class GithubPagesDeployer:
         run(["git", "add", "-v", "."], check=True)
         changes_exists = run(["git", "diff-index", "--quiet", "HEAD", "--"], capture_output=True, text=True)
         if 1 == changes_exists.returncode:
+            print("Start generating/updating release_index.html")
+            gen_index(self.target_branch, target_worktree=Path(self.worktree_paths["target_worktree"]),
+                      source_branch=self.source_branch, target_branch_exists_remote=bool(self.target_branch_exists.stdout))
+            run(["git", "add", "-v", "."], check=True)
             print(f"committing changes because changes exist.")
             run(["git", "commit", "--no-verify", "-m",
                  f"Update documentation from source branch {self.source_branch} with commit id"
