@@ -27,7 +27,7 @@ def setup_test_env(tmp_path, request):
 
 @pytest.fixture
 def setup_index_tests_integration(setup_test_env):
-    branches_to_delete_in_cleanup, _,_ = setup_test_env
+    branches_to_delete_in_cleanup, _, _ = setup_test_env
     original_workdir = os.getcwd()
     source_branch = "main"
     run(["git", "checkout", source_branch], check=True)

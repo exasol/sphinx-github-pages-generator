@@ -37,7 +37,7 @@ def generate_release_dicts(release_list: List[str], source_branch: str, target_w
     release_list_dicts = [{"release": "latest",
                            "release_path": f"{find_index(target_worktree, source_branch)}"}]
     for release in release_list:
-        if release is not source_branch:
+        if release != source_branch:
             release_list_dicts.append({"release": release,
                                        "release_path": f"{find_index('.', release)}"})
 
@@ -100,9 +100,11 @@ def alter_meta_line(original_line: str, source_branch: str) -> str:
     static_position_list = [m.start() for m in re.finditer("_static", original_line)]
     double_quote_list = [m.start() for m in re.finditer('"', original_line)]
     new_line = original_line
-    for static_pos in static_position_list:
-        quote_pos = find_quote_pos(static_pos, double_quote_list)
-        new_line = original_line[:quote_pos+1] + f'{source_branch}/' + original_line[quote_pos+1:]
+    # find where new path needs to be inserted
+    quote_pos = [find_quote_pos(static_pos, double_quote_list) for static_pos in static_position_list]
+    # insert in reverse order, so the positions don't need to be adjusted after each insertion
+    for pos in quote_pos[::-1]:
+        new_line = new_line[:pos+1] + f'{source_branch}/' + new_line[pos+1:]
     return new_line
 
 

@@ -201,12 +201,11 @@ def test_get_releases_no_target_branch():
 def test_get_releases_empty_target_branch(): #todo would need empty test branch or generation and deletion of empty test branch
     pass
 
-
-
 def test_get_footer():
     index_path = Path("test_src/input_index.html")
-    print(os.getcwd()) #/home/marlene/PycharmProjects/sphinx-github-pages-generator/tests
-    #/tmp/pytest-of-marlene/pytest-74/test_get_releases0/sphinx-github-pages-generator-test
+    print(os.getcwd())
+    #/home/marlene/PycharmProjects/sphinx-github-pages-generator/tests          single
+    #/tmp/pytest-of-marlene/pytest-74/test_get_releases0/sphinx-github-pages-generator-test     all
     footer = get_footer(index_path)
     feet = "".join(map(lambda foot: (foot.replace("\n", "")).strip(), footer))
 
