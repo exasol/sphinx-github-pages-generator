@@ -18,12 +18,13 @@ import exasol_sphinx_github_pages_generator
 def find_index(target_worktree: Path, source_branch: str) -> Path:
     cwd = os.getcwd()
     os.chdir(target_worktree)
+    print(source_branch)
     index_list = glob.glob(f'{source_branch}/**/index.html', recursive=True)
     print(f"index_list : {index_list}")
     if len(index_list) != 1:
         sys.exit(f"""
                 Your generated documentation does not include the right amount of index.html files (1). 
-                Instead it includes {len(index_list)} in path {target_worktree}
+                Instead it includes {len(index_list)} in path {target_worktree}/{source_branch}
                 """)
     index_path = index_list[0]#target_worktree.joinpath(index_list[0])  # todo just take the one closest to root if multiple?
     os.chdir(cwd)
@@ -158,15 +159,17 @@ def gen_index(target_branch: str, target_worktree: Path, source_branch: str, tar
     if local_source_branch_commit_id.returncode != 0:
         sys.exit(f"{source_branch} not currently checked out. Please Check out branch {source_branch}"
                  f" before calling gen_index.")
+    # remove slashes from branch-name, this makes parsing the release-names for the release-index much easier
+    simple_source_branch_name = source_branch.replace("/", "-")
     env = Environment(
         loader=PackageLoader("exasol_sphinx_github_pages_generator"),
         autoescape=select_autoescape()
     )
     template = env.get_template("index_template.html.jinja2")
     print(os.getcwd())
-    index_path = find_index(target_worktree, source_branch)
-    meta = get_meta_lines(target_worktree.joinpath(index_path), source_branch)
-    releases = get_releases(target_branch, target_branch_exists_remote, source_branch, target_worktree)
+    index_path = find_index(target_worktree, simple_source_branch_name)
+    meta = get_meta_lines(target_worktree.joinpath(index_path), simple_source_branch_name)
+    releases = get_releases(target_branch, target_branch_exists_remote, simple_source_branch_name, target_worktree)
     footer = get_footer(target_worktree.joinpath(index_path))
     with open(f"{target_worktree}/index.html", "w+") as file:
         file.write(template.render(meta_list=meta, releases=releases, footer=footer))
