@@ -31,7 +31,7 @@ jobs:
         git config --local user.email "opensource@exasol.com"
         git config --local user.name "GitHub Action"
         git fetch
-        poetry run poe push_pages_current
+        poetry run poe commit_pages_current
     - name: Cleanup delete target branch
       if: ${{ !contains(github.ref, 'main') }}
       run: git push -d origin "github-pages/"$(git branch --show-current)""
