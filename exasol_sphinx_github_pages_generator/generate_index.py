@@ -67,7 +67,7 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
 
     :param target_branch: The branch the generated documentation should end up on.
     :param target_branch_exists_remote: Bool representing whether the target_branch already exist in the remote
-    repository.
+        repository.
     :param source_branch: The branch we are currently generating the documentation for.
     :param target_worktree: Worktree/path all generated project documentation is put into.
     :return: List of dictionaries containing the release name and path to its index.html file.
@@ -162,6 +162,7 @@ def get_meta_lines(index_path: Path, source_branch: str) -> List[str]:
     but since the new index.html is in another directory, we need to adjust the paths.
 
     Meta_lines are defined as lines containing the keywords "_static" or "<meta".
+
     :param index_path: Path to a file to be read.
     :param source_branch: String to be inserted into the meta_lines.
     :return: List of strings containing all extracted and altered meta_lines.
@@ -183,15 +184,17 @@ def get_footer(index_path: Path) -> List[str]:
     Given the path to a file, reads each line of the file, and extracts the footer which Sphinx generates if it exists.
     We want to use this footer to make the release-index page of a similar style as the rest of the documentation.
     So we steal the lines describing tefooter from source-branch/index.html.
-    We need to adjust the paths ponting to the source for this file. Since it is a new file.
+    We need to adjust the paths pointing to the source for this file. Since it is a new file.
     Ths footer is found by:
+
     - Starts with line '<div class="footer">'
     - All opened divs after this line have to be closed. If this is the case, it is assumed the last line
-    of the footer is found.
+        of the footer is found.
 
     :param index_path: Path to the file the footer should be searched in.
     :return: List of all found footer-lines as strings.
     """
+
     print("get_footer")
     lines = []
     open_divs = 0
@@ -231,8 +234,10 @@ def gen_index(target_branch: str, target_worktree: Path, source_branch: str, tar
     :param target_worktree: Worktree/path all generated project documentation is put into.
     :param source_branch: The branch we are currently generating the documentation for.
     :param target_branch_exists_remote: Bool representing whether the target_branch already exist in the remote
-    repository.
+        repository.
+
     """
+
     print("s_branch " + source_branch)
     local_source_branch_commit_id = run(["git", "rev-parse", source_branch], capture_output=True,
                                         text=True)

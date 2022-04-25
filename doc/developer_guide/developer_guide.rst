@@ -37,7 +37,7 @@ To build the documentation manually for testing, you can use:
 
 .. code:: bash
 
-    sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator
+    sphinx-apidoc -T -e -o api PathToProject/sphinx-github-pages-generator/exasol_sphinx_github_pages_generator
     sphinx-build -b html -W PathToProject/sphinx-github-pages-generator/doc .build
 
 #####
