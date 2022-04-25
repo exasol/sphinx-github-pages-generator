@@ -7,6 +7,7 @@ import os
 from exasol_sphinx_github_pages_generator.generate_index import gen_index
 
 # todo fix if currentbranch used it is not isolated into tmp folder
+# todo fix comments with new changes
 class GithubPagesDeployer:
     """
     Builds and deploys GitHub Pages using Sphinx given a branch.
@@ -204,10 +205,6 @@ class GithubPagesDeployer:
             shutil.move(self.build_dir + "/" + str(obj), output_dir)
         open(f"{self.worktree_paths['target_worktree']}/.nojekyll", "w").close()
 
-        #print("Start generating release_index.html")
-        #gen_index(self.target_branch, target_worktree=Path(self.worktree_paths["target_worktree"]),
-        #          source_branch=self.source_branch, target_branch_exists_remote=self.target_branch_exists)
-
         print(f"Content of output directory {output_dir}")
         run(["ls", "-la", output_dir], check=True)
 
@@ -216,7 +213,9 @@ class GithubPagesDeployer:
     def git_commit_and_push(self, output_dir: Path) -> None:
         """
         Commits and pushes the generated documentation files to the remote GitHUb repository.
-        Also adds a file describing the source branch and commit of the generated files.
+        Also adds a file describing the source branch and commit of the generated files, and
+        generates a release index file using functions in generate_index.py.
+
         Does nothing if no changes occurred.
         :param output_dir: Path of the generated files inside the target_branch worktree.
         """

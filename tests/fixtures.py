@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 @pytest.fixture()
-def setup_test_env(tmp_path, request):
+def setup_test_env(tmp_path):
     os.chdir(tmp_path)
     user_name, user_access_token = setup_workdir()
     used_branches = ["1"]
@@ -20,9 +20,6 @@ def setup_test_env(tmp_path, request):
     print("clean")
     for branch in used_branches:
         remove_branch(branch) #todo also remove brnch locally? or extra funk fot that
-
-
-
 
 
 @pytest.fixture
@@ -47,6 +44,7 @@ def setup_index_tests_integration(setup_test_env):
         yield target_branch, source_branch, deployer.target_branch_exists, Path(deployer.worktree_paths["target_worktree"])  # tests will run now
 
         deployer.clean_worktree(original_workdir)
+
 
 @pytest.fixture
 def setup_index_tests_target_branch(setup_test_env):

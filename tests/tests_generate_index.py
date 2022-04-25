@@ -201,11 +201,14 @@ def test_get_releases_no_target_branch():
 def test_get_releases_empty_target_branch(): #todo would need empty test branch or generation and deletion of empty test branch
     pass
 
+
+# this test fails locally for me if run with the other test with "FileNotFoundError" for "test_src/input_index.html".
+# it succeeds if run as a single test or in the CI.
+# cwd :
+    # /home/marlene/PycharmProjects/sphinx-github-pages-generator/tests                          single
+    # /tmp/pytest-of-marlene/pytest-74/test_get_releases0/sphinx-github-pages-generator-test     all
 def test_get_footer():
     index_path = Path("test_src/input_index.html")
-    print(os.getcwd())
-    #/home/marlene/PycharmProjects/sphinx-github-pages-generator/tests          single
-    #/tmp/pytest-of-marlene/pytest-74/test_get_releases0/sphinx-github-pages-generator-test     all
     footer = get_footer(index_path)
     feet = "".join(map(lambda foot: (foot.replace("\n", "")).strip(), footer))
 
@@ -230,7 +233,7 @@ def test_no_footer():
     assert feet.strip() == ''
 
 
-def test_alter_mea_line(): #todo
+def test_alter_mea_line():
     source_branch = "source_branch"
     original_lines = [
         'some text ="_static/doctools.js" some more text ',
@@ -257,7 +260,6 @@ def test_alter_mea_line(): #todo
         ' this text contains "source_branch/_static" multiple times because "source_branch/_static" is a keyword'
     ]
     altered_lines = [alter_meta_line(original_line, source_branch) for original_line in original_lines]
-
     assert altered_lines == correct_altered_lines
 
 
@@ -326,8 +328,7 @@ def test_gen_index_abort_missing_index_file(setup_test_env):
         assert e.match(comp_regex)
 
 
-
-def test_index_no_existing_releases(setup_test_env): #todo move these tests
+def test_index_no_existing_releases(setup_test_env): #todo move these tests?
     source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch-"
