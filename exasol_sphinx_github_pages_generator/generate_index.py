@@ -28,7 +28,7 @@ def find_index(target_worktree: Path, source_branch: str) -> Path:
                 Your generated documentation does not include the right amount of index.html files (1). 
                 Instead it includes {len(index_list)} in path {target_worktree}/{source_branch}
                 """)
-    index_path = index_list[0]  # todo just take the one closest to root if multiple?
+    index_path = index_list[0]
     os.chdir(cwd)
     return Path(index_path)
 

@@ -6,8 +6,6 @@ import shutil
 import os
 from exasol_sphinx_github_pages_generator.generate_index import gen_index
 
-# todo fix if currentbranch used it is not isolated into tmp folder
-# todo fix comments with new changes
 class GithubPagesDeployer:
     """
     Builds and deploys GitHub Pages using Sphinx given a branch.

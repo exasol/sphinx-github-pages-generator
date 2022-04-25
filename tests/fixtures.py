@@ -19,7 +19,7 @@ def setup_test_env(tmp_path):
 
     print("clean")
     for branch in used_branches:
-        remove_branch(branch) #todo also remove brnch locally? or extra funk fot that
+        remove_branch(branch)
 
 
 @pytest.fixture
