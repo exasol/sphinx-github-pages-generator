@@ -125,11 +125,15 @@ def alter_meta_line(original_line: str, source_branch: str) -> str:
     Given a input string original_line and a insert string source_branch, inserts the insert string directly behind
     double quotes closest from the left to the keyword "_static" for each occurrence of the keyword in the input string.
     So
-        'this text contains "_static" multiple times because "_static" is a keyword and can
-        be used in context "quotes" ="another_dict/_static/doctools.js"'
+
+    'this text contains "_static" multiple times because "_static" is a keyword and can
+    be used in context "quotes" ="another_dict/_static/doctools.js"'
+
     will be turned into
-        'this text contains "source_branch/_static" multiple times because "source_branch/_static" is a keyword'
-        and can be used in context "quotes" ="source_branch/another_dict/_static/doctools.js"'
+
+    'this text contains "source_branch/_static" multiple times because "source_branch/_static" is a keyword'
+    and can be used in context "quotes" ="source_branch/another_dict/_static/doctools.js"'
+
     :param original_line: String that should be changed to include "source_branch".
     :param source_branch: string that should be inserted before "_static".
     :return: altered input string with the inclusion of "source_branch".
@@ -181,9 +185,9 @@ def get_footer(index_path: Path) -> List[str]:
     So we steal the lines describing tefooter from source-branch/index.html.
     We need to adjust the paths ponting to the source for this file. Since it is a new file.
     Ths footer is found by:
-        - Starts with line '<div class="footer">'
-        - All opened divs after this line have to be closed. If this is the case, it is assumed the last line
-        of the footer is found.
+    - Starts with line '<div class="footer">'
+    - All opened divs after this line have to be closed. If this is the case, it is assumed the last line
+    of the footer is found.
 
     :param index_path: Path to the file the footer should be searched in.
     :return: List of all found footer-lines as strings.
