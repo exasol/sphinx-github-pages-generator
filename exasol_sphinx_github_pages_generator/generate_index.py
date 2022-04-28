@@ -43,11 +43,11 @@ def generate_release_dicts(release_list: List[str], source_branch: str, target_w
     :param target_worktree:  Worktree/path all generated project documentation is put into.
     :return: List of dictionaries containing the release name and path to its index.html file.
     """
-    if "_sources" in release_list:
-        release_list.remove("_sources")
     release_list_dicts = [{"release": "latest",
                            "release_path": f"{find_index(target_worktree, source_branch)}"}]
     for release in release_list:
+        if release == "_sources":
+            continue
         if release != source_branch:
             release_list_dicts.append({"release": release,
                                        "release_path": f"{find_index('.', release)}"})
@@ -72,8 +72,8 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
     :param target_worktree: Worktree/path all generated project documentation is put into.
     :return: List of dictionaries containing the release name and path to its index.html file.
     """
-    cwd = os.getcwd()
     if target_branch_exists_remote:
+        cwd = os.getcwd()
         find_index_worktree_path = os.path.join(cwd, "target-branch-for-index/")
         completed = run(["git", "worktree", "add", find_index_worktree_path, target_branch, "--force"])
         if completed.returncode != 0:
@@ -90,13 +90,12 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
                              check=True)
         print(f"current_branch {current_branch.stdout} in find_index_worktree_path {find_index_worktree_path}.")
         # does not work if release branch name contains slash
-        release_list = [name for name in os.listdir(find_index_worktree_path)
-                        if os.path.isdir(os.path.join(find_index_worktree_path, name))]
+        release_list = (name for name in os.listdir(find_index_worktree_path)
+                        if os.path.isdir(os.path.join(find_index_worktree_path, name)))
 
         release_list_dicts = generate_release_dicts(release_list, source_branch, target_worktree)
         run(["git", "worktree", "remove", "--force", find_index_worktree_path], check=True)
 
-        os.chdir(cwd)
     else:
         release_list_dicts = generate_release_dicts([], source_branch, target_worktree)
 
@@ -106,7 +105,7 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
 def find_quote_pos(static_pos: int, double_quote_list: List[int]) -> int:
     """
     Given an integer and a sorted lists of integers, returns the entry in
-    the second list closest to but smaller than the given integer.
+    the list closest to but smaller than the given integer.
     :param static_pos: Integer the matching entry from the double_quote_list should be found for.
     :param double_quote_list: Sorted list of integers to be searched.
     :return: Integer from the input list closest to but smaller than the input integer.
@@ -199,14 +198,13 @@ def get_footer(index_path: Path) -> List[str]:
     lines = []
     open_divs = 0
     with open(index_path) as file:
-        while True:
-            line = file.readline()
-            if line == "":
-                break
+        line = file.readline()
+        while line != "":
             if '<div class="footer">' in line:
                 lines.append(line)
                 open_divs += 1
                 break
+            line = file.readline()
 
         while open_divs > 0:
             line = file.readline()

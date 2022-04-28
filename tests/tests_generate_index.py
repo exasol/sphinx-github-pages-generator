@@ -54,7 +54,7 @@ def test_find_index():
                 i_file.write(line)
             i_file.flush()
         index_path = find_index(Path(tempdir), source_branch)
-        assert index_path == (f"{source_branch}/index.html")
+        assert index_path == Path(f"{source_branch}/index.html")
 
 
 def test_get_meta_lines():
@@ -189,11 +189,11 @@ def test_get_releases(setup_index_tests_target_branch):
 
 def test_get_releases_no_target_branch():
     target_branch, source_branch = "t_branch", "s_branch"
-    with TemporaryDirectory() as dir:
-
-        Path(f"{dir}/target_worktree/{source_branch}/").mkdir(parents=True)
-        open(f"{dir}/target_worktree/{source_branch}/index.html", 'a').close()
-        releases = get_releases(target_branch, False, source_branch, Path(f"{dir}/target_worktree"))
+    with TemporaryDirectory() as direc:
+        os.chdir(direc)
+        Path(f"{direc}/target_worktree/{source_branch}/").mkdir(parents=True)
+        open(f"{direc}/target_worktree/{source_branch}/index.html", 'a').close()
+        releases = get_releases(target_branch, False, source_branch, Path(f"{direc}/target_worktree"))
         print(releases)
         assert releases == [{'release': "latest", 'release_path': f'{source_branch}/index.html'}]
 
