@@ -5,12 +5,17 @@ packages = \
 ['exasol_sphinx_github_pages_generator']
 
 package_data = \
-{'': ['*'], 'exasol_sphinx_github_pages_generator': ['templates/*']}
+{'': ['*'],
+ 'exasol_sphinx_github_pages_generator': ['_static/*',
+                                          '_static/scripts/*',
+                                          '_static/styles/*',
+                                          'templates/*']}
 
 install_requires = \
 ['Jinja2>=3.0.3,<4.0.0',
- 'Sphinx>=3.5.3,<4.0.0',
- 'myst-parser>=0.14.0,<0.15.0',
+ 'Sphinx>=4.0,<5.0',
+ 'furo>=2022.02.14.1,<2023.0.0.0',
+ 'myst-parser>=0.15.0,<0.16.0',
  'poethepoet>=0.10.0,<0.11.0']
 
 setup_kwargs = {
