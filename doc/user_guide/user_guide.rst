@@ -42,12 +42,12 @@ You can also include plain text, or documentation for specific functions or obje
 :code:`autoexception` directives, which will import the docstring for the given objects automatically.
 Here is the code from te index.rst of this project, which generates the documentation if the api:
 
-.. code:: rst
+.. code-block::
 
     .. autosummary::
-       :toctree: api
+        :toctree: ../api
 
-       exasol_sphinx_github_pages_generator
+        exasol_sphinx_github_pages_generator
 
 To see the generated pages see :ref:`api_ref_target`.
 

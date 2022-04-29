@@ -446,7 +446,7 @@ def test_use_different_source_dir(setup_test_env):
     source_branch = "branch-with-different-docu-source-dir"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
-    branches_to_delete_in_cleanup += [target_branch]
+    #branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
     deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,

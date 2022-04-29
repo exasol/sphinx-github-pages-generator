@@ -46,7 +46,7 @@ def generate_release_dicts(release_list: List[str], source_branch: str, target_w
     release_list_dicts = [{"release": "latest",
                            "release_path": f"{find_index(target_worktree, source_branch)}"}]
     for release in release_list:
-        if release == "_sources":
+        if release == "_sources" or release == "_static":
             continue
         if release != source_branch:
             release_list_dicts.append({"release": release,
@@ -95,128 +95,12 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
 
         release_list_dicts = generate_release_dicts(release_list, source_branch, target_worktree)
         run(["git", "worktree", "remove", "--force", find_index_worktree_path], check=True)
+        os.chdir(cwd)
 
     else:
         release_list_dicts = generate_release_dicts([], source_branch, target_worktree)
 
     return release_list_dicts
-
-
-def find_quote_pos(static_pos: int, double_quote_list: List[int]) -> int:
-    """
-    Given an integer and a sorted lists of integers, returns the entry in
-    the list closest to but smaller than the given integer.
-    :param static_pos: Integer the matching entry from the double_quote_list should be found for.
-    :param double_quote_list: Sorted list of integers to be searched.
-    :return: Integer from the input list closest to but smaller than the input integer.
-    """
-    found_pos = 0
-    for pos in double_quote_list:
-        if pos < static_pos:
-            found_pos = pos
-        elif pos > static_pos:
-            break
-    return found_pos
-
-
-def alter_meta_line(original_line: str, source_branch: str) -> str:
-    """
-    Given a input string original_line and a insert string source_branch, inserts the insert string directly behind
-    double quotes closest from the left to the keyword "_static" for each occurrence of the keyword in the input string.
-    So
-
-    'this text contains "_static" multiple times because "_static" is a keyword and can
-    be used in context "quotes" ="another_dict/_static/doctools.js"'
-
-    will be turned into
-
-    'this text contains "source_branch/_static" multiple times because "source_branch/_static" is a keyword'
-    and can be used in context "quotes" ="source_branch/another_dict/_static/doctools.js"'
-
-    :param original_line: String that should be changed to include "source_branch".
-    :param source_branch: string that should be inserted before "_static".
-    :return: altered input string with the inclusion of "source_branch".
-    """
-    static_position_list = [m.start() for m in re.finditer("_static", original_line)]
-    double_quote_list = [m.start() for m in re.finditer('"', original_line)]
-    new_line = original_line
-    # find where new path needs to be inserted
-    quote_pos = [find_quote_pos(static_pos, double_quote_list) for static_pos in static_position_list]
-    # insert in reverse order, so the positions don't need to be adjusted after each insertion
-    for pos in quote_pos[::-1]:
-        new_line = new_line[:pos+1] + f'{source_branch}/' + new_line[pos+1:]
-    return new_line
-
-
-def get_meta_lines(index_path: Path, source_branch: str) -> List[str]:
-    """
-    Given the path to a file, reads each line of the file, and extracts meta_lines. Aborts if source_branch is an
-    empty string. If a meta_line contains the
-    keyword "_static", the given source_branch string is added to the line using the "alter_meta_line" function.
-
-    This is done because Sphinx puts all style sheets or script files for themes in the "_static"
-    directory inside the build-output directory. We want to use these to make the release-index the
-    same/similar style as the rest of the documentation.
-    So we steal the lines describing them from the source-branch/index.html,
-    but since the new index.html is in another directory, we need to adjust the paths.
-
-    Meta_lines are defined as lines containing the keywords "_static" or "<meta".
-
-    :param index_path: Path to a file to be read.
-    :param source_branch: String to be inserted into the meta_lines.
-    :return: List of strings containing all extracted and altered meta_lines.
-    """
-    print("get_meta_lines")
-    if not source_branch:
-        raise ValueError("No source branch was given to get_meta_lines")
-    with open(index_path) as file:
-        meta_lines = []
-        for line in file.readlines():
-            if "_static" in line or "<meta" in line:
-                line = alter_meta_line(line, source_branch)
-                meta_lines.append(line)
-    return meta_lines
-
-
-def get_footer(index_path: Path) -> List[str]:
-    """
-    Given the path to a file, reads each line of the file, and extracts the footer which Sphinx generates if it exists.
-    We want to use this footer to make the release-index page of a similar style as the rest of the documentation.
-    So we steal the lines describing tefooter from source-branch/index.html.
-    We need to adjust the paths pointing to the source for this file. Since it is a new file.
-    Ths footer is found by:
-
-    - Starts with line '<div class="footer">'
-    - All opened divs after this line have to be closed. If this is the case, it is assumed the last line
-        of the footer is found.
-
-    :param index_path: Path to the file the footer should be searched in.
-    :return: List of all found footer-lines as strings.
-    """
-
-    print("get_footer")
-    lines = []
-    open_divs = 0
-    with open(index_path) as file:
-        line = file.readline()
-        while line != "":
-            if '<div class="footer">' in line:
-                lines.append(line)
-                open_divs += 1
-                break
-            line = file.readline()
-
-        while open_divs > 0:
-            line = file.readline()
-            if '<a href="_sources/index.rst.txt"' in line:
-                lines.append(f'<a href="_sources/index_template.jinja.txt"')
-            else:
-                lines.append(line)
-            if "<div" in line:
-                open_divs += 1
-            if "</div>" in line:
-                open_divs -= 1
-    return lines
 
 
 def gen_index(target_branch: str, target_worktree: Path, source_branch: str, target_branch_exists_remote: bool) -> None:
@@ -249,12 +133,9 @@ def gen_index(target_branch: str, target_worktree: Path, source_branch: str, tar
         autoescape=select_autoescape()
     )
     template = env.get_template("index_template.html.jinja2")
-    index_path = find_index(target_worktree, simple_source_branch_name)
-    meta = get_meta_lines(target_worktree.joinpath(index_path), simple_source_branch_name)
     releases = get_releases(target_branch, target_branch_exists_remote, simple_source_branch_name, target_worktree)
-    footer = get_footer(target_worktree.joinpath(index_path))
     with open(f"{target_worktree}/index.html", "w+") as file:
-        file.write(template.render(meta_list=meta, releases=releases, footer=footer))
+        file.write(template.render(meta_list=[], releases=releases, footer=[]))
     run(["ls", "-la", ".."], check=True)
 
     generator_init_path = inspect.getfile(exasol_sphinx_github_pages_generator)
@@ -264,3 +145,11 @@ def gen_index(target_branch: str, target_worktree: Path, source_branch: str, tar
         target_path.mkdir(parents=True)
     shutil.copy(f"{sources_dir}/index_template.html.jinja2",
                 f"{target_path}/index_template.jinja.txt")
+
+    target_path = Path(f"{target_worktree}/_static")
+
+    static_dir = f"{os.path.dirname(generator_init_path)}/_static"
+    if not Path(static_dir).is_dir():
+        shutil.copytree(static_dir, target_path)
+
+

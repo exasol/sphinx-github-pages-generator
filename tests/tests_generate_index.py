@@ -2,7 +2,7 @@ import sys
 
 import pytest
 from subprocess import run
-from tempfile import TemporaryDirectory, NamedTemporaryFile
+from tempfile import TemporaryDirectory
 import os
 import re
 from pathlib import Path
@@ -11,18 +11,13 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
 from helper_test_functions import remove_branch
 from fixtures import setup_test_env, setup_index_tests_target_branch, setup_index_tests_integration
-from exasol_sphinx_github_pages_generator.generate_index import find_index, get_meta_lines, \
-    get_footer, get_releases, generate_release_dicts, alter_meta_line, gen_index
+from exasol_sphinx_github_pages_generator.generate_index import find_index, \
+    get_releases, generate_release_dicts, gen_index
 
 
 with open(
         "./test_src/correct_index_file_main_branch.html") as file:
     correct_content = file.readlines()
-with open("./test_src/meta_lines_correct") as file:
-    correct_meta_lines = file.readlines()
-
-with open("./test_src/input_index.html") as file:
-    input_index_html = file.readlines()
 
 correct_releases = [{'release': 'latest', 'release_path': 'branch_name/index.html'},
                      {'release': 'test', 'release_path': 'test/index.html'},
@@ -50,52 +45,10 @@ def test_find_index():
     with TemporaryDirectory("dir") as tempdir:
         Path(f"{tempdir}/{source_branch}/").mkdir(parents=True)
         with open(f"{tempdir}/{source_branch}/index.html", "w+") as i_file:
-            for line in input_index_html:
-                i_file.write(line)
+            i_file.write("sometext \n")
             i_file.flush()
         index_path = find_index(Path(tempdir), source_branch)
         assert index_path == Path(f"{source_branch}/index.html")
-
-
-def test_get_meta_lines():
-    source_branch = "main"
-    import subprocess
-    subprocess.run(["ls"])
-    meta = get_meta_lines(Path("./test_src/input_index.html"), source_branch)
-    print(meta)
-    for i in range(0, len(correct_meta_lines)):
-        assert correct_meta_lines[i].strip() == meta[i].strip()
-
-
-def test_get_meta_lines_no_meta_lines():
-    source_branch = "main"
-    input_path = NamedTemporaryFile()
-    with open(input_path.name, "w") as meta_input:
-        meta_input.write("These are\n some lines \n of text. \n "
-                         "not including any \n lines detected by \n get_meta_lines\n")
-        meta = get_meta_lines(Path(input_path.name), source_branch)
-    assert meta == []
-
-
-def test_get_meta_lines_wrong_path():
-    wrong_path = Path("./test_src/this_is_not_an_existing_file")
-    with pytest.raises(FileNotFoundError) as e:
-        get_meta_lines(wrong_path, "main")
-    e.match(str(wrong_path))
-
-
-def test_get_meta_lines_no_source_branch():
-    with pytest.raises(ValueError) as e:
-        get_meta_lines(Path("./test_src/correct_index_file_main_branch.html"), "")
-    e.match("No source branch was given to get_meta_lines")
-
-
-def test_render_template_no_meta_lines():
-    meta = []
-    releases = correct_releases
-    footer = correct_footer
-
-    index_content = template.render(meta_list=meta, releases=releases, footer=footer)
 
 
 def test_generate_release_dicts_include_sources():
@@ -138,7 +91,7 @@ def test_generate_release_dicts_include_source_branch():
     assert releases == correct_releases
 
 
-def test_generate_release_dict_include_only_unkown_dirs():
+def test_generate_release_dict_include_only_unknown_dirs():
     source_branch = "branch_name"
     target_worktree = "t_worktree"
     target_branch = "t_branch"
@@ -202,70 +155,9 @@ def test_get_releases_empty_target_branch(): #todo would need empty test branch 
     pass
 
 
-# this test fails locally for me if run with the other test with "FileNotFoundError" for "test_src/input_index.html".
-# it succeeds if run as a single test or in the CI.
-# cwd :
-    # /home/marlene/PycharmProjects/sphinx-github-pages-generator/tests                          single
-    # /tmp/pytest-of-marlene/pytest-74/test_get_releases0/sphinx-github-pages-generator-test     all
-def test_get_footer():
-    index_path = Path("test_src/input_index.html")
-    footer = get_footer(index_path)
-    feet = "".join(map(lambda foot: (foot.replace("\n", "")).strip(), footer))
-
-    assert feet.strip() == ('<div class="footer">'
-                            '&copy;2021, Exasol.'
-                            '|'
-                            'Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>'
-                            '&amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>'
-                            '|'
-                            '<a href="_sources/index_template.jinja.txt"'
-                            'rel="nofollow">Page source</a>'
-                            '</div>')
-
-
-def test_no_footer():
-    with NamedTemporaryFile("a+") as i_file:
-        i_file.write("some text")
-        i_file.flush()
-        index_path = Path(i_file.name)
-        footer = get_footer(index_path)
-        feet = "".join(map(lambda foot: (foot.replace("\n", "")).strip(), footer))
-    assert feet.strip() == ''
-
-
-def test_alter_mea_line():
-    source_branch = "source_branch"
-    original_lines = [
-        'some text ="_static/doctools.js" some more text ',
-        'some text ="_static/doctools.js" some more text containing "quotes" ',
-        'some text containing "quotes" ="_static/doctools.js" some more text ',
-        'some text containing "quotes" ="_static/doctools.js" some more text containing "quotes" ',
-        'some text containing "quotes" ="another_dict/_static/doctools.js" some more text containing "quotes" ',
-        'just some text not containing the keyword',
-        'just some text not containing the keyword but with "quotes"',
-        '"this whole line is in quotes"',
-        '',
-        ' this text contains "_static" multiple times because "_static" is a keyword'
-    ]
-    correct_altered_lines =[
-        'some text ="source_branch/_static/doctools.js" some more text ',
-        'some text ="source_branch/_static/doctools.js" some more text containing "quotes" ',
-        'some text containing "quotes" ="source_branch/_static/doctools.js" some more text ',
-        'some text containing "quotes" ="source_branch/_static/doctools.js" some more text containing "quotes" ',
-        'some text containing "quotes" ="source_branch/another_dict/_static/doctools.js" some more text containing "quotes" ',
-        'just some text not containing the keyword',
-        'just some text not containing the keyword but with "quotes"',
-        '"this whole line is in quotes"',
-        '',
-        ' this text contains "source_branch/_static" multiple times because "source_branch/_static" is a keyword'
-    ]
-    altered_lines = [alter_meta_line(original_line, source_branch) for original_line in original_lines]
-    assert altered_lines == correct_altered_lines
-
-
 def test_gen_index(setup_index_tests_integration):
     target_branch, source_branch, target_branch_exists, target_worktree = setup_index_tests_integration
-    gen_index(target_branch, Path(target_worktree), source_branch, target_branch_exists_remote = True)
+    gen_index(target_branch, Path(target_worktree), source_branch, target_branch_exists_remote=True)
 
     with open(f"{target_worktree}/index.html") as index_file:
         index_content = index_file.readlines()

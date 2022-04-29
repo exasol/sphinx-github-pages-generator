@@ -29,8 +29,9 @@ API Reference
 
 .. autosummary::
    :toctree: api
+   :recursive:
 
-   exasol_sphinx_github_pages_generator
+       exasol_sphinx_github_pages_generator
 
 Indices and tables
 ==================
