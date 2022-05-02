@@ -190,7 +190,8 @@ class GithubPagesDeployer:
 
         # remove slashes from branch-name, this makes parsing the release-names for the release-index much easier
         simple_source_branch_name = self.source_branch.replace("/", "-")
-        output_dir = Path(f"{self.worktree_paths['target_worktree']}/{simple_source_branch_name}")
+        output_dir = Path(self.worktree_paths['target_worktree']) / simple_source_branch_name
+
 
         print(f"Using output_dir={output_dir}")
         if output_dir.exists() and output_dir.is_dir():

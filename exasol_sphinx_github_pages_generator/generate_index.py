@@ -2,12 +2,11 @@ import os
 from pathlib import Path
 import sys
 import glob
-import re
 import shutil
 from subprocess import run
 from jinja2 import Environment, PackageLoader, select_autoescape
 import inspect
-from typing import List, Dict
+from typing import List, Dict, Generator, Union, Any
 
 import exasol_sphinx_github_pages_generator
 
@@ -24,21 +23,21 @@ def find_index(target_worktree: Path, source_branch: str) -> Path:
     os.chdir(target_worktree)
     index_list = glob.glob(f'{source_branch}/**/index.html', recursive=True)
     if len(index_list) != 1:
-        sys.exit(f"""
+        sys.exit(inspect.cleandoc(f"""
                 Your generated documentation does not include the right amount of index.html files (1). 
                 Instead it includes {len(index_list)} in path {target_worktree}/{source_branch}
-                """)
+                """))
     index_path = index_list[0]
     os.chdir(cwd)
     return Path(index_path)
 
 
-def generate_release_dicts(release_list: List[str], source_branch: str, target_worktree: Path) \
+def generate_release_dicts(release_list: Union[Generator[str, None, Any], List[str]], source_branch: str, target_worktree: Path) \
         -> List[Dict[str, str]]:
     """
     Given a list of releases, generate a list of dictionaries containing the name of the release, and the path to its
     documentation relative to targen_worktree. The current release is titled "latest".
-    :param release_list: List of release-names as strings.
+    :param release_list: List or Generator of release-names as strings.
     :param source_branch: The branch we are currently generating the documentation for.
     :param target_worktree:  Worktree/path all generated project documentation is put into.
     :return: List of dictionaries containing the release name and path to its index.html file.
@@ -50,7 +49,7 @@ def generate_release_dicts(release_list: List[str], source_branch: str, target_w
             continue
         if release != source_branch:
             release_list_dicts.append({"release": release,
-                                       "release_path": f"{find_index('.', release)}"})
+                                       "release_path": f"{find_index(Path('.'), release)}"})
     return release_list_dicts
 
 
@@ -77,13 +76,13 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
         find_index_worktree_path = os.path.join(cwd, "target-branch-for-index/")
         completed = run(["git", "worktree", "add", find_index_worktree_path, target_branch, "--force"])
         if completed.returncode != 0:
-            sys.exit(f"""checking out target_branch {target_branch} failed, although given 
+            sys.exit(inspect.cleandoc(f"""checking out target_branch {target_branch} failed, although given 
                      'target_branch_exists_remote' was 'True'. Check if target_branch really exists on remote?
                      received Error:
                         returncode: {completed.returncode},
                         stderr: {completed.stderr},
                         stdout: {completed.stdout}"""
-                     )
+                     ))
 
         os.chdir(find_index_worktree_path)
         current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
@@ -106,8 +105,7 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
 def gen_index(target_branch: str, target_worktree: Path, source_branch: str, target_branch_exists_remote: bool) -> None:
     """
     Generates a release index file from a given target_branch into the target_worktree.
-    Uses the given source_branch to pull the newest generated index.html file to take out lines describing the style
-    and the footer, in oder to keep the release index file visually close to the rest of the documentation.
+    Uses the "furo" theme for the generated release index file.
     Source_branch will be called "latest" in the resulting release index.
     Also adds the template file to "_sources".
     Aborts if not currently in given source_branch.

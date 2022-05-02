@@ -14,7 +14,7 @@ from pathlib import Path
 def setup_test_env(tmp_path):
     os.chdir(tmp_path)
     user_name, user_access_token = setup_workdir()
-    used_branches = ["1"]
+    used_branches = []
     yield used_branches, user_name, user_access_token,
 
     print("clean")

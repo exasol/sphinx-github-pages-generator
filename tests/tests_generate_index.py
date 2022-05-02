@@ -172,12 +172,9 @@ def test_abort_gen_index_wrong_target_branch(setup_index_tests_integration):
     with pytest.raises(SystemExit) as e:
         gen_index(target_branch_wrong, Path(target_worktree), source_branch, target_branch_exists_remote = True)
 
-    regex = r"""checking out target_branch .* failed, although given.*
-                     'target_branch_exists_remote' was 'True'. Check if target_branch really exists on remote?.*
-                     received Error:.*
-                        returncode: .*
-                        stderr: .*
-                        stdout: .*"""
+    regex = r"checking out target_branch .* failed, although given.*'target_branch_exists_remote' was 'True'. " \
+            r"Check if target_branch really exists on remote?.*received Error:.*returncode: .*stderr: .*stdout: .*"
+    print(e.value)
     comp_regex = re.compile(regex, flags=re.DOTALL)
     assert e.match(comp_regex)
     assert e.type == SystemExit
@@ -213,9 +210,10 @@ def test_gen_index_abort_missing_index_file(setup_test_env):
     target_branch = "test-docu-new-branch-"
     with TemporaryDirectory("dir") as tempdir:
         with pytest.raises(SystemExit) as e:
-            gen_index(target_branch, tempdir, source_branch, target_branch_exists_remote=True)
+            gen_index(target_branch, tempdir, source_branch, target_branch_exists_remote=False)
 
-        regex = r""".*Your generated documentation does not include the right amount of index.html files.*Instead it includes 0 in path.*"""
+        regex = r".*Your generated documentation does not include the right amount of index.html files.*" \
+                r"Instead it includes 0 in path.*"
         comp_regex = re.compile(regex, flags=re.DOTALL)
         assert e.match(comp_regex)
 
