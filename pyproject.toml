@@ -18,7 +18,7 @@ keywords = ['exasol', 'github pages', 'documentaion']
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
-Sphinx = "^4.0"
+Sphinx = "^4.5"
 poethepoet = "^0.10.0"
 myst-parser = "^0.15.0"
 Jinja2 = "^3.0.3"

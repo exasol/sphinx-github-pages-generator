@@ -13,7 +13,7 @@ package_data = \
 
 install_requires = \
 ['Jinja2>=3.0.3,<4.0.0',
- 'Sphinx>=4.0,<5.0',
+ 'Sphinx>=4.5,<5.0',
  'furo>=2022.02.14.1,<2023.0.0.0',
  'myst-parser>=0.15.0,<0.16.0',
  'poethepoet>=0.10.0,<0.11.0']
