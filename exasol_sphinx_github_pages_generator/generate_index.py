@@ -1,4 +1,5 @@
 import os
+from contextlib import contextmanager
 from pathlib import Path
 import sys
 import glob
@@ -11,6 +12,14 @@ from typing import List, Dict, Generator, Union, Any
 import exasol_sphinx_github_pages_generator
 
 
+@contextmanager
+def change_and_restore(directory: Path):
+    old_working_dir = os.getcwd()
+    os.chdir(directory)
+    yield
+    os.chdir(old_working_dir)
+
+
 def find_index(target_worktree: Path, source_branch: str) -> Path:
     """
     For the given source_branch find the index.html file in its documentation files,
@@ -19,16 +28,14 @@ def find_index(target_worktree: Path, source_branch: str) -> Path:
     :param source_branch: Name of the branch the documentation should be searched for.
     :return: Path pointing at found index.html file
     """
-    cwd = os.getcwd()
-    os.chdir(target_worktree)
-    index_list = glob.glob(f'{source_branch}/**/index.html', recursive=True)
-    if len(index_list) != 1:
-        sys.exit(inspect.cleandoc(f"""
-                Your generated documentation does not include the right amount of index.html files (1). 
-                Instead it includes {len(index_list)} in path {target_worktree}/{source_branch}
-                """))
-    index_path = index_list[0]
-    os.chdir(cwd)
+    with change_and_restore(target_worktree):
+        index_list = glob.glob(f'{source_branch}/**/index.html', recursive=True)
+        if len(index_list) != 1:
+            sys.exit(inspect.cleandoc(f"""
+                    Your generated documentation does not include the right amount of index.html files (1). 
+                    Instead it includes {len(index_list)} in path {target_worktree}/{source_branch}
+                    """))
+        index_path = index_list[0]
     return Path(index_path)
 
 
@@ -72,8 +79,7 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
     :return: List of dictionaries containing the release name and path to its index.html file.
     """
     if target_branch_exists_remote:
-        cwd = os.getcwd()
-        find_index_worktree_path = os.path.join(cwd, "target-branch-for-index/")
+        find_index_worktree_path = Path(os.getcwd()) / "target-branch-for-index/"
         completed = run(["git", "worktree", "add", find_index_worktree_path, target_branch, "--force"])
         if completed.returncode != 0:
             sys.exit(inspect.cleandoc(f"""checking out target_branch {target_branch} failed, although given 
@@ -83,18 +89,16 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
                         stderr: {completed.stderr},
                         stdout: {completed.stdout}"""
                      ))
+        with change_and_restore(find_index_worktree_path):
+            current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
+                                 check=True)
+            print(f"current_branch {current_branch.stdout} in find_index_worktree_path {find_index_worktree_path}.")
+            # does not work if release branch name contains slash
+            release_list = (name for name in os.listdir(find_index_worktree_path)
+                            if os.path.isdir(os.path.join(find_index_worktree_path, name)))
 
-        os.chdir(find_index_worktree_path)
-        current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
-                             check=True)
-        print(f"current_branch {current_branch.stdout} in find_index_worktree_path {find_index_worktree_path}.")
-        # does not work if release branch name contains slash
-        release_list = (name for name in os.listdir(find_index_worktree_path)
-                        if os.path.isdir(os.path.join(find_index_worktree_path, name)))
-
-        release_list_dicts = generate_release_dicts(release_list, source_branch, target_worktree)
-        run(["git", "worktree", "remove", "--force", find_index_worktree_path], check=True)
-        os.chdir(cwd)
+            release_list_dicts = generate_release_dicts(release_list, source_branch, target_worktree)
+            run(["git", "worktree", "remove", "--force", find_index_worktree_path], check=True)
 
     else:
         release_list_dicts = generate_release_dicts([], source_branch, target_worktree)
