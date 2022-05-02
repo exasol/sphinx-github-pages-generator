@@ -12,7 +12,7 @@ import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github
 from helper_test_functions import remove_branch
 from fixtures import setup_test_env, setup_index_tests_target_branch, setup_index_tests_integration
 from exasol_sphinx_github_pages_generator.generate_index import find_index, \
-    get_releases, generate_release_dicts, gen_index
+    get_releases, generate_release_dicts, generate_release_index
 
 
 with open(
@@ -155,9 +155,9 @@ def test_get_releases_empty_target_branch(): #todo would need empty test branch 
     pass
 
 
-def test_gen_index(setup_index_tests_integration):
+def test_generate_release_index(setup_index_tests_integration):
     target_branch, source_branch, target_branch_exists, target_worktree = setup_index_tests_integration
-    gen_index(target_branch, Path(target_worktree), source_branch, target_branch_exists_remote=True)
+    generate_release_index(target_branch, Path(target_worktree), source_branch, target_branch_exists_remote=True)
 
     with open(f"{target_worktree}/index.html") as index_file:
         index_content = index_file.readlines()
@@ -165,12 +165,12 @@ def test_gen_index(setup_index_tests_integration):
         assert correct_content[i].strip() == index_content[i].strip()
 
 
-def test_abort_gen_index_wrong_target_branch(setup_index_tests_integration):
+def test_abort_generate_release_index_wrong_target_branch(setup_index_tests_integration):
     _, source_branch, target_branch_exists, target_worktree = setup_index_tests_integration
     target_branch_exists_remote = True
     target_branch_wrong = "not_an_existing_branch"
     with pytest.raises(SystemExit) as e:
-        gen_index(target_branch_wrong, Path(target_worktree), source_branch, target_branch_exists_remote = True)
+        generate_release_index(target_branch_wrong, Path(target_worktree), source_branch, target_branch_exists_remote = True)
 
     regex = r"checking out target_branch .* failed, although given.*'target_branch_exists_remote' was 'True'. " \
             r"Check if target_branch really exists on remote?.*received Error:.*returncode: .*stderr: .*stdout: .*"
@@ -180,37 +180,37 @@ def test_abort_gen_index_wrong_target_branch(setup_index_tests_integration):
     assert e.type == SystemExit
 
 
-def test_abort_gen_index_worktree_not_a_dir(setup_index_tests_integration):
+def test_abort_generate_release_index_worktree_not_a_dir(setup_index_tests_integration):
     target_branch, source_branch, target_branch_exists, _ = setup_index_tests_integration
     not_target_worktree = "not_a_dir"
     with pytest.raises(FileNotFoundError) as e:
-        gen_index(target_branch, Path(not_target_worktree), source_branch, target_branch_exists_remote = True)
+        generate_release_index(target_branch, Path(not_target_worktree), source_branch, target_branch_exists_remote = True)
 
     assert e.match(f"No such file or directory: '{not_target_worktree}'")
     assert e.type == FileNotFoundError
 
-def test_abort_gen_index_source_branch_not_exists(setup_index_tests_integration):
+def test_abort_generate_release_index_source_branch_not_exists(setup_index_tests_integration):
     target_branch, _, target_branch_exists, target_worktree = setup_index_tests_integration
     not_source_branch = "not_a_branch"
     with pytest.raises(SystemExit) as e:
-        gen_index(target_branch, Path(target_worktree), not_source_branch, target_branch_exists_remote = True)
+        generate_release_index(target_branch, Path(target_worktree), not_source_branch, target_branch_exists_remote = True)
 
     assert e.match(f".* not currently checked out. Please Check out branch .*"
-                   f" before calling gen_index.")
+                   f" before calling generate_release_index.")
     assert e.type == SystemExit
 
-def test_gen_index_target_branch_not_exists(setup_index_tests_integration):
+def test_generate_release_index_target_branch_not_exists(setup_index_tests_integration):
     _, source_branch, target_branch_exists, target_worktree = setup_index_tests_integration
     target_branch_new = "new_target"
-    gen_index(target_branch_new, Path(target_worktree), source_branch, target_branch_exists_remote = False)
+    generate_release_index(target_branch_new, Path(target_worktree), source_branch, target_branch_exists_remote = False)
 
-def test_gen_index_abort_missing_index_file(setup_test_env):
+def test_generate_release_index_abort_missing_index_file(setup_test_env):
     source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch-"
     with TemporaryDirectory("dir") as tempdir:
         with pytest.raises(SystemExit) as e:
-            gen_index(target_branch, tempdir, source_branch, target_branch_exists_remote=False)
+            generate_release_index(target_branch, tempdir, source_branch, target_branch_exists_remote=False)
 
         regex = r".*Your generated documentation does not include the right amount of index.html files.*" \
                 r"Instead it includes 0 in path.*"

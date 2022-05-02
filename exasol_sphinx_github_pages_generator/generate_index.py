@@ -106,7 +106,7 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
     return release_list_dicts
 
 
-def gen_index(target_branch: str, target_worktree: Path, source_branch: str, target_branch_exists_remote: bool) -> None:
+def generate_release_index(target_branch: str, target_worktree: Path, source_branch: str, target_branch_exists_remote: bool) -> None:
     """
     Generates a release index file from a given target_branch into the target_worktree.
     Uses the "furo" theme for the generated release index file.
@@ -127,7 +127,7 @@ def gen_index(target_branch: str, target_worktree: Path, source_branch: str, tar
                                         text=True)
     if local_source_branch_commit_id.returncode != 0:
         sys.exit(f"{source_branch} not currently checked out. Please Check out branch {source_branch}"
-                 f" before calling gen_index.")
+                 f" before calling generate_release_index.")
     # remove slashes from branch-name, this makes parsing the release-names for the release-index much easier
     simple_source_branch_name = source_branch.replace("/", "-")
     env = Environment(

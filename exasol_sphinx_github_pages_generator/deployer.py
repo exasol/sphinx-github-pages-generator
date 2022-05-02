@@ -4,7 +4,7 @@ from pathlib import Path
 from subprocess import run
 import shutil
 import os
-from exasol_sphinx_github_pages_generator.generate_index import gen_index
+from exasol_sphinx_github_pages_generator.generate_index import generate_release_index
 
 class GithubPagesDeployer:
     """
