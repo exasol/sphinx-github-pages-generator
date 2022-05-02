@@ -228,7 +228,7 @@ class GithubPagesDeployer:
         changes_exists = run(["git", "diff-index", "--quiet", "HEAD", "--"], capture_output=True, text=True)
         if 1 == changes_exists.returncode:
             print("Start generating/updating release_index.html")
-            gen_index(self.target_branch, target_worktree=Path(self.worktree_paths["target_worktree"]),
+            generate_release_index(self.target_branch, target_worktree=Path(self.worktree_paths["target_worktree"]),
                       source_branch=self.source_branch, target_branch_exists_remote=bool(self.target_branch_exists.stdout))
             run(["git", "add", "-v", "."], check=True)
             print(f"committing changes because changes exist.")
