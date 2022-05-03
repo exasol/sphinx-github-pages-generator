@@ -8,6 +8,7 @@ from subprocess import run
 from jinja2 import Environment, PackageLoader, select_autoescape
 import inspect
 from typing import List, Dict, Generator, Union, Any
+from importlib_resources import files
 
 import exasol_sphinx_github_pages_generator
 
@@ -67,8 +68,10 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
     file. Additionally, also return the current release and index.html-file-path. The current release is titled "latest".
     Found releases are returned as a list of dictionaries.
     In order to find the releases in the target_branch, it is checked out in an additional temporary worktree.
-    Takes the root-directory name for each release and returns it. Gives bad results if directory names contain slashes.
-    Please remove slashes from directory names before using them to generate the root directory for your
+    Takes the root-directory name for each release and returns it.
+    Gives bad results if branch names contain slashes, because these result in nested directories instead of
+    one directory, therefore only the first part of the branch name is found by this function.
+    Please remove slashes from branch names before using them to generate the root directory for your
     release-documentation.
 
     :param target_branch: The branch the generated documentation should end up on.
@@ -93,7 +96,6 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
             current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
                                  check=True)
             print(f"current_branch {current_branch.stdout} in find_index_worktree_path {find_index_worktree_path}.")
-            # does not work if release branch name contains slash
             release_list = (name for name in os.listdir(find_index_worktree_path)
                             if os.path.isdir(os.path.join(find_index_worktree_path, name)))
 
@@ -140,7 +142,7 @@ def generate_release_index(target_branch: str, target_worktree: Path, source_bra
         file.write(template.render(meta_list=[], releases=releases, footer=[]))
     run(["ls", "-la", ".."], check=True)
 
-    generator_init_path = inspect.getfile(exasol_sphinx_github_pages_generator)
+    generator_init_path = files(exasol_sphinx_github_pages_generator) / "exasol_sphinx_github_pages_generator"
     sources_dir = f"{os.path.dirname(generator_init_path)}/templates"
     target_path = Path(f"{target_worktree}/_sources")
     if not target_path.is_dir():
