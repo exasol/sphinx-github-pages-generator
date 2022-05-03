@@ -23,7 +23,7 @@ def change_and_restore(directory: Path):
 def find_index(target_worktree: Path, source_branch: str) -> Path:
     """
     For the given source_branch find the index.html file in its documentation files,
-    and return its path. Aborts if there are more or less han exactly one (1) index.html file.
+    and return its path. Aborts if there are more or less than exactly one (1) index.html file.
     :param target_worktree: Worktree/path all generated project documentation is put into.
     :param source_branch: Name of the branch the documentation should be searched for.
     :return: Path pointing at found index.html file
@@ -43,7 +43,7 @@ def generate_release_dicts(release_list: Union[Generator[str, None, Any], List[s
         -> List[Dict[str, str]]:
     """
     Given a list of releases, generate a list of dictionaries containing the name of the release, and the path to its
-    documentation relative to targen_worktree. The current release is titled "latest".
+    documentation relative to target_worktree. The current release is titled "latest".
     :param release_list: List or Generator of release-names as strings.
     :param source_branch: The branch we are currently generating the documentation for.
     :param target_worktree:  Worktree/path all generated project documentation is put into.
@@ -63,8 +63,8 @@ def generate_release_dicts(release_list: Union[Generator[str, None, Any], List[s
 def get_releases(target_branch: str, target_branch_exists_remote: bool, source_branch: str, target_worktree: Path) \
         -> List[Dict[str, str]]:
     """
-    Find all releases already documented in target_branch, and return them tih the path pointing to their index.html
-    file. Additionally also return the current release and index.html-file-path. The current release is titled "latest".
+    Find all releases already documented in target_branch, and return them with the path pointing to their index.html
+    file. Additionally, also return the current release and index.html-file-path. The current release is titled "latest".
     Found releases are returned as a list of dictionaries.
     In order to find the releases in the target_branch, it is checked out in an additional temporary worktree.
     Takes the root-directory name for each release and returns it. Gives bad results if directory names contain slashes.
