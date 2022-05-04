@@ -108,7 +108,31 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
     return release_list_dicts
 
 
-def generate_release_index(target_branch: str, target_worktree: Path, source_branch: str, target_branch_exists_remote: bool) -> None:
+def copy_importlib_resources_file(src_file, target_file):
+    try:
+        content = src_file.read_text()
+        with open(target_file, "w") as file:
+            file.write(content)
+    except UnicodeDecodeError:
+        content = src_file.read_bytes()
+        with open(target_file, "wb") as file:
+            file.write(content)
+
+
+def copy_importlib_resources_dir_tree(src_path, target_path):
+    if not target_path.is_dir():
+        target_path.mkdir()
+    for file in src_path.iterdir():
+        file_target = target_path / file.name
+        if file.is_file():
+            copy_importlib_resources_file(file, file_target)
+        else:
+            file_target.mkdir()
+            copy_importlib_resources_dir_tree(file, file_target)
+
+
+def generate_release_index(target_branch: str, target_worktree: Path,
+                           source_branch: str, target_branch_exists_remote: bool) -> None:
     """
     Generates a release index file from a given target_branch into the target_worktree.
     Uses the "furo" theme for the generated release index file.
@@ -142,18 +166,15 @@ def generate_release_index(target_branch: str, target_worktree: Path, source_bra
         file.write(template.render(meta_list=[], releases=releases, footer=[]))
     run(["ls", "-la", ".."], check=True)
 
-    generator_init_path = files(exasol_sphinx_github_pages_generator) / "exasol_sphinx_github_pages_generator"
-    sources_dir = f"{os.path.dirname(generator_init_path)}/templates"
+    generator_init_path = files(exasol_sphinx_github_pages_generator)
+    sources_dir = generator_init_path / "templates"
     target_path = Path(f"{target_worktree}/_sources")
-    if not target_path.is_dir():
-        target_path.mkdir(parents=True)
-    shutil.copy(f"{sources_dir}/index_template.html.jinja2",
-                f"{target_path}/index_template.jinja.txt")
+    copy_importlib_resources_dir_tree(sources_dir, target_path)
 
     target_path = Path(f"{target_worktree}/_static")
+    static_dir = generator_init_path / "_static"
+    if not Path(target_path).is_dir():
+        copy_importlib_resources_dir_tree(static_dir, target_path)
 
-    static_dir = f"{os.path.dirname(generator_init_path)}/_static"
-    if not Path(static_dir).is_dir():
-        shutil.copytree(static_dir, target_path)
 
 

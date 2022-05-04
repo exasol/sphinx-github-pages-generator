@@ -170,7 +170,8 @@ def test_abort_generate_release_index_wrong_target_branch(setup_index_tests_inte
     target_branch_exists_remote = True
     target_branch_wrong = "not_an_existing_branch"
     with pytest.raises(SystemExit) as e:
-        generate_release_index(target_branch_wrong, Path(target_worktree), source_branch, target_branch_exists_remote = True)
+        generate_release_index(target_branch_wrong, Path(target_worktree),
+                               source_branch, target_branch_exists_remote)
 
     regex = r"checking out target_branch .* failed, although given.*'target_branch_exists_remote' was 'True'. " \
             r"Check if target_branch really exists on remote?.*received Error:.*returncode: .*stderr: .*stdout: .*"
