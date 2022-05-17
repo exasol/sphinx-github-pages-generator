@@ -1,46 +1,78 @@
-<!doctype html>
-<html class="no-js">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Sphinx GitHub Pages Generator 0.1.0, released X-X-X" href="changes_0.1.0.html" /><link rel="prev" title="User Guide" href="../user_guide/user_guide.html" />
 
-    <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Changes - Exasol Github Pages Generator documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
-    
-    
+<!DOCTYPE html>
+
+    <html>
+        <head>
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width,initial-scale=1"/>
+            <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="User Guide" href="user_guide/user_guide.html" />
+
+            <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
+            <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+            <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+            <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+
+            <title> Documentation for the Releases </title>
+
+            <style>
+              body {
+                --color-code-background: #f8f8f8;
+              --color-code-foreground: black;
+
+              }
+              @media not print {
+                body[data-theme="dark"] {
+                  --color-code-background: #202020;
+              --color-code-foreground: #d0d0d0;
+
+                }
+                @media (prefers-color-scheme: dark) {
+                  body:not([data-theme="light"]) {
+                    --color-code-background: #202020;
+              --color-code-foreground: #d0d0d0;
+
+                  }
+                }
+              }
+            </style>
+
+        </head>
+
+        <body>
+
+            <script>
+              document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+            </script>
+
 
 
 <style>
   body {
     --color-code-background: #f8f8f8;
   --color-code-foreground: black;
-  
+
   }
   @media not print {
     body[data-theme="dark"] {
       --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
-  
+
     }
     @media (prefers-color-scheme: dark) {
       body:not([data-theme="light"]) {
         --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
-  
+
       }
     }
   }
 </style></head>
   <body>
-    
+
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
-    
+
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
@@ -123,7 +155,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Exasol Github Pages Generator  documentation</div></a>
+      <a href="#"><div class="brand">Documentation for the Releases</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -134,7 +166,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -142,46 +174,17 @@
   </header>
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
-      
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
-  
-  
-  <span class="sidebar-brand-text">Exasol Github Pages Generator  documentation</span>
-  
-</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
-  <input type="hidden" name="check_keywords" value="yes">
-  <input type="hidden" name="area" value="default">
-</form>
-<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">User Guide</a></li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Changes</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released X-X-X</a></li>
-</ul>
-</li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../developer_guide/developer_guide.html">Developer Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../system_requirements.html">Requirements this Software aims to fulfill:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../design.html">Design Decisions:</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
-</ul>
-<ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.html">exasol_sphinx_github_pages_generator package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.deploy_github_pages.html">exasol_sphinx_github_pages_generator.deploy_github_pages module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.deployer.html">exasol_sphinx_github_pages_generator.deployer module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.generate_index.html">exasol_sphinx_github_pages_generator.generate_index module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.parser.html">exasol_sphinx_github_pages_generator.parser module</a></li>
-</ul>
-</li>
-</ul>
 
-</div>
-</div>
+      <div class="sidebar-sticky">
+          <a class="sidebar-brand" href="#">
 
-      </div>
-      
+
+  <span class="sidebar-brand-text">Documentation for the Releases</span>
+
+        </a>
+
+        </div>
+
     </div>
   </aside>
   <div class="main">
@@ -201,77 +204,61 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
-          <section class="tex2jax_ignore mathjax_ignore" id="changes">
-<h1>Changes<a class="headerlink" href="#changes" title="Permalink to this headline">#</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="changes_0.1.0.html"><span class="doc std std-doc">0.1.0</span></a></p></li>
-</ul>
-<!--- This MyST Parser Sphinx directive is necessary to keep Sphinx happy. We need list here all release letters again, because release droid and other scripts assume Markdown --->
-<div class="toctree-wrapper compound">
-</div>
-</section>
 
-        </article>
-      </div>
-      <footer>
-        
-        <div class="related-pages">
-          <a class="next-page" href="changes_0.1.0.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
+
+            <div class="document">
+                <div class="documentwrapper">
+                    <div class="bodywrapper">
+                        <div class="body" role="main">
+
+                            <div class="section" id="existing-releases">
+                                <h2>Existing Releases<a class="headerlink" href="#existing-releases" title="Permalink to this headline">¶</a></h2>
+                                    <ul class="simple">
+                                        
+                                            <li><p><a class="reference internal" href="main/index.html"><span class="std std-ref">latest</span></a></p></li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                    <div class="clearer"></div>
                 </div>
-                <div class="title">Sphinx GitHub Pages Generator 0.1.0, released X-X-X</div>
-              </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="../user_guide/user_guide.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">User Guide</div>
-                
-              </div>
-            </a>
-        </div>
+            </div>
+
+
+        <footer>
+
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
                 Copyright &#169; 2021, Exasol
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-            
+
             <a href="https://github.com/pradyunsg/furo">Furo</a>
-            
+
           </div>
           <div class="right-details">
             <div class="icons">
-              
+
             </div>
           </div>
         </div>
-        
+
       </footer>
-    </div>
-    <aside class="toc-drawer no-toc">
-      
-      
-      
-    </aside>
-  </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/scripts/furo.js"></script>
-    </body>
-</html>
+
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+
+        </body>
+    </html>

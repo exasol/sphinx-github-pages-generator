@@ -9,6 +9,7 @@ Submodules
 
    exasol_sphinx_github_pages_generator.deploy_github_pages
    exasol_sphinx_github_pages_generator.deployer
+   exasol_sphinx_github_pages_generator.generate_index
    exasol_sphinx_github_pages_generator.parser
 
 Module contents

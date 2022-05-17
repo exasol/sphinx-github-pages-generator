@@ -9,6 +9,7 @@ Code name: Initial implementation
   - #1: Moved from "https://github.com/exasol/bucketfs-utils-python"
   - #5: Added tests
   - #2: Added option to select source branch
+  - #11: Added generation of index.html linking to all existing documentations
 
 ## Bug Fixes
 

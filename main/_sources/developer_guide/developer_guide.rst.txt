@@ -37,7 +37,7 @@ To build the documentation manually for testing, you can use:
 
 .. code:: bash
 
-    sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator
+    sphinx-apidoc -T -e -o api PathToProject/sphinx-github-pages-generator/exasol_sphinx_github_pages_generator
     sphinx-build -b html -W PathToProject/sphinx-github-pages-generator/doc .build
 
 #####
@@ -60,3 +60,4 @@ For running your own tests, you can change the tests Repository, User and Passwo
 .. _doc folder: https://github.com/exasol/sphinx-github-pages-generator/tree/main/doc
 .. _tests folder: https://github.com/exasol/sphinx-github-pages-generator/tree/main/tests
 .. _setup_test_repo: https://github.com/exasol/sphinx-github-pages-generator/blob/7235e9577531bb3992425ffd200004dc4a7fee32/tests/helper_test_functions.py#L13
+
