@@ -4,7 +4,7 @@ from pathlib import Path
 from subprocess import run
 import shutil
 import os
-
+from exasol_sphinx_github_pages_generator.generate_index import generate_release_index
 
 class GithubPagesDeployer:
     """
@@ -38,6 +38,8 @@ class GithubPagesDeployer:
                                "source_worktree": tempdir + "/worktrees/worktree_source"}
         self.build_dir = tempdir + "/build"
         self.intermediate_dir = tempdir + "/intermediate"
+        self.target_branch_exists = run(["git", "show-branch", f"remotes/origin/{self.target_branch}"],
+                                        capture_output=True, text=True)
 
     def check_out_source_branch_as_worktree(self,
                                             source_branch_exists_locally: int) -> None:
@@ -68,7 +70,8 @@ class GithubPagesDeployer:
             except subprocess.CalledProcessError as e:
                 sys.exit(f"""
                         Problem with adding worktree for source.
-                        From git worktree add documentation: ' If <branch> does exist, it will be checked out in the new working tree,
+                        From git worktree add documentation: ' If <branch> does exist, it will be checked out in the 
+                        new working tree,
                         if it’s not checked out anywhere else, otherwise the command will refuse to create 
                         the working tree (unless --force is used).'
                         Error from subprocess: {str(e)}"
@@ -121,9 +124,8 @@ class GithubPagesDeployer:
         If the target_branch already exists in remote, it is checked out into a new local worktree.
         Else, target_branch is added as a new branch with a separate worktree and set as default for GitHub Pages.
         """
-        target_branch_exists = run(["git", "show-branch", f"remotes/origin/{self.target_branch}"], capture_output=True,
-                                   text=True)
-        if target_branch_exists.returncode == 0:
+
+        if self.target_branch_exists.returncode == 0:
             print(f"Create worktree from existing branch {self.target_branch}")
             run(["git", "worktree", "add", self.worktree_paths["target_worktree"], self.target_branch], check=True)
         else:
@@ -186,7 +188,11 @@ class GithubPagesDeployer:
         print("Generated HTML Output")
         print(f"Using html_output_dir={self.build_dir}")
 
-        output_dir = Path(f"{self.worktree_paths['target_worktree']}/{self.source_branch}")
+        # remove slashes from branch-name, this makes parsing the release-names for the release-index much easier
+        simple_source_branch_name = self.source_branch.replace("/", "-")
+        output_dir = Path(self.worktree_paths['target_worktree']) / simple_source_branch_name
+
+
         print(f"Using output_dir={output_dir}")
         if output_dir.exists() and output_dir.is_dir():
             print(f"Removing existing output directory {output_dir}")
@@ -197,6 +203,7 @@ class GithubPagesDeployer:
         for obj in os.listdir(self.build_dir):
             shutil.move(self.build_dir + "/" + str(obj), output_dir)
         open(f"{self.worktree_paths['target_worktree']}/.nojekyll", "w").close()
+
         print(f"Content of output directory {output_dir}")
         run(["ls", "-la", output_dir], check=True)
 
@@ -205,7 +212,9 @@ class GithubPagesDeployer:
     def git_commit_and_push(self, output_dir: Path) -> None:
         """
         Commits and pushes the generated documentation files to the remote GitHUb repository.
-        Also adds a file describing the source branch and commit of the generated files.
+        Also adds a file describing the source branch and commit of the generated files, and
+        generates a release index file using functions in generate_index.py.
+
         Does nothing if no changes occurred.
         :param output_dir: Path of the generated files inside the target_branch worktree.
         """
@@ -218,6 +227,10 @@ class GithubPagesDeployer:
         run(["git", "add", "-v", "."], check=True)
         changes_exists = run(["git", "diff-index", "--quiet", "HEAD", "--"], capture_output=True, text=True)
         if 1 == changes_exists.returncode:
+            print("Start generating/updating release_index.html")
+            generate_release_index(self.target_branch, target_worktree=Path(self.worktree_paths["target_worktree"]),
+                      source_branch=self.source_branch, target_branch_exists_remote=bool(self.target_branch_exists.stdout))
+            run(["git", "add", "-v", "."], check=True)
             print(f"committing changes because changes exist.")
             run(["git", "commit", "--no-verify", "-m",
                  f"Update documentation from source branch {self.source_branch} with commit id"

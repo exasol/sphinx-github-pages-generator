@@ -39,3 +39,5 @@ Features
 * Choose which remote branch to generate the documentation from
 * Choose whether to automatically push the generated and committed documentation or not.
 * Works with multiple packages in one repository.
+* Generates a index.html file containing links to all existing documentations on that branch.
+    This file is generated using the "furo" theme.

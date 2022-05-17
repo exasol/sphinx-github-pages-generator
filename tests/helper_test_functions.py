@@ -1,5 +1,28 @@
 from subprocess import run
 import os
+import shutil
+from pathlib import Path
+import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
+
+
+def run_deployer_build_and_copy_documentation_without_gen_index(deployer):
+    currentworkdir = os.getcwd()
+    print(currentworkdir)
+    for module in deployer.module_path:
+        out = run(["sphinx-apidoc", "-T", "-e", "-o", "api", module])
+        print(module)
+        print(out)
+    run(["sphinx-build", "-b", "html", "-d", deployer.intermediate_dir, "-W", currentworkdir, deployer.build_dir], check=True)
+
+    output_dir = Path(f"{deployer.worktree_paths['target_worktree']}/{deployer.source_branch}")
+
+    if output_dir.exists() and output_dir.is_dir():
+        shutil.rmtree(output_dir)
+    output_dir.mkdir(parents=True)
+    for obj in os.listdir(deployer.build_dir):
+        shutil.move(deployer.build_dir + "/" + str(obj), output_dir)
+
+    return output_dir
 
 
 def remove_branch(branch_name):
