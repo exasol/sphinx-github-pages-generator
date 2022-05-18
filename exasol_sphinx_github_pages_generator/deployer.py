@@ -19,7 +19,6 @@ class GithubPagesDeployer:
     :param push_origin: origin of the Git Repository.
     :param push_enabled: Set to "push" if generated files should be pushed to the remote, otherwise set to "commit".
     :param tempdir: Path of the temporary directory this Generator runs in.
-
     """
     def __init__(self, source_dir: str, source_branch: str, current_commit_id: str,
                  module_path: list,
@@ -51,7 +50,7 @@ class GithubPagesDeployer:
         Exits with error if source_branch does not exist in the remote repository.
 
         :param source_branch_exists_locally: Indicates if the source_branch exists in the local repository.
-        If 0, it exists, else it does not
+               If 0, it exists, else it does not
         """
         source_branch_exists_remote = run(["git", "show-branch", f"remotes/origin/{self.source_branch}"],
                                           capture_output=True, text=True)
@@ -125,7 +124,6 @@ class GithubPagesDeployer:
         If the target_branch already exists in remote, it is checked out into a new local worktree.
         Else, target_branch is added as a new branch with a separate worktree and set as default for GitHub Pages.
         """
-
         if self.target_branch_exists.returncode == 0:
             print(f"Create worktree from existing branch {self.target_branch}")
             run(["git", "worktree", "add", self.worktree_paths["target_worktree"], self.target_branch], check=True)
@@ -257,7 +255,7 @@ class GithubPagesDeployer:
         ensure it points to an existing directory.
 
         :param original_workdir: A directory that can be used as the working directory after the generator finishes.
-        Preferably the original working-directory.
+               Preferably the original working-directory.
         """
         print("Starting cleanup.")
         os.chdir(original_workdir)

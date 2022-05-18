@@ -46,10 +46,26 @@ Here is the code from te index.rst of this project, which generates the document
 
     .. autosummary::
         :toctree: ../api
+        :recursive:
 
         exasol_sphinx_github_pages_generator
 
 To see the generated pages see :ref:`api_ref_target`.
+
+----------------------------------------------------
+Testing the documentation build with Sphinx locally
+----------------------------------------------------
+
+You can use the Spinx commands for building your documentation like normal to build your documentation locally.
+This can be useful for debugging purposes.
+
+When called from your "./doc" directory, the commands below will build you html files and put them in the
+"./doc/.build" directory:
+
+.. code:: bash
+
+    sphinx-apidoc -T -e -o api ../<your-module-name>
+    sphinx-build -b html -W . .build
 
 -----------------------------
 Call the Sphinx generator

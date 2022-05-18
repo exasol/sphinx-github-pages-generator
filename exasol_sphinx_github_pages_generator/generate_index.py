@@ -158,7 +158,6 @@ def generate_release_index(target_branch: str, target_worktree: Path,
     :param source_branch: The branch we are currently generating the documentation for.
     :param target_branch_exists_remote: Bool representing whether the target_branch already exist in the remote
         repository.
-
     """
 
     print("s_branch " + source_branch)
