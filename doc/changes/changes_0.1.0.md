@@ -10,6 +10,7 @@ Code name: Initial implementation
   - #5: Added tests
   - #2: Added option to select source branch
   - #11: Added generation of index.html linking to all existing documentations
+  - #20: Added GitHub Action for generating the documentation on release
 
 ## Bug Fixes
 

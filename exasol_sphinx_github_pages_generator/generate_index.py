@@ -27,6 +27,7 @@ def find_index(target_worktree: Path, source_branch: str) -> Path:
     """
     For the given source_branch find the index.html file in its documentation files,
     and return its path. Aborts if there are more or less than exactly one (1) index.html file.
+
     :param target_worktree: Worktree/path all generated project documentation is put into.
     :param source_branch: Name of the branch the documentation should be searched for.
     :return: Path pointing at found index.html file
@@ -47,6 +48,7 @@ def generate_release_dicts(release_list: Union[Generator[str, None, Any], List[s
     """
     Given a list of releases, generate a list of dictionaries containing the name of the release, and the path to its
     documentation relative to target_worktree. The current release is titled "latest".
+
     :param release_list: List or Generator of release-names as strings.
     :param source_branch: The branch we are currently generating the documentation for.
     :param target_worktree:  Worktree/path all generated project documentation is put into.
@@ -114,6 +116,7 @@ def copy_importlib_resources_file(src_file: importlib_resources.abc.Traversable,
     """
     Uses a given source path "src_file" given as an importlib_resources.abc.Traversable to copy the file it points to
     into the destination denoted by target_path.
+
     :param src_file: Location of the file to be copied, given as importlib_resources.abc.Traversable.
     :param target_file: Path object the location file should be copied to.
     """
@@ -126,6 +129,7 @@ def copy_importlib_resources_dir_tree(src_path: importlib_resources.abc.Traversa
     """
     Uses a given source path "scr_path" given as an importlib_resources.abc.Traversable to copy all files/directories
     in the directory tree whose root is scr_path into target_path.
+
     :param src_path: Root of the dir tree to be copied, given as importlib_resources.abc.Traversable.
     :param target_path: Path object the dir tree should be copied to.
     """

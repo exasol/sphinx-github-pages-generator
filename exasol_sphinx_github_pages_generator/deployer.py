@@ -49,6 +49,7 @@ class GithubPagesDeployer:
         The new worktree is created at self.worktree_paths["source_worktree"].
         !! Uses remote branch for generating the documentation, all stashed or unpushed changes will be ignored !!
         Exits with error if source_branch does not exist in the remote repository.
+
         :param source_branch_exists_locally: Indicates if the source_branch exists in the local repository.
         If 0, it exists, else it does not
         """
@@ -169,6 +170,7 @@ class GithubPagesDeployer:
         Build the html documentation files using "sphinx-apidoc" and "sphinx-build",
         then copies them into the target branch. If an older version of the files exist for the source branch, on the
         target_branch, these are deleted first.
+
         :returns the path of the generated files inside the target_branch worktree.
         """
         print("Build with sphinx")
@@ -214,8 +216,8 @@ class GithubPagesDeployer:
         Commits and pushes the generated documentation files to the remote GitHUb repository.
         Also adds a file describing the source branch and commit of the generated files, and
         generates a release index file using functions in generate_index.py.
-
         Does nothing if no changes occurred.
+
         :param output_dir: Path of the generated files inside the target_branch worktree.
         """
         currentworkdir = os.getcwd()
@@ -253,6 +255,7 @@ class GithubPagesDeployer:
         """
         Deletes the temporary worktrees and resets the working directory to the given working directory in order to
         ensure it points to an existing directory.
+
         :param original_workdir: A directory that can be used as the working directory after the generator finishes.
         Preferably the original working-directory.
         """

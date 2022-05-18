@@ -36,5 +36,8 @@ push_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)";declare -a 
 push_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "push" --module_path "${StringArray[@]}" """ }
 
 
+push_pages_release = { shell = """cd "$(git rev-parse --show-toplevel)";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pagess/main" --push_origin "origin" --push_enabled "push" --module_path "${StringArray[@]}" """ }
+
+
 
 test =  "pytest tests"

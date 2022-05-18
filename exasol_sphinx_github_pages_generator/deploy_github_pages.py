@@ -10,6 +10,7 @@ from inspect import cleandoc
 def deploy_github_pages(argv):
     """
     Runs the GithubPagesDeployer inside a temp directory given the command-line options and arguments inside argv.
+
     :param argv: Command-line options and arguments, better described in the parser.
     """
     args = Parser(argv).args
