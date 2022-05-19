@@ -20,6 +20,7 @@ def deploy_github_pages(argv):
     print(cleandoc(f"""
                    Commandline parameter
                    source_dir= {source_dir}
+                   source_origin= {args.source_origin}
                    module_path= {str(args.module_path)}
                    TARGET_BRANCH= {args.target_branch}
                    PUSH_ORIGIN= {args.push_origin}
@@ -27,7 +28,8 @@ def deploy_github_pages(argv):
                    SOURCE_BRANCH= {args.source_branch}""") + "\n")
 
     with TemporaryDirectory() as tempdir:
-        deployer = GithubPagesDeployer(source_dir, args.source_branch, current_commit_id.stdout[:-1], args.module_path,
+        deployer = GithubPagesDeployer(source_dir, args.source_branch, args.source_origin,
+                                       current_commit_id.stdout[:-1], args.module_path,
                                        args.target_branch, args.push_origin, args.push_enabled,
                                        tempdir)
         os.mkdir(deployer.build_dir)

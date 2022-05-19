@@ -12,7 +12,7 @@ from fixtures import setup_test_env
 import shutil
 from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
 
-
+#todo add tests for tags
 def test_remote_branch_creation(setup_test_env):
     branches_to_delete_in_cleanup, _, _ = setup_test_env
     source_branch = "main"

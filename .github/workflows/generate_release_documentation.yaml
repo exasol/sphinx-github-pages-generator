@@ -3,7 +3,6 @@ name: Generate release documentation
 on:
   release:
     types: [published]
-    types: [created] #for testing
 jobs:
 
   publish-release-documentation:
@@ -33,7 +32,7 @@ jobs:
         git config --local user.email "opensource@exasol.com"
         git config --local user.name "GitHub Action"
         git fetch
-        poetry run poe push_pages_release --source_branch "${{ github.event.release.tag_name }}"
+        poetry run poe push_pages_release
 
 
 

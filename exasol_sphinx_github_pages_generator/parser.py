@@ -20,6 +20,9 @@ class Parser:
                             default="",
                             help='The branch you want to generate documentation from. '
                                  'If empty, defaults to current branch')
+        parser.add_argument('--source_origin', type=str,
+                            default="origin",
+                            help="origin of source_branch. Set to 'tags' if your source_branch is a tag ")
         parser.add_argument('--source_dir', type=str, default="/doc/",
                             help="Path to the directory inside the source_branch where the index.rst "
                                  "and conf.py reside in.")
