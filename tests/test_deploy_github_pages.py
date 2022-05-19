@@ -429,7 +429,8 @@ def test_abort_if_no_source_branch_detected(setup_test_env):
     with pytest.raises(SystemExit) as e:
         with TemporaryDirectory() as tempdir:
             thisIsABrokenID = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
-            deployer = GithubPagesDeployer("/doc/", "", thisIsABrokenID.stdout[:-1], ["../test_package", "../another_test_package"],
+            deployer = GithubPagesDeployer("/doc/", "", thisIsABrokenID.stdout[:-1], "origin",
+                                           ["../test_package", "../another_test_package"],
                                            target_branch, "origin", "push",
                                            tempdir)
             try:
