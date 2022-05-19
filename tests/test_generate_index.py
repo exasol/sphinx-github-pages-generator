@@ -14,25 +14,17 @@ from fixtures import setup_test_env, setup_index_tests_target_branch, setup_inde
 from exasol_sphinx_github_pages_generator.generate_index import find_index, \
     get_releases, generate_release_dicts, generate_release_index
 
+from importlib_resources import files
+import exasol_sphinx_github_pages_generator
 
-with open(
-        "./test_src/correct_index_file_main_branch.html") as file:
-    correct_content = file.readlines()
+source_files = files(exasol_sphinx_github_pages_generator)
+correct_index_file_main_branch = source_files / "../tests/test_src/correct_index_file_main_branch.html"
+correct_content = (correct_index_file_main_branch.read_text()).splitlines(keepends=True)
 
 correct_releases = [{'release': 'latest', 'release_path': 'branch_name/index.html'},
                      {'release': 'test', 'release_path': 'test/index.html'},
                      {'release': 'feature-some_dir', 'release_path': 'feature-some_dir/index.html'}]
 
-
-correct_footer =('<div class="footer">'
-                    '&copy;2021, Exasol.'
-                    '|'
-                    'Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>'
-                    '&amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>'
-                    '|'
-                    '<a href="_sources/index_template.jinja.txt"'
-                    'rel="nofollow">Page source</a>'
-                    '</div>')
 
 env = Environment(
         loader=PackageLoader("exasol_sphinx_github_pages_generator"),
