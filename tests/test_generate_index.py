@@ -58,7 +58,6 @@ def test_generate_release_dicts_include_sources():
         target_worktree = Path(target_worktree).absolute()
         os.chdir(target_branch)
         releases = generate_release_dicts(release_list, source_branch, Path(target_worktree).absolute())
-
     assert releases == correct_releases
 
 
@@ -127,9 +126,12 @@ def test_get_releases(setup_index_tests_target_branch):
     Path(f"target_worktree/{source_branch}/").mkdir(parents=True)
     open(f"target_worktree/{source_branch}/index.html", 'a').close()
     releases = get_releases(target_branch, True, source_branch, Path(f"target_worktree").absolute())
-    assert releases == [{'release': "latest", 'release_path': f'{source_branch}/index.html'},
+    correct_releases_local = [{'release': "latest", 'release_path': f'{source_branch}/index.html'},
                         {'release': 'feature-some-feature', 'release_path': 'feature-some-feature/index.html'},
                         {'release': 'another_branch', 'release_path': 'another_branch/index.html'}]
+    for release in releases:
+        assert release in correct_releases_local
+    assert len(releases) == len(correct_releases_local)
 
 
 def test_get_releases_no_target_branch():
