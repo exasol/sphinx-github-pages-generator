@@ -12,7 +12,7 @@ class GithubPagesDeployer:
     Builds and deploys GitHub Pages using Sphinx given a branch.
 
     :param source_dir: Path to the directory inside the source_branch where the index.rst and conf.py reside in.
-    :param source_branch: The branch the documentation files should be generated for. Will use remote branch
+    :param source_branch: The branch-name or tag the documentation files should be generated for. Will use remote branch
            for generation. Local unpushed changes will cause program exit or be ignored.
     :param current_commit_id: CommitID of the current branch.
     :param module_path: List of modules/packages in the source_branch that should be documented.

@@ -19,7 +19,7 @@ class Parser:
         parser.add_argument('--source_branch', type=str,
                             default="",
                             help='The branch you want to generate documentation from. '
-                                 'If empty, defaults to current branch')
+                                 'If empty, defaults to current branch. Can also be a GitHub tag')
         parser.add_argument('--source_origin', type=str,
                             default="origin",
                             help="origin of source_branch. Set to 'tags' if your source_branch is a tag ")

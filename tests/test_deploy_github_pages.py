@@ -12,7 +12,6 @@ from fixtures import setup_test_env
 import shutil
 from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
 
-#todo add tests for tags
 def test_remote_branch_creation(setup_test_env):
     branches_to_delete_in_cleanup, _, _ = setup_test_env
     source_branch = "main"
@@ -417,7 +416,7 @@ def test_abort_source_branch_only_exists_locally(setup_test_env):
 
 
 def test_abort_if_no_source_branch_detected(setup_test_env):
-    branches_to_delete_in_cleanup, _,_ = setup_test_env
+    branches_to_delete_in_cleanup, _, _ = setup_test_env
     source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     os.chdir("./doc/")
@@ -474,3 +473,20 @@ def test_abort_if_invalid_source_dir(setup_test_env):
 
     assert e.match(re.escape("[Errno 2] No such file or directory: './not_a_source_dir/'"))
     remove_branch(target_branch)
+
+
+def test_source_branch_is_tag(setup_test_env):
+    branches_to_delete_in_cleanup, _, _ = setup_test_env
+    source_branch = "test-release-tag"
+    run(["git", "checkout", source_branch], check=True)
+    target_branch = "test-docu-new-branch"
+    branches_to_delete_in_cleanup += [target_branch]
+    remove_branch(target_branch)
+    print(os.getcwd())
+    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
+                                             "--source_branch", source_branch,
+                                             "--source_origin", "tags",
+                                             "--module_path", "../test_package"])
+    target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
+                               text=True)
+    assert target_branch_exists.returncode == 0
