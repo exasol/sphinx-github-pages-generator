@@ -56,7 +56,7 @@ To see the generated pages see :ref:`api_ref_target`.
 Testing the documentation build with Sphinx locally
 ----------------------------------------------------
 
-You can use the Spinx commands for building your documentation like normal to build your documentation locally.
+You can use the Sphinx commands for building your documentation like normal to build your documentation locally.
 This can be useful for debugging purposes.
 
 When called from your "./doc" directory, the commands below will build you html files and put them in the
