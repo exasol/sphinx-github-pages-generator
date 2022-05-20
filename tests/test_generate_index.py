@@ -129,9 +129,7 @@ def test_get_releases(setup_index_tests_target_branch):
     correct_releases_local = [{'release': "latest", 'release_path': f'{source_branch}/index.html'},
                         {'release': 'feature-some-feature', 'release_path': 'feature-some-feature/index.html'},
                         {'release': 'another_branch', 'release_path': 'another_branch/index.html'}]
-    for release in releases:
-        assert release in correct_releases_local
-    assert len(releases) == len(correct_releases_local)
+    assert set(releases) == set(correct_releases_local)
 
 
 def test_get_releases_no_target_branch():

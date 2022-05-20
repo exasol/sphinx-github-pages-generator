@@ -16,7 +16,7 @@ install_requires = \
  'Sphinx>=4.5,<5.0',
  'furo>=2022.02.14.1,<2023.0.0.0',
  'importlib_resources>=1.3,<2.0',
- 'myst-parser>=0.15.0,<0.16.0',
+ 'myst-parser>=0.17.0,<0.18.0',
  'poethepoet>=0.10.0,<0.11.0']
 
 setup_kwargs = {
