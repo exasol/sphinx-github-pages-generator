@@ -4,10 +4,10 @@ on:
   push:
   # This way it only triggers on branch pushes,
   # and ignores releases that push a tag.
-      branches:
+    tags-ignore:
       - '**'
-      branches-ignore:
-      - github-pages/*
+    branches-ignore:
+    - github-pages/*
 
 jobs:
   check_setup_py:
