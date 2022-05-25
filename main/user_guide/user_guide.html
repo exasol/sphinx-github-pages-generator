@@ -237,11 +237,23 @@ Inside the index.rst you can link to other parts of your documentation using the
 Here is the code from te index.rst of this project, which generates the documentation if the api:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">autosummary</span><span class="p">::</span>
     <span class="p">:</span><span class="n">toctree</span><span class="p">:</span> <span class="o">../</span><span class="n">api</span>
+    <span class="p">:</span><span class="n">recursive</span><span class="p">:</span>
 
     <span class="n">exasol_sphinx_github_pages_generator</span>
 </pre></div>
 </div>
 <p>To see the generated pages see <a class="reference internal" href="../index.html#api-ref-target"><span class="std std-ref">API Reference</span></a>.</p>
+</section>
+<section id="testing-the-documentation-build-with-sphinx-locally">
+<h3>Testing the documentation build with Sphinx locally<a class="headerlink" href="#testing-the-documentation-build-with-sphinx-locally" title="Permalink to this headline">#</a></h3>
+<p>You can use the Sphinx commands for building your documentation like normal to build your documentation locally.
+This can be useful for debugging purposes.</p>
+<p>When called from your “./doc” directory, the commands below will build you html files and put them in the
+“./doc/.build” directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sphinx-apidoc -T -e -o api ../&lt;your-module-name&gt;
+sphinx-build -b html -W . .build
+</pre></div>
+</div>
 </section>
 <section id="call-the-sphinx-generator">
 <h3>Call the Sphinx generator<a class="headerlink" href="#call-the-sphinx-generator" title="Permalink to this headline">#</a></h3>
@@ -279,18 +291,21 @@ python3 your_caller_script.py --target_branch <span class="s2">"github-pages/mai
 <p>Parameters:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="exasol_sphinx_github_pages_generator.deploy_github_pages.GithubPagesDeployer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">exasol_sphinx_github_pages_generator.deploy_github_pages.</span></span><span class="sig-name descname"><span class="pre">GithubPagesDeployer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_commit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tempdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deploy_github_pages.GithubPagesDeployer" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">exasol_sphinx_github_pages_generator.deploy_github_pages.</span></span><span class="sig-name descname"><span class="pre">GithubPagesDeployer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_commit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tempdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deploy_github_pages.GithubPagesDeployer" title="Permalink to this definition">#</a></dt>
 <dd><p>Builds and deploys GitHub Pages using Sphinx given a branch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source_dir</strong> – Path to the directory inside the source_branch where the index.rst and conf.py reside in.</p></li>
-<li><p><strong>source_branch</strong> – The branch the documentation files should be generated for. Will use remote branch
+<li><p><strong>source_branch</strong> – The branch-name or tag the documentation files should be generated for. Will use remote branch
 for generation. Local unpushed changes will cause program exit or be ignored.</p></li>
 <li><p><strong>current_commit_id</strong> – CommitID of the current branch.</p></li>
 <li><p><strong>module_path</strong> – List of modules/packages in the source_branch that should be documented.</p></li>
 <li><p><strong>target_branch</strong> – Branch the documentation should be generated into.</p></li>
 <li><p><strong>push_origin</strong> – origin of the Git Repository.</p></li>
+<li><p><strong>source_origin</strong> – origin of the source branch. “origin” results in “refs/remotes/origin/source_branch”,
+other results in “refs/source_origin/source_branch”.
+Example: source_origin = tags, source_branch = tag_name result : “refs/tags/tag_name”</p></li>
 <li><p><strong>push_enabled</strong> – Set to “push” if generated files should be pushed to the remote, otherwise set to “commit”.</p></li>
 <li><p><strong>tempdir</strong> – Path of the temporary directory this Generator runs in.</p></li>
 </ul>
@@ -387,6 +402,7 @@ for this action in “.github/workflows/check_documentation_build.yaml”.</p>
 <li><a class="reference internal" href="#">User Guide</a><ul>
 <li><a class="reference internal" href="#building-the-documentation">Building the Documentation</a><ul>
 <li><a class="reference internal" href="#needed-repository-structure">Needed Repository structure</a></li>
+<li><a class="reference internal" href="#testing-the-documentation-build-with-sphinx-locally">Testing the documentation build with Sphinx locally</a></li>
 <li><a class="reference internal" href="#call-the-sphinx-generator">Call the Sphinx generator</a></li>
 <li><a class="reference internal" href="#options">Options</a></li>
 </ul>
