@@ -2,8 +2,12 @@ name: Check the documentation build, publish if on main
 
 on:
   push:
+  # This way it only triggers on branch pushes,
+  # and ignores releases that push a tag.
+    tags-ignore:
+      - '**'
     branches-ignore:
-      - github-pages/*
+    - github-pages/*
 
 jobs:
   create_github_pages_docs:

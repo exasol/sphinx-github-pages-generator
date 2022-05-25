@@ -14,25 +14,17 @@ from fixtures import setup_test_env, setup_index_tests_target_branch, setup_inde
 from exasol_sphinx_github_pages_generator.generate_index import find_index, \
     get_releases, generate_release_dicts, generate_release_index
 
+from importlib_resources import files
+import exasol_sphinx_github_pages_generator
 
-with open(
-        "./test_src/correct_index_file_main_branch.html") as file:
-    correct_content = file.readlines()
+source_files = files(exasol_sphinx_github_pages_generator)
+correct_index_file_main_branch = source_files / "../tests/test_src/correct_index_file_main_branch.html"
+correct_content = (correct_index_file_main_branch.read_text()).splitlines(keepends=True)
 
 correct_releases = [{'release': 'latest', 'release_path': 'branch_name/index.html'},
                      {'release': 'test', 'release_path': 'test/index.html'},
                      {'release': 'feature-some_dir', 'release_path': 'feature-some_dir/index.html'}]
 
-
-correct_footer =('<div class="footer">'
-                    '&copy;2021, Exasol.'
-                    '|'
-                    'Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>'
-                    '&amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>'
-                    '|'
-                    '<a href="_sources/index_template.jinja.txt"'
-                    'rel="nofollow">Page source</a>'
-                    '</div>')
 
 env = Environment(
         loader=PackageLoader("exasol_sphinx_github_pages_generator"),
@@ -66,7 +58,6 @@ def test_generate_release_dicts_include_sources():
         target_worktree = Path(target_worktree).absolute()
         os.chdir(target_branch)
         releases = generate_release_dicts(release_list, source_branch, Path(target_worktree).absolute())
-
     assert releases == correct_releases
 
 
@@ -135,9 +126,12 @@ def test_get_releases(setup_index_tests_target_branch):
     Path(f"target_worktree/{source_branch}/").mkdir(parents=True)
     open(f"target_worktree/{source_branch}/index.html", 'a').close()
     releases = get_releases(target_branch, True, source_branch, Path(f"target_worktree").absolute())
-    assert releases == [{'release': "latest", 'release_path': f'{source_branch}/index.html'},
+    correct_releases_local = [{'release': "latest", 'release_path': f'{source_branch}/index.html'},
                         {'release': 'feature-some-feature', 'release_path': 'feature-some-feature/index.html'},
                         {'release': 'another_branch', 'release_path': 'another_branch/index.html'}]
+    for release in releases:
+        assert release in correct_releases_local
+    assert len(releases) == len(correct_releases_local)
 
 
 def test_get_releases_no_target_branch():

@@ -6,22 +6,25 @@ import shutil
 import os
 from exasol_sphinx_github_pages_generator.generate_index import generate_release_index
 
+
 class GithubPagesDeployer:
     """
     Builds and deploys GitHub Pages using Sphinx given a branch.
 
     :param source_dir: Path to the directory inside the source_branch where the index.rst and conf.py reside in.
-    :param source_branch: The branch the documentation files should be generated for. Will use remote branch
+    :param source_branch: The branch-name or tag the documentation files should be generated for. Will use remote branch
            for generation. Local unpushed changes will cause program exit or be ignored.
     :param current_commit_id: CommitID of the current branch.
     :param module_path: List of modules/packages in the source_branch that should be documented.
     :param target_branch: Branch the documentation should be generated into.
     :param push_origin: origin of the Git Repository.
+    :param source_origin: origin of the source branch. "origin" results in "refs/remotes/origin/source_branch",
+        other results in "refs/source_origin/source_branch".
+        Example: source_origin = tags, source_branch = tag_name result : "refs/tags/tag_name"
     :param push_enabled: Set to "push" if generated files should be pushed to the remote, otherwise set to "commit".
     :param tempdir: Path of the temporary directory this Generator runs in.
-
     """
-    def __init__(self, source_dir: str, source_branch: str, current_commit_id: str,
+    def __init__(self, source_dir: str, source_branch: str, source_origin: str, current_commit_id: str,
                  module_path: list,
                  target_branch: str, push_origin: str, push_enabled: str,
                  tempdir: str):
@@ -32,6 +35,7 @@ class GithubPagesDeployer:
 
         self.target_branch = target_branch
         self.push_origin = push_origin
+        self.source_origin = f"refs/remotes/{source_origin}/" if source_origin == "origin" else f"refs/{source_origin}/"
         self.push_enabled = push_enabled
 
         self.worktree_paths = {"target_worktree": tempdir + "/worktrees/worktree_target",
@@ -49,11 +53,13 @@ class GithubPagesDeployer:
         The new worktree is created at self.worktree_paths["source_worktree"].
         !! Uses remote branch for generating the documentation, all stashed or unpushed changes will be ignored !!
         Exits with error if source_branch does not exist in the remote repository.
+
         :param source_branch_exists_locally: Indicates if the source_branch exists in the local repository.
-        If 0, it exists, else it does not
+               If 0, it exists, else it does not
         """
-        source_branch_exists_remote = run(["git", "show-branch", f"remotes/origin/{self.source_branch}"],
+        source_branch_exists_remote = run(["git", "show-branch", f"{self.source_origin}{self.source_branch}"],
                                           capture_output=True, text=True)
+
         print("source_branch_exists_remote : " + str(source_branch_exists_remote))
         if source_branch_exists_remote.returncode == 0:
             try:
@@ -98,7 +104,8 @@ class GithubPagesDeployer:
                          "Please check the state of your local git repository.")
             print(f"No source branch given. Using Current branch {current_branch.stdout[:-1]} as source.")
             self.source_branch = current_branch.stdout[:-1]
-        remote_source_branch_commit_id = run(["git", "rev-parse", f"remotes/origin/{self.source_branch}"], capture_output=True, text=True)
+        remote_source_branch_commit_id = run(["git", "rev-parse", f"{self.source_origin}{self.source_branch}"],
+                                             capture_output=True, text=True)
         # the [:-1] removes the newline from the output
         if current_branch.stdout[:-1] != self.source_branch:
             print("Current branch is not source branch. Need to switch branches.")
@@ -124,7 +131,6 @@ class GithubPagesDeployer:
         If the target_branch already exists in remote, it is checked out into a new local worktree.
         Else, target_branch is added as a new branch with a separate worktree and set as default for GitHub Pages.
         """
-
         if self.target_branch_exists.returncode == 0:
             print(f"Create worktree from existing branch {self.target_branch}")
             run(["git", "worktree", "add", self.worktree_paths["target_worktree"], self.target_branch], check=True)
@@ -169,6 +175,7 @@ class GithubPagesDeployer:
         Build the html documentation files using "sphinx-apidoc" and "sphinx-build",
         then copies them into the target branch. If an older version of the files exist for the source branch, on the
         target_branch, these are deleted first.
+
         :returns the path of the generated files inside the target_branch worktree.
         """
         print("Build with sphinx")
@@ -214,8 +221,8 @@ class GithubPagesDeployer:
         Commits and pushes the generated documentation files to the remote GitHUb repository.
         Also adds a file describing the source branch and commit of the generated files, and
         generates a release index file using functions in generate_index.py.
-
         Does nothing if no changes occurred.
+
         :param output_dir: Path of the generated files inside the target_branch worktree.
         """
         currentworkdir = os.getcwd()
@@ -253,8 +260,9 @@ class GithubPagesDeployer:
         """
         Deletes the temporary worktrees and resets the working directory to the given working directory in order to
         ensure it points to an existing directory.
+
         :param original_workdir: A directory that can be used as the working directory after the generator finishes.
-        Preferably the original working-directory.
+               Preferably the original working-directory.
         """
         print("Starting cleanup.")
         os.chdir(original_workdir)

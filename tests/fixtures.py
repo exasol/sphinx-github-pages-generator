@@ -34,7 +34,7 @@ def setup_index_tests_integration(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
 
     with TemporaryDirectory() as tempdir:
-        deployer = GithubPagesDeployer("/doc/", source_branch, current_commit_id.stdout[:-1], ["../test_package"],
+        deployer = GithubPagesDeployer("/doc/", source_branch, "origin", current_commit_id.stdout[:-1], ["../test_package"],
                                        target_branch, "origin", "push",
                                        tempdir)
         os.mkdir(deployer.build_dir)

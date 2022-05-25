@@ -1,7 +1,11 @@
 name: run_tests
 
 on:
-  - push
+  push:
+  # This way it only triggers on branch pushes,
+  # and ignores releases that push a tag.
+      branches:
+      - '**'
 
 jobs:
   test-job:

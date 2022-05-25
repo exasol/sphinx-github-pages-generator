@@ -19,22 +19,23 @@ keywords = ['exasol', 'github pages', 'documentaion']
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 Sphinx = "^4.5"
-poethepoet = "^0.10.0"
-myst-parser = "^0.15.0"
+poethepoet = "^0.13.0"
+myst-parser = "^0.17.0"
 Jinja2 = "^3.0.3"
 furo = "^2022.02.14.1"
 importlib_resources = "^1.3"
 
+
 [tool.poetry.dev-dependencies]
-pytest = "^6.1.1"
+pytest = "^7.1.2"
 
 
 [tool.poe.tasks]
-commit_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "commit" --source_branch "main"  --module_path "${StringArray[@]}" """ }
-commit_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "commit" --module_path "${StringArray[@]}" """ }
-push_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" """ }
-push_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "push" --module_path "${StringArray[@]}" """ }
+commit_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/commit_pages_main.sh""" }
+commit_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)";  bash ./doc/scripts/commit_pages_current.sh""" }
+push_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_main.sh""" }
+push_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_current.sh """ }
 
-
+push_pages_release = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_release.sh""" }
 
 test =  "pytest tests"

@@ -2,8 +2,12 @@ name: Check if setup.py is up to date
 
 on:
   push:
+  # This way it only triggers on branch pushes,
+  # and ignores releases that push a tag.
+    tags-ignore:
+      - '**'
     branches-ignore:
-      - github-pages/*
+    - github-pages/*
 
 jobs:
   check_setup_py:
