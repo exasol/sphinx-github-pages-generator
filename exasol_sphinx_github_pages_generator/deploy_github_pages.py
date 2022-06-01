@@ -7,7 +7,7 @@ import sys
 from inspect import cleandoc
 
 
-def deploy_github_pages(argv):
+def deploy_github_pages(argv=sys.argv[1:]):
     """
     Runs the GithubPagesDeployer inside a temp directory given the command-line options and arguments inside argv.
 
