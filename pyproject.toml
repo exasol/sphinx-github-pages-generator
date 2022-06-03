@@ -32,7 +32,7 @@ gitpython = "^3.1.27"
 toml = "^=0.10.2"
 
 [tool.poetry.plugins."console_scripts"]
-"SGPG-run"="exasol_sphinx_github_pages_generator.deploy_github_pages:deploy_github_pages"
+"sgpg"="exasol_sphinx_github_pages_generator.deploy_github_pages:main"
 
 [tool.poe.tasks]
 commit_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/commit_pages_main.sh""" }

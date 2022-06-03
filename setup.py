@@ -20,8 +20,8 @@ install_requires = \
  'poethepoet>=0.13.0,<0.14.0']
 
 entry_points = \
-{'console_scripts': ['SGPG-run = '
-                     'exasol_sphinx_github_pages_generator.deploy_github_pages:deploy_github_pages']}
+{'console_scripts': ['sgpg = '
+                     'exasol_sphinx_github_pages_generator.deploy_github_pages:main']}
 
 setup_kwargs = {
     'name': 'exasol-sphinx-github-pages-generator',

@@ -7,7 +7,7 @@ import sys
 from inspect import cleandoc
 
 
-def deploy_github_pages(argv=sys.argv[1:]):
+def deploy_github_pages(argv):
     """
     Runs the GithubPagesDeployer inside a temp directory given the command-line options and arguments inside argv.
 
@@ -49,5 +49,9 @@ def deploy_github_pages(argv=sys.argv[1:]):
             deployer.clean_worktree(original_workdir)
 
 
-if __name__ == "__main__":
+def main():
     deploy_github_pages(sys.argv[1:])
+
+
+if __name__ == "__main__":
+    main()
