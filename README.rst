@@ -9,9 +9,32 @@ Overview
 This project provides a python library for accessing automatic generation of sphinx GitHub pages 
 for a given repository. It is intended for the use with a Continuous Integration solution.
 Developed using GitHub Actions.
+We are using Sphinx for generating the documentation,
+because it is the default documentation tool for Python projects.
+Sphinx supports reStructuredText with proper cross-document references.
+We using the MyST-Parser to also integrate markdown files into the documentation.
 
 In a Nutshell
 =============
+
+Motivation
+----------
+
+Using Sphinx for building the documentation of a project in the CI is a bit different to the steps you can use during coding,
+because it also contains the preparations for publishing. At the moment, we publish
+the documentation on Github Pages.
+
+To publish it there, the HTML needs to be build from the documentation source and committed. It also needs to be ensured
+it adheres to the file structure expected by GitHub Pages.
+Our usual directory structure doesn't fit these requirements, so we decided to create
+a new Git root commit and initially set github-pages/main branch to this commit.
+We then add new commits to this branch to update existing or add new versions of the documentation.
+
+This has the additional benefit, that we don't have automatic commits to the source branch.
+For each branch or tag for which we build the documentation in the CI
+we add a directory to the root directory of the github-pages/main branch.
+
+For simplification of this process, we build the Sphinx_GitHub-Pages-Generator.
 
 Prerequisites
 -------------
@@ -25,7 +48,7 @@ Installation
 
 Install the package from Github via `pip`::
 
-    pip install -e git://github.com/exasol/bucketfs-utils-python.git@{tag name}#egg=exasol-bucketfs-utils-python
+    pip install -e git://github.com/exasol/sphinx-github-pages-generator.git@{tag name}#egg=exasol-sphinx-github-pages-generator
 
 Documentation
 -------------

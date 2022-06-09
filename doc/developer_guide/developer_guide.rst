@@ -24,8 +24,13 @@ Now, you can run the project using the poethepoet task defined in the `pyproject
 
 .. code::
 
-    poetry run poe commit_pages_current
+    poetry run poe commit_pages_main  # creates or updates github-pages/main locally
+    poetry run poe push_pages_main  # creates or updates github-pages/main and pushes it to origin
+    poetry run poe commit_pages_current  # creates or updates github-pages/<current-branch-name> locally
+    poetry run poe push_pages_current  # creates or updates github-pages/<current-branch-name> and pushes it to origin
+    poetry run poe push_pages_release  # creates or updates github-pages/<latest-tag> and pushes it to origin
 
+These are also be used in the CI to build and publish the documentation of this project.
 
 #############
 Documentation
@@ -37,8 +42,12 @@ To build the documentation manually for testing, you can use:
 
 .. code:: bash
 
-    sphinx-apidoc -T -e -o api PathToProject/sphinx-github-pages-generator/exasol_sphinx_github_pages_generator
-    sphinx-build -b html -W PathToProject/sphinx-github-pages-generator/doc .build
+    poetry run poe build-html-doc # Builds the documentation
+    poetry run poe open-html-doc # Opens the currently build documentation in the browser
+    poetry run poe build-and-open-html-doc # Builds and opens the documentation
+
+All three build commands generate the documentation into /doc/.build-docu
+which is excluded in gitignore.
 
 #####
 Tests
