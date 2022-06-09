@@ -30,7 +30,7 @@ Now, you can run the project using the poethepoet task defined in the `pyproject
     poetry run poe push_pages_current  # creates or updates github-pages/<current-branch-name> and pushes it to origin
     poetry run poe push_pages_release  # creates or updates github-pages/<latest-tag> and pushes it to origin
 
-These are also be used in the CI to build and publish the documentation of this project.
+These are also used in the CI to build and publish the documentation of this project.
 
 #############
 Documentation

@@ -11,8 +11,8 @@ for a given repository. It is intended for the use with a Continuous Integration
 Developed using GitHub Actions.
 We are using Sphinx for generating the documentation,
 because it is the default documentation tool for Python projects.
-Sphinx supports reStructuredText with proper cross-document references.
-We using the MyST-Parser to also integrate markdown files into the documentation.
+Sphinx supports reStructuredText with appropriate cross-document references.
+We use the MyST-Parser to also integrate markdown files into the documentation.
 
 In a Nutshell
 =============
@@ -24,7 +24,7 @@ Using Sphinx for building the documentation of a project in the CI is a bit diff
 because it also contains the preparations for publishing. At the moment, we publish
 the documentation on Github Pages.
 
-To publish it there, the HTML needs to be build from the documentation source and committed. It also needs to be ensured
+To publish it there, the HTML needs to be built from the documentation source and committed. It also needs to be ensured
 it adheres to the file structure expected by GitHub Pages.
 Our usual directory structure doesn't fit these requirements, so we decided to create
 a new Git root commit and initially set github-pages/main branch to this commit.

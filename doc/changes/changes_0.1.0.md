@@ -3,7 +3,7 @@ Code name: Initial implementation
 
 ## Summary
 
-This release provides an initial version of the Sphinx GitHub Pages Generator. It can be used to automatically build and commit or push the Sphinx-documentation of a project to a target GitHub branch. It Also automatically creates an index.html file listing the created releases that can be used as an entrypoint for GithubPages.
+This release provides an initial version of the Sphinx GitHub Pages Generator. It can be used to automatically build and commit or push the Sphinx-documentation of a project to a target GitHub branch. It also automatically creates an index.html file listing the created releases that can be used as an entrypoint for GithubPages.
 
 
 ## Features / Enhancements
