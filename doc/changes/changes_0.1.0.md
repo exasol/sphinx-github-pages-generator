@@ -1,4 +1,4 @@
-# Sphinx GitHub Pages Generator 0.1.0, released 2022-06-09
+# Sphinx GitHub Pages Generator 0.1.0, released 2022-06-10
 Code name: Initial implementation
 
 ## Summary
