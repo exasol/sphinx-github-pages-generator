@@ -23,7 +23,7 @@ Needed Repository structure
 ---------------------------
 
 This Project uses Sphinx for the generation of the documentation. Therefore, all files you want to use as a
-source for your documentation have to be compatible with Spinx. You can find Sphinx's
+source for your documentation have to be compatible with Sphinx. You can find Sphinx's
 documentation `here <https://www.sphinx-doc.org/en/master/>`_.
 
 In general:
@@ -67,11 +67,31 @@ When called from your "./doc" directory, the commands below will build you html 
     sphinx-apidoc -T -e -o api ../<your-module-name>
     sphinx-build -b html -W . .build
 
+We also provide shortcuts for this as poethepoet tasks in the pyproject.toml file:
+
+.. code:: bash
+
+    build-html-doc = {shell = """
+        cd "$(git rev-parse --show-toplevel)/doc";
+        sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator;
+        sphinx-build -b html -W . .build
+        """ }           # Builds the documentation
+    open-html-doc = { shell = """
+        cd "$(git rev-parse --show-toplevel)/doc";
+        xdg-open .build/index.html""" }     # Opens the currently build documentation in the browser
+    build-and-open-html-doc = [ "build-html-doc", "open-html-doc" ]     # Builds and opens the documentation
+
+
+You can use similar shorthands in your project, just adjust the module path.
+
 -----------------------------
 Call the Sphinx generator
 -----------------------------
 
-Once Sphinx generator is installed in your environment, you can import and use it in a
+Once Sphinx generator is installed in your environment, you can use the "sgpg" command to run it. Use "sgpg -h"
+for an overview over parameters.
+
+You can also import and use it in a
 python script like this:
 
 .. code:: py
@@ -87,7 +107,13 @@ Then call the script using command line parameters like this:
 .. code:: bash
 
     declare -a StringArray=("../package/module-path1" "../package/module-path2")
-    python3 your_caller_script.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" --source_dir "/doc/"
+    python3 your_caller_script.py \
+        --target_branch "github-pages/main" \
+        --push_origin "origin" \
+        --push_enabled "push" \
+        --source_branch "main"  \
+        --module_path "${StringArray[@]}" \
+        --source_dir "/doc/"
 
 Alternatively you can also pass the parameters directly in the python script:
 
@@ -129,26 +155,40 @@ It uses the target branch github-pages/<feature-branch-name>,
 and if the branch is not "main", the target branch is deleted immediately after generation. Your can find the yaml file
 for this action in ".github/workflows/check_documentation_build.yaml".
 
-The GitHub Action uses poethepoet task which we describe in the pyproject.toml:
+The GitHub Action uses poethepoet tasks which we describe in the pyproject.toml:
 
 .. code::
 
     [tool.poe.tasks]
-        commit_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "commit" --source_branch "main"  --module_path "${StringArray[@]}" """ }
-        commit_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "commit" --module_path "${StringArray[@]}" """ }
-        push_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "${StringArray[@]}" """ }
-        push_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "push" --module_path "${StringArray[@]}" """ }
+        commit_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/commit_pages_main.sh""" }
+        commit_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)";  bash ./doc/scripts/commit_pages_current.sh""" }
+        push_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_main.sh""" }
+        push_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_current.sh """ }
 
+        push_pages_release = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_release.sh""" }
 ..
-    _This: todo does calling package work like this everywhere else?
 
-These are used in the GitHub Actions like this:
+They use bash scripts that look like this:
 
-.. code::
+.. code:: bash
 
-        - name: Deploy documentation to github-pages-main branch
-          run: |
-            git config --local user.email <e-mail>
-            git config --local user.name <user>
-            git fetch
-            poetry run poe push_pages_current
+    declare -a StringArray=("../exasol_sphinx_github_pages_generator" )
+    python3 <path/to/your/call_generator_script.py> \
+      --target_branch "github-pages/main" \
+      --push_origin "origin" \
+      --push_enabled "commit" \
+      --source_branch "main"  \
+      --module_path "${StringArray[@]}"
+
+
+The task can be called like this:
+
+.. code:: bash
+
+    poetry run poe commit_pages_main  # creates or updates github-pages/main locally
+    poetry run poe push_pages_main  # creates or updates github-pages/main and pushes it to origin
+    poetry run poe commit_pages_current  # creates or updates github-pages/<current-branch-name> locally
+    poetry run poe push_pages_current  # creates or updates github-pages/<current-branch-name> and pushes it to origin
+    poetry run poe push_pages_release  # creates or updates github-pages/<latest-tag> and pushes it to origin
+
+

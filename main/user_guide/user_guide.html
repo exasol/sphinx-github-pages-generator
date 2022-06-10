@@ -157,7 +157,7 @@
   <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">User Guide</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../changes/changelog.html">Changes</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changes/changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released X-X-X</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changes/changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-10</a></li>
 </ul>
 </li>
 </ul>
@@ -220,7 +220,7 @@ Furthermore, it supports reStructuredText with proper cross-document references.
 <section id="needed-repository-structure">
 <h3>Needed Repository structure<a class="headerlink" href="#needed-repository-structure" title="Permalink to this headline">#</a></h3>
 <p>This Project uses Sphinx for the generation of the documentation. Therefore, all files you want to use as a
-source for your documentation have to be compatible with Spinx. You can find Sphinx’s
+source for your documentation have to be compatible with Sphinx. You can find Sphinx’s
 documentation <a class="reference external" href="https://www.sphinx-doc.org/en/master/">here</a>.</p>
 <p>In general:</p>
 <p>You will need a base directory for your documentation source files. We use “repository_root/doc”,
@@ -254,10 +254,25 @@ This can be useful for debugging purposes.</p>
 sphinx-build -b html -W . .build
 </pre></div>
 </div>
+<p>We also provide shortcuts for this as poethepoet tasks in the pyproject.toml file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-html-doc <span class="o">=</span> <span class="o">{</span><span class="nv">shell</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">    cd "</span><span class="k">$(</span>git rev-parse --show-toplevel<span class="k">)</span>/doc<span class="s2">";</span>
+<span class="s2">    sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator;</span>
+<span class="s2">    sphinx-build -b html -W . .build</span>
+<span class="s2">    """</span> <span class="o">}</span>           <span class="c1"># Builds the documentation</span>
+open-html-doc <span class="o">=</span> <span class="o">{</span> <span class="nv">shell</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">    cd "</span><span class="k">$(</span>git rev-parse --show-toplevel<span class="k">)</span>/doc<span class="s2">";</span>
+<span class="s2">    xdg-open .build/index.html"""</span> <span class="o">}</span>     <span class="c1"># Opens the currently build documentation in the browser</span>
+build-and-open-html-doc <span class="o">=</span> <span class="o">[</span> <span class="s2">"build-html-doc"</span>, <span class="s2">"open-html-doc"</span> <span class="o">]</span>     <span class="c1"># Builds and opens the documentation</span>
+</pre></div>
+</div>
+<p>You can use similar shorthands in your project, just adjust the module path.</p>
 </section>
 <section id="call-the-sphinx-generator">
 <h3>Call the Sphinx generator<a class="headerlink" href="#call-the-sphinx-generator" title="Permalink to this headline">#</a></h3>
-<p>Once Sphinx generator is installed in your environment, you can import and use it in a
+<p>Once Sphinx generator is installed in your environment, you can use the “sgpg” command to run it. Use “sgpg -h”
+for an overview over parameters.</p>
+<p>You can also import and use it in a
 python script like this:</p>
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">exasol_sphinx_github_pages_generator.deploy_github_pages</span> <span class="k">as</span> <span class="nn">deploy_github_pages</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -268,7 +283,13 @@ python script like this:</p>
 </div>
 <p>Then call the script using command line parameters like this:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">declare</span> -a <span class="nv">StringArray</span><span class="o">=(</span><span class="s2">"../package/module-path1"</span> <span class="s2">"../package/module-path2"</span><span class="o">)</span>
-python3 your_caller_script.py --target_branch <span class="s2">"github-pages/main"</span> --push_origin <span class="s2">"origin"</span> --push_enabled <span class="s2">"push"</span> --source_branch <span class="s2">"main"</span>  --module_path <span class="s2">"</span><span class="si">${</span><span class="nv">StringArray</span><span class="p">[@]</span><span class="si">}</span><span class="s2">"</span> --source_dir <span class="s2">"/doc/"</span>
+python3 your_caller_script.py <span class="se">\</span>
+    --target_branch <span class="s2">"github-pages/main"</span> <span class="se">\</span>
+    --push_origin <span class="s2">"origin"</span> <span class="se">\</span>
+    --push_enabled <span class="s2">"push"</span> <span class="se">\</span>
+    --source_branch <span class="s2">"main"</span>  <span class="se">\</span>
+    --module_path <span class="s2">"</span><span class="si">${</span><span class="nv">StringArray</span><span class="p">[@]</span><span class="si">}</span><span class="s2">"</span> <span class="se">\</span>
+    --source_dir <span class="s2">"/doc/"</span>
 </pre></div>
 </div>
 <p>Alternatively you can also pass the parameters directly in the python script:</p>
@@ -322,21 +343,32 @@ documentation for each push not on the main branch or on documentation branches.
 It uses the target branch github-pages/&lt;feature-branch-name&gt;,
 and if the branch is not “main”, the target branch is deleted immediately after generation. Your can find the yaml file
 for this action in “.github/workflows/check_documentation_build.yaml”.</p>
-<p>The GitHub Action uses poethepoet task which we describe in the pyproject.toml:</p>
+<p>The GitHub Action uses poethepoet tasks which we describe in the pyproject.toml:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">poe</span><span class="o">.</span><span class="n">tasks</span><span class="p">]</span>
-    <span class="n">commit_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">"""cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "commit" --source_branch "main"  --module_path "$</span><span class="si">{StringArray[@]}</span><span class="s2">" """</span> <span class="p">}</span>
-    <span class="n">commit_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">"""cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "commit" --module_path "$</span><span class="si">{StringArray[@]}</span><span class="s2">" """</span> <span class="p">}</span>
-    <span class="n">push_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">"""cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/main" --push_origin "origin" --push_enabled "push" --source_branch "main"  --module_path "$</span><span class="si">{StringArray[@]}</span><span class="s2">" """</span> <span class="p">}</span>
-    <span class="n">push_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">"""cd "$(git rev-parse --show-toplevel)/doc";declare -a StringArray=("../exasol_sphinx_github_pages_generator" ); python3 ./exasol_sphinx_github_pages_generator/deploy_github_pages.py --target_branch "github-pages/"$(git branch --show-current)"" --push_origin "origin" --push_enabled "push" --module_path "$</span><span class="si">{StringArray[@]}</span><span class="s2">" """</span> <span class="p">}</span>
+    <span class="n">commit_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">"""cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/commit_pages_main.sh"""</span> <span class="p">}</span>
+    <span class="n">commit_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">"""cd "$(git rev-parse --show-toplevel)";  bash ./doc/scripts/commit_pages_current.sh"""</span> <span class="p">}</span>
+    <span class="n">push_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">"""cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_main.sh"""</span> <span class="p">}</span>
+    <span class="n">push_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">"""cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_current.sh """</span> <span class="p">}</span>
+
+    <span class="n">push_pages_release</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">"""cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_release.sh"""</span> <span class="p">}</span>
 </pre></div>
 </div>
-<p>These are used in the GitHub Actions like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Deploy</span> <span class="n">documentation</span> <span class="n">to</span> <span class="n">github</span><span class="o">-</span><span class="n">pages</span><span class="o">-</span><span class="n">main</span> <span class="n">branch</span>
-  <span class="n">run</span><span class="p">:</span> <span class="o">|</span>
-    <span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">local</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">&lt;</span><span class="n">e</span><span class="o">-</span><span class="n">mail</span><span class="o">&gt;</span>
-    <span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">local</span> <span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="o">&lt;</span><span class="n">user</span><span class="o">&gt;</span>
-    <span class="n">git</span> <span class="n">fetch</span>
-    <span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_current</span>
+<p>They use bash scripts that look like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">declare</span> -a <span class="nv">StringArray</span><span class="o">=(</span><span class="s2">"../exasol_sphinx_github_pages_generator"</span> <span class="o">)</span>
+python3 &lt;path/to/your/call_generator_script.py&gt; <span class="se">\</span>
+  --target_branch <span class="s2">"github-pages/main"</span> <span class="se">\</span>
+  --push_origin <span class="s2">"origin"</span> <span class="se">\</span>
+  --push_enabled <span class="s2">"commit"</span> <span class="se">\</span>
+  --source_branch <span class="s2">"main"</span>  <span class="se">\</span>
+  --module_path <span class="s2">"</span><span class="si">${</span><span class="nv">StringArray</span><span class="p">[@]</span><span class="si">}</span><span class="s2">"</span>
+</pre></div>
+</div>
+<p>The task can be called like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry run poe commit_pages_main  <span class="c1"># creates or updates github-pages/main locally</span>
+poetry run poe push_pages_main  <span class="c1"># creates or updates github-pages/main and pushes it to origin</span>
+poetry run poe commit_pages_current  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; locally</span>
+poetry run poe push_pages_current  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; and pushes it to origin</span>
+poetry run poe push_pages_release  <span class="c1"># creates or updates github-pages/&lt;latest-tag&gt; and pushes it to origin</span>
 </pre></div>
 </div>
 </section>

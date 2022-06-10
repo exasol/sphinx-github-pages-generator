@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Requirements this Software aims to fulfill:" href="../system_requirements.html" /><link rel="prev" title="Sphinx GitHub Pages Generator 0.1.0, released X-X-X" href="../changes/changes_0.1.0.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Requirements this Software aims to fulfill:" href="../system_requirements.html" /><link rel="prev" title="Sphinx GitHub Pages Generator 0.1.0, released 2022-06-10" href="../changes/changes_0.1.0.html" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
         <title>Developer Guide - Exasol Github Pages Generator documentation</title>
@@ -157,7 +157,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">User Guide</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../changes/changelog.html">Changes</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changes/changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released X-X-X</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changes/changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-10</a></li>
 </ul>
 </li>
 </ul>
@@ -222,19 +222,27 @@
 </pre></div>
 </div>
 <p>Now, you can run the project using the poethepoet task defined in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/blob/main/pyproject.toml">pyproject.toml</a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">commit_pages_current</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">commit_pages_main</span>  <span class="c1"># creates or updates github-pages/main locally</span>
+<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_main</span>  <span class="c1"># creates or updates github-pages/main and pushes it to origin</span>
+<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">commit_pages_current</span>  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; locally</span>
+<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_current</span>  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; and pushes it to origin</span>
+<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_release</span>  <span class="c1"># creates or updates github-pages/&lt;latest-tag&gt; and pushes it to origin</span>
 </pre></div>
 </div>
+<p>These are also used in the CI to build and publish the documentation of this project.</p>
 </section>
 <section id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">#</a></h2>
 <p>This repository also uses itself to generate the documentation for the Generator. The Source Files for the documentation
 can be found in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/tree/main/doc">doc folder</a>. Here is the <a class="reference internal" href="../index.html#docu-start"><span class="std std-ref">generated documentation</span></a> (You are already here ;) ).
 To build the documentation manually for testing, you can use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sphinx-apidoc -T -e -o api PathToProject/sphinx-github-pages-generator/exasol_sphinx_github_pages_generator
-sphinx-build -b html -W PathToProject/sphinx-github-pages-generator/doc .build
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry run poe build-html-doc <span class="c1"># Builds the documentation</span>
+poetry run poe open-html-doc <span class="c1"># Opens the currently build documentation in the browser</span>
+poetry run poe build-and-open-html-doc <span class="c1"># Builds and opens the documentation</span>
 </pre></div>
 </div>
+<p>All three build commands generate the documentation into /doc/.build-docu
+which is excluded in gitignore.</p>
 </section>
 <section id="tests">
 <h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">#</a></h2>
@@ -272,7 +280,7 @@ these changes in order not to break the CI tests.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Sphinx GitHub Pages Generator 0.1.0, released X-X-X</div>
+                <div class="title">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-10</div>
                 
               </div>
             </a>

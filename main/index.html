@@ -157,7 +157,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/user_guide.html">User Guide</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="changes/changelog.html">Changes</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="changes/changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released X-X-X</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes/changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-10</a></li>
 </ul>
 </li>
 </ul>
@@ -213,10 +213,29 @@
 <span id="docu-start"></span><h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">#</a></h2>
 <p>This project provides a python library for accessing automatic generation of sphinx GitHub pages
 for a given repository. It is intended for the use with a Continuous Integration solution.
-Developed using GitHub Actions.</p>
+Developed using GitHub Actions.
+We are using Sphinx for generating the documentation,
+because it is the default documentation tool for Python projects.
+Sphinx supports reStructuredText with appropriate cross-document references.
+We use the MyST-Parser to also integrate markdown files into the documentation.</p>
 </section>
 <section id="in-a-nutshell">
 <h2>In a Nutshell<a class="headerlink" href="#in-a-nutshell" title="Permalink to this headline">#</a></h2>
+<section id="motivation">
+<h3>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">#</a></h3>
+<p>Using Sphinx for building the documentation of a project in the CI is a bit different to the steps you can use during coding,
+because it also contains the preparations for publishing. At the moment, we publish
+the documentation on Github Pages.</p>
+<p>To publish it there, the HTML needs to be built from the documentation source and committed. It also needs to be ensured
+it adheres to the file structure expected by GitHub Pages.
+Our usual directory structure doesn’t fit these requirements, so we decided to create
+a new Git root commit and initially set github-pages/main branch to this commit.
+We then add new commits to this branch to update existing or add new versions of the documentation.</p>
+<p>This has the additional benefit, that we don’t have automatic commits to the source branch.
+For each branch or tag for which we build the documentation in the CI
+we add a directory to the root directory of the github-pages/main branch.</p>
+<p>For simplification of this process, we build the Sphinx_GitHub-Pages-Generator.</p>
+</section>
 <section id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
@@ -226,7 +245,7 @@ Developed using GitHub Actions.</p>
 <section id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">#</a></h3>
 <p>Install the package from Github via <cite>pip</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">exasol</span><span class="o">/</span><span class="n">bucketfs</span><span class="o">-</span><span class="n">utils</span><span class="o">-</span><span class="n">python</span><span class="o">.</span><span class="n">git</span><span class="o">@</span><span class="p">{</span><span class="n">tag</span> <span class="n">name</span><span class="p">}</span><span class="c1">#egg=exasol-bucketfs-utils-python</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">exasol</span><span class="o">/</span><span class="n">sphinx</span><span class="o">-</span><span class="n">github</span><span class="o">-</span><span class="n">pages</span><span class="o">-</span><span class="n">generator</span><span class="o">.</span><span class="n">git</span><span class="o">@</span><span class="p">{</span><span class="n">tag</span> <span class="n">name</span><span class="p">}</span><span class="c1">#egg=exasol-sphinx-github-pages-generator</span>
 </pre></div>
 </div>
 </section>
@@ -339,6 +358,7 @@ This file is generated using the “furo” theme.</p></li>
 <li><a class="reference internal" href="#">Sphinx GitHub Pages Generator</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#in-a-nutshell">In a Nutshell</a><ul>
+<li><a class="reference internal" href="#motivation">Motivation</a></li>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
