@@ -31,6 +31,8 @@ pytest = "^7.1.2"
 gitpython = "^3.1.27"
 toml = "^=0.10.2"
 
+[tool.poetry.plugins."console_scripts"]
+"sgpg"="exasol_sphinx_github_pages_generator.deploy_github_pages:main"
 
 [tool.poe.tasks]
 commit_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/commit_pages_main.sh""" }
@@ -39,5 +41,15 @@ push_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc
 push_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_current.sh """ }
 
 push_pages_release = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_release.sh""" }
+
+build-html-doc = {shell = """
+    cd "$(git rev-parse --show-toplevel)/doc";
+    sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator;
+    sphinx-build -b html -W . .build
+    """ }
+open-html-doc = { shell = """
+    cd "$(git rev-parse --show-toplevel)/doc";
+    xdg-open .build/index.html""" }
+build-and-open-html-doc = [ "build-html-doc", "open-html-doc" ]
 
 test =  "pytest tests"

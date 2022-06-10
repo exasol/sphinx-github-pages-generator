@@ -49,5 +49,18 @@ def deploy_github_pages(argv):
             deployer.clean_worktree(original_workdir)
 
 
+_SUCCESS = 0
+_FAILURE = 1
+
+
+def main():
+    try:
+        deploy_github_pages(sys.argv[1:])
+        return _SUCCESS
+    except Exception as ex:
+        print(ex)
+        return _FAILURE
+
+
 if __name__ == "__main__":
-    deploy_github_pages(sys.argv[1:])
+    sys.exit(main())
