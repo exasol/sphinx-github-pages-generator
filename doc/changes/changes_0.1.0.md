@@ -18,6 +18,7 @@ This release provides an initial version of the Sphinx GitHub Pages Generator. I
 ## Bug Fixes
 
  - #12: Fixed incorrect usage of source_dir parameter
+ - #26: Fixed missing trigger in workflow
   
 ## Documentation
 
