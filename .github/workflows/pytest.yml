@@ -34,14 +34,14 @@ jobs:
         poetry-version: 1.1.4
     - name: Poetry install
       run: poetry install
+    - if: ${{ github.event_name == 'push' }}
+      env:
+        MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
+        MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
+    - if: ${{ github.event_name == 'workflow_call' }}
+      env:
+        MAuserPAT: ${{ secrets.MAuserPAT }}
+        MAuserName: ${{ secrets.MAuserName }}
     - name: run_generator_tests
-      - if: ${{ github.event_name == 'push' }}
-        env:
-          MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
-          MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
-      - if: ${{ github.event_name == 'workflow_call' }}
-        env:
-          MAuserPAT: ${{ secrets.MAuserPAT }}
-          MAuserName: ${{ secrets.MAuserName }}
       run:
         poetry run pytest tests
