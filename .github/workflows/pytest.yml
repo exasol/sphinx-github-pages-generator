@@ -8,10 +8,13 @@ on:
       MAuserName:
         required: true
   push:
-  # This way it only triggers on branch pushes,
-  # and ignores releases that push a tag.
-      branches:
-      - '**'
+    secrets:
+      MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
+      MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
+      # This way it only triggers on branch pushes,
+      # and ignores releases that push a tag.
+    branches:
+    - '**'
 
 jobs:
   test-job:
