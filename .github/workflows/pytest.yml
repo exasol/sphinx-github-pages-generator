@@ -36,11 +36,11 @@ jobs:
       run: poetry install
 
     - name: run_generator_tests
-      if: ${{ github.event_name == 'push' }}
+      - if: ${{ github.event_name == 'push' }}
         env:
           MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
           MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
-      if: ${{ github.event_name == 'workflow_call' }}
+      - if: ${{ github.event_name == 'workflow_call' }}
         env:
           MAuserPAT: ${{ secrets.MAuserPAT }}
           MAuserName: ${{ secrets.MAuserName }}
