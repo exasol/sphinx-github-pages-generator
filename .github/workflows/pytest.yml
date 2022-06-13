@@ -38,10 +38,13 @@ jobs:
       env:
         MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
         MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
+      run:
+        poetry run pytest tests
     - if: ${{ github.event_name == 'workflow_call' }}
       env:
         MAuserPAT: ${{ secrets.MAuserPAT }}
         MAuserName: ${{ secrets.MAuserName }}
-    - name: run_generator_tests
       run:
         poetry run pytest tests
+
+
