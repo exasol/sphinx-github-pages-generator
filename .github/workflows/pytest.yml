@@ -3,10 +3,10 @@ name: run_tests
 on:
   workflow_call:
     secrets:
-    MAuserPAT:
-      required: true
-    MAuserName:
-      required: true
+      MAuserPAT:
+        required: true
+      MAuserName:
+        required: true
   push:
   # This way it only triggers on branch pushes,
   # and ignores releases that push a tag.
