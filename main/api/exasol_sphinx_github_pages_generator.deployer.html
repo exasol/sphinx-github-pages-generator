@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="exasol_sphinx_github_pages_generator.generate_index module" href="exasol_sphinx_github_pages_generator.generate_index.html" /><link rel="prev" title="exasol_sphinx_github_pages_generator.deploy_github_pages module" href="exasol_sphinx_github_pages_generator.deploy_github_pages.html" />
 
-    <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
+    <meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
         <title>exasol_sphinx_github_pages_generator.deployer module - Exasol Github Pages Generator documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
     
@@ -157,7 +157,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">User Guide</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../changes/changelog.html">Changes</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changes/changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-10</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changes/changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-13</a></li>
 </ul>
 </li>
 </ul>
@@ -193,7 +193,8 @@
           </svg>
           <span>Back to top</span>
         </a>
-        <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
@@ -234,15 +235,16 @@ Example: source_origin = tags, source_branch = tag_name result : “refs/tags/ta
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.build_and_copy_documentation">
-<span class="sig-name descname"><span class="pre">build_and_copy_documentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><span class="pre">pathlib.Path</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.build_and_copy_documentation" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">build_and_copy_documentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><span class="pre">pathlib.Path</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.build_and_copy_documentation" title="Permalink to this definition">#</a></dt>
 <dd><p>Build the html documentation files using “sphinx-apidoc” and “sphinx-build”,
 then copies them into the target branch. If an older version of the files exist for the source branch, on the
 target_branch, these are deleted first.</p>
 <p>:returns the path of the generated files inside the target_branch worktree.</p>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.check_out_source_branch_as_worktree">
-<span class="sig-name descname"><span class="pre">check_out_source_branch_as_worktree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_branch_exists_locally</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.check_out_source_branch_as_worktree" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">check_out_source_branch_as_worktree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_branch_exists_locally</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.check_out_source_branch_as_worktree" title="Permalink to this definition">#</a></dt>
 <dd><p>Creates a separate Git worktree for the source_branch if the existing worktree has a different branch
 currently checked out. This way, the local current Git Repository is kept in its original state.
 The new worktree is created at self.worktree_paths[“source_worktree”].
@@ -255,16 +257,18 @@ If 0, it exists, else it does not</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.checkout_target_branch_as_worktree">
-<span class="sig-name descname"><span class="pre">checkout_target_branch_as_worktree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.checkout_target_branch_as_worktree" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">checkout_target_branch_as_worktree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.checkout_target_branch_as_worktree" title="Permalink to this definition">#</a></dt>
 <dd><p>Creates a separate worktree for the target branch and checks it out.
 If the target_branch already exists in remote, it is checked out into a new local worktree.
 Else, target_branch is added as a new branch with a separate worktree and set as default for GitHub Pages.</p>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.clean_worktree">
-<span class="sig-name descname"><span class="pre">clean_worktree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_workdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.clean_worktree" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">clean_worktree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_workdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.clean_worktree" title="Permalink to this definition">#</a></dt>
 <dd><p>Deletes the temporary worktrees and resets the working directory to the given working directory in order to
 ensure it points to an existing directory.</p>
 <dl class="field-list simple">
@@ -274,18 +278,20 @@ Preferably the original working-directory.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.detect_or_verify_source_branch">
-<span class="sig-name descname"><span class="pre">detect_or_verify_source_branch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.detect_or_verify_source_branch" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">detect_or_verify_source_branch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.detect_or_verify_source_branch" title="Permalink to this definition">#</a></dt>
 <dd><p>Tries to find a valid source_branch.
 If source_branch is set, checks if it is equal to the current branch. If not, switches branches.
 Tries to use the current branch if source_branch is not set. Exits if this fails.
 Also fails if the detected source branch has local uncommitted/pushed changes or is not
 up-to-date with the remote.</p>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.git_commit_and_push">
-<span class="sig-name descname"><span class="pre">git_commit_and_push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.git_commit_and_push" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">git_commit_and_push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer.git_commit_and_push" title="Permalink to this definition">#</a></dt>
 <dd><p>Commits and pushes the generated documentation files to the remote GitHUb repository.
 Also adds a file describing the source branch and commit of the generated files, and
 generates a release index file using functions in generate_index.py.
@@ -296,7 +302,9 @@ Does nothing if no changes occurred.</p>
 </dd>
 </dl>
 </dd></dl>
+
 </dd></dl>
+
 </section>
 
         </article>
