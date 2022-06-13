@@ -37,7 +37,7 @@ jobs:
 
     - name: run_generator_tests
       env:
-        MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
-        MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
+        MAuserPAT: ${{ secrets.MAuserPAT }}
+        MAuserName: ${{ secrets.MAuserName }}
       run:
         poetry run pytest tests
