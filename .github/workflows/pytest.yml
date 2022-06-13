@@ -8,11 +8,8 @@ on:
       MAuserName:
         required: true
   push:
-    secrets:
-      MAuserPAT: ${{ EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
-      MAuserName: ${{ EXA_CI_USER_NAME }}
-      # This way it only triggers on branch pushes,
-      # and ignores releases that push a tag.
+    # This way it only triggers on branch pushes,
+    # and ignores releases that push a tag.
     branches:
     - '**'
 
@@ -39,8 +36,13 @@ jobs:
       run: poetry install
 
     - name: run_generator_tests
-      env:
-        MAuserPAT: ${{ secrets.MAuserPAT }}
-        MAuserName: ${{ secrets.MAuserName }}
+      if: ${{ github.event_name == 'push' }}
+        env:
+          MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
+          MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
+      if: ${{ github.event_name == 'workflow_call' }}
+        env:
+          MAuserPAT: ${{ secrets.MAuserPAT }}
+          MAuserName: ${{ secrets.MAuserName }}
       run:
         poetry run pytest tests
