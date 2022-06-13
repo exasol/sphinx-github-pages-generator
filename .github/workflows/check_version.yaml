@@ -1,6 +1,8 @@
 name: Check if versions are consistent
 
-on: pull_request
+on:
+  workflow_call:
+  pull_request:
 
 jobs:
   check-version-numbers:
