@@ -34,7 +34,6 @@ jobs:
         poetry-version: 1.1.4
     - name: Poetry install
       run: poetry install
-
     - name: run_generator_tests
       - if: ${{ github.event_name == 'push' }}
         env:
