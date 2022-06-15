@@ -39,7 +39,8 @@ jobs:
         poetry-version: 1.1.4
     - name: Poetry install
       run: poetry install
-    - if: ${{ github.event_name == 'workflow_call' }}
+    #- if: ${{ github.event_name == 'workflow_call' }}
+    - if: ${{ inputs.wc }}
       env:
         MAuserPAT: ${{ secrets.MAuserPAT-wc }}
         MAuserName: ${{ secrets.MAuserName-wc }}
