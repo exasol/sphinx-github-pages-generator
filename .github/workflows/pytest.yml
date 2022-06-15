@@ -47,7 +47,7 @@ jobs:
       run:
         echo workflow_call
         # poetry run pytest tests
-    - if: ${{ github.event_name == 'push' }}
+    - if:  ${{ inputs.wc ! }}
       env:
         MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
         MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
