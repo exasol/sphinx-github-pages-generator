@@ -3,9 +3,9 @@ name: run_tests
 on:
   workflow_call:
     secrets:
-      MAuserPAT:
+      MAuserPAT-wc:
         required: true
-      MAuserName:
+      MAuserName-wc:
         required: true
   push:
     # This way it only triggers on branch pushes,
@@ -42,8 +42,8 @@ jobs:
         poetry run pytest tests
     - if: ${{ github.event_name == 'workflow_call' }}
       env:
-        MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
-        MAuserName: ${{ secrets.MAuserName }}
+        MAuserPAT: ${{ secrets.MAuserPAT-wc }}
+        MAuserName: ${{ secrets.MAuserName-wc }}
       run:
         poetry run pytest tests
 
