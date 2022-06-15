@@ -1,0 +1,7 @@
+exasol\_sphinx\_github\_pages\_generator.deploy\_github\_pages module
+=====================================================================
+
+.. automodule:: exasol_sphinx_github_pages_generator.deploy_github_pages
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,21 @@
+exasol\_sphinx\_github\_pages\_generator package
+================================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   exasol_sphinx_github_pages_generator.deploy_github_pages
+   exasol_sphinx_github_pages_generator.deployer
+   exasol_sphinx_github_pages_generator.generate_index
+   exasol_sphinx_github_pages_generator.parser
+
+Module contents
+---------------
+
+.. automodule:: exasol_sphinx_github_pages_generator
+   :members:
+   :undoc-members:
+   :show-inheritance:

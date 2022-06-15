@@ -1,0 +1,7 @@
+exasol\_sphinx\_github\_pages\_generator.generate\_index module
+===============================================================
+
+.. automodule:: exasol_sphinx_github_pages_generator.generate_index
+   :members:
+   :undoc-members:
+   :show-inheritance:

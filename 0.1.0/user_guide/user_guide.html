@@ -1,0 +1,462 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Changes" href="../changes/changelog.html" /><link rel="prev" title="Sphinx GitHub Pages Generator" href="../index.html" />
+
+    <meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>User Guide - Exasol Github Pages Generator documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Exasol Github Pages Generator  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Exasol Github Pages Generator  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">User Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../changes/changelog.html">Changes</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changes/changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-15</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_requirements.html">Requirements this Software aims to fulfill:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design Decisions:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.html">exasol_sphinx_github_pages_generator package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.deploy_github_pages.html">exasol_sphinx_github_pages_generator.deploy_github_pages module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.deployer.html">exasol_sphinx_github_pages_generator.deployer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.generate_index.html">exasol_sphinx_github_pages_generator.generate_index module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.parser.html">exasol_sphinx_github_pages_generator.parser module</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="user-guide">
+<h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">#</a></h1>
+<p>This user guide provides you with usage examples for this repository.
+For a detailed explanation of the API, please refer to our <a class="reference internal" href="../api/exasol_sphinx_github_pages_generator.html"><span class="doc">API Documentation</span></a></p>
+<section id="building-the-documentation">
+<h2>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">#</a></h2>
+<p>We are using Sphinx for generating the documentation,
+because it is the default documentation tool for Python projects.
+Sphinx supports API documentation generation for Python and with plugins also for other languages.
+Furthermore, it supports reStructuredText with proper cross-document references.</p>
+<section id="needed-repository-structure">
+<h3>Needed Repository structure<a class="headerlink" href="#needed-repository-structure" title="Permalink to this headline">#</a></h3>
+<p>This Project uses Sphinx for the generation of the documentation. Therefore, all files you want to use as a
+source for your documentation have to be compatible with Sphinx. You can find Sphinx’s
+documentation <a class="reference external" href="https://www.sphinx-doc.org/en/master/">here</a>.</p>
+<p>In general:</p>
+<p>You will need a base directory for your documentation source files. We use “repository_root/doc”,
+but you can set it to another folder (Please set the source_dir parameter accordingly. It defaults to /doc/).
+Inside the documentation root directory, you need at least a minimal “conf.py” to configure
+Sphinx and a “index.rst”
+for Sphinx to use as a root for your documentation. You can use <code class="code docutils literal notranslate"><span class="pre">sphinx-quickstart</span></code> to generate stubs for these.
+Inside the index.rst you can link to other parts of your documentation using the <code class="code docutils literal notranslate"><span class="pre">toctree</span></code> directive.</p>
+<p>You can also include plain text, or documentation for specific functions or objects by using the
+<code class="code docutils literal notranslate"><span class="pre">autosummary</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">automodule</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">autoclass</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">autoexception</span></code> directives, which will import the docstring for the given objects automatically.
+Here is the code from te index.rst of this project, which generates the documentation if the api:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">autosummary</span><span class="p">::</span>
+    <span class="p">:</span><span class="n">toctree</span><span class="p">:</span> <span class="o">../</span><span class="n">api</span>
+    <span class="p">:</span><span class="n">recursive</span><span class="p">:</span>
+
+    <span class="n">exasol_sphinx_github_pages_generator</span>
+</pre></div>
+</div>
+<p>To see the generated pages see <a class="reference internal" href="../index.html#api-ref-target"><span class="std std-ref">API Reference</span></a>.</p>
+</section>
+<section id="testing-the-documentation-build-with-sphinx-locally">
+<h3>Testing the documentation build with Sphinx locally<a class="headerlink" href="#testing-the-documentation-build-with-sphinx-locally" title="Permalink to this headline">#</a></h3>
+<p>You can use the Sphinx commands for building your documentation like normal to build your documentation locally.
+This can be useful for debugging purposes.</p>
+<p>When called from your “./doc” directory, the commands below will build you html files and put them in the
+“./doc/.build” directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sphinx-apidoc -T -e -o api ../&lt;your-module-name&gt;
+sphinx-build -b html -W . .build
+</pre></div>
+</div>
+<p>We also provide shortcuts for this as poethepoet tasks in the pyproject.toml file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-html-doc <span class="o">=</span> <span class="o">{</span><span class="nv">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    cd &quot;</span><span class="k">$(</span>git rev-parse --show-toplevel<span class="k">)</span>/doc<span class="s2">&quot;;</span>
+<span class="s2">    sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator;</span>
+<span class="s2">    sphinx-build -b html -W . .build</span>
+<span class="s2">    &quot;&quot;&quot;</span> <span class="o">}</span>           <span class="c1"># Builds the documentation</span>
+open-html-doc <span class="o">=</span> <span class="o">{</span> <span class="nv">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    cd &quot;</span><span class="k">$(</span>git rev-parse --show-toplevel<span class="k">)</span>/doc<span class="s2">&quot;;</span>
+<span class="s2">    xdg-open .build/index.html&quot;&quot;&quot;</span> <span class="o">}</span>     <span class="c1"># Opens the currently build documentation in the browser</span>
+build-and-open-html-doc <span class="o">=</span> <span class="o">[</span> <span class="s2">&quot;build-html-doc&quot;</span>, <span class="s2">&quot;open-html-doc&quot;</span> <span class="o">]</span>     <span class="c1"># Builds and opens the documentation</span>
+</pre></div>
+</div>
+<p>You can use similar shorthands in your project, just adjust the module path.</p>
+</section>
+<section id="call-the-sphinx-generator">
+<h3>Call the Sphinx generator<a class="headerlink" href="#call-the-sphinx-generator" title="Permalink to this headline">#</a></h3>
+<p>Once Sphinx generator is installed in your environment, you can use the “sgpg” command to run it. Use “sgpg -h”
+for an overview over parameters.</p>
+<p>You can also import and use it in a
+python script like this:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">exasol_sphinx_github_pages_generator.deploy_github_pages</span> <span class="k">as</span> <span class="nn">deploy_github_pages</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">deploy_github_pages</span><span class="o">.</span><span class="n">deploy_github_pages</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+</pre></div>
+</div>
+<p>Then call the script using command line parameters like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">declare</span> -a <span class="nv">StringArray</span><span class="o">=(</span><span class="s2">&quot;../package/module-path1&quot;</span> <span class="s2">&quot;../package/module-path2&quot;</span><span class="o">)</span>
+python3 your_caller_script.py <span class="se">\</span>
+    --target_branch <span class="s2">&quot;github-pages/main&quot;</span> <span class="se">\</span>
+    --push_origin <span class="s2">&quot;origin&quot;</span> <span class="se">\</span>
+    --push_enabled <span class="s2">&quot;push&quot;</span> <span class="se">\</span>
+    --source_branch <span class="s2">&quot;main&quot;</span>  <span class="se">\</span>
+    --module_path <span class="s2">&quot;</span><span class="si">${</span><span class="nv">StringArray</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
+    --source_dir <span class="s2">&quot;/doc/&quot;</span>
+</pre></div>
+</div>
+<p>Alternatively you can also pass the parameters directly in the python script:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">deploy_github_pages</span><span class="o">.</span><span class="n">deploy_github_pages</span><span class="p">([</span><span class="s2">&quot;--target_branch&quot;</span><span class="p">,</span> <span class="s2">&quot;target_branch&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;--push_origin&quot;</span><span class="p">,</span> <span class="s2">&quot;origin&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;--push_enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;push&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;--source_branch&quot;</span><span class="p">,</span> <span class="s2">&quot;source_branch&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;--source_dir&quot;</span><span class="p">,</span> <span class="s2">&quot;/doc/&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;--module_path&quot;</span><span class="p">,</span> <span class="s2">&quot;../package/module-path1&quot;</span><span class="p">,</span> <span class="s2">&quot;../package/module-path2&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The generator has to be called from the working directory containing the index.rst file.</p>
+</section>
+<section id="options">
+<h3>Options<a class="headerlink" href="#options" title="Permalink to this headline">#</a></h3>
+<p>Calling the module with “-h” will print the help page for the generator.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">deploy_github_pages</span><span class="o">.</span><span class="n">deploy_github_pages</span><span class="p">([</span><span class="s2">&quot;-h&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Parameters:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="exasol_sphinx_github_pages_generator.deploy_github_pages.GithubPagesDeployer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">exasol_sphinx_github_pages_generator.deploy_github_pages.</span></span><span class="sig-name descname"><span class="pre">GithubPagesDeployer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_commit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tempdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exasol_sphinx_github_pages_generator.deploy_github_pages.GithubPagesDeployer" title="Permalink to this definition">#</a></dt>
+<dd><p>Builds and deploys GitHub Pages using Sphinx given a branch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_dir</strong> – Path to the directory inside the source_branch where the index.rst and conf.py reside in.</p></li>
+<li><p><strong>source_branch</strong> – The branch-name or tag the documentation files should be generated for. Will use remote branch
+for generation. Local unpushed changes will cause program exit or be ignored.</p></li>
+<li><p><strong>current_commit_id</strong> – CommitID of the current branch.</p></li>
+<li><p><strong>module_path</strong> – List of modules/packages in the source_branch that should be documented.</p></li>
+<li><p><strong>target_branch</strong> – Branch the documentation should be generated into.</p></li>
+<li><p><strong>push_origin</strong> – origin of the Git Repository.</p></li>
+<li><p><strong>source_origin</strong> – origin of the source branch. “origin” results in “refs/remotes/origin/source_branch”,
+other results in “refs/source_origin/source_branch”.
+Example: source_origin = tags, source_branch = tag_name result : “refs/tags/tag_name”</p></li>
+<li><p><strong>push_enabled</strong> – Set to “push” if generated files should be pushed to the remote, otherwise set to “commit”.</p></li>
+<li><p><strong>tempdir</strong> – Path of the temporary directory this Generator runs in.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="building-the-documentation-in-the-ci">
+<h2>Building the Documentation in the CI<a class="headerlink" href="#building-the-documentation-in-the-ci" title="Permalink to this headline">#</a></h2>
+<p>The documentation for this project is built on GitHub Actions using this project. We will use the process as an example here.</p>
+<p>There is an action, both for updating the documentation for the main branch, and for validating the build of the
+documentation for each push not on the main branch or on documentation branches.
+It uses the target branch github-pages/&lt;feature-branch-name&gt;,
+and if the branch is not “main”, the target branch is deleted immediately after generation. Your can find the yaml file
+for this action in “.github/workflows/check_documentation_build.yaml”.</p>
+<p>The GitHub Action uses poethepoet tasks which we describe in the pyproject.toml:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">poe</span><span class="o">.</span><span class="n">tasks</span><span class="p">]</span>
+    <span class="n">commit_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;; bash ./doc/scripts/commit_pages_main.sh&quot;&quot;&quot;</span> <span class="p">}</span>
+    <span class="n">commit_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;;  bash ./doc/scripts/commit_pages_current.sh&quot;&quot;&quot;</span> <span class="p">}</span>
+    <span class="n">push_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;; bash ./doc/scripts/push_pages_main.sh&quot;&quot;&quot;</span> <span class="p">}</span>
+    <span class="n">push_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;; bash ./doc/scripts/push_pages_current.sh &quot;&quot;&quot;</span> <span class="p">}</span>
+
+    <span class="n">push_pages_release</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;; bash ./doc/scripts/push_pages_release.sh&quot;&quot;&quot;</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>They use bash scripts that look like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">declare</span> -a <span class="nv">StringArray</span><span class="o">=(</span><span class="s2">&quot;../exasol_sphinx_github_pages_generator&quot;</span> <span class="o">)</span>
+python3 &lt;path/to/your/call_generator_script.py&gt; <span class="se">\</span>
+  --target_branch <span class="s2">&quot;github-pages/main&quot;</span> <span class="se">\</span>
+  --push_origin <span class="s2">&quot;origin&quot;</span> <span class="se">\</span>
+  --push_enabled <span class="s2">&quot;commit&quot;</span> <span class="se">\</span>
+  --source_branch <span class="s2">&quot;main&quot;</span>  <span class="se">\</span>
+  --module_path <span class="s2">&quot;</span><span class="si">${</span><span class="nv">StringArray</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>The task can be called like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry run poe commit_pages_main  <span class="c1"># creates or updates github-pages/main locally</span>
+poetry run poe push_pages_main  <span class="c1"># creates or updates github-pages/main and pushes it to origin</span>
+poetry run poe commit_pages_current  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; locally</span>
+poetry run poe push_pages_current  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; and pushes it to origin</span>
+poetry run poe push_pages_release  <span class="c1"># creates or updates github-pages/&lt;latest-tag&gt; and pushes it to origin</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../changes/changelog.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Changes</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../index.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Home</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2021, Exasol
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">User Guide</a><ul>
+<li><a class="reference internal" href="#building-the-documentation">Building the Documentation</a><ul>
+<li><a class="reference internal" href="#needed-repository-structure">Needed Repository structure</a></li>
+<li><a class="reference internal" href="#testing-the-documentation-build-with-sphinx-locally">Testing the documentation build with Sphinx locally</a></li>
+<li><a class="reference internal" href="#call-the-sphinx-generator">Call the Sphinx generator</a></li>
+<li><a class="reference internal" href="#options">Options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#building-the-documentation-in-the-ci">Building the Documentation in the CI</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    </body>
+</html>
