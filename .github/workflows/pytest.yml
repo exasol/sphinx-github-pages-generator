@@ -6,9 +6,7 @@ on:
       wc:
         description: 'desc todo'
         required: true
-        type: bool
-
-
+        type: boolean
     secrets:
       MAuserPAT-wc:
         required: true
