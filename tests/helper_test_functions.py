@@ -36,15 +36,6 @@ def remove_branch(branch_name):
 def setup_test_repo():
     user_access_token = os.environ.get("MAuserPAT")
     user_name = os.environ.get("MAuserName")
-    if user_name == "":
-        print("username not there")
-    if user_access_token == "":
-        print("user_access_token not there")
-    if user_name.startswith("exa"):
-        print("user_name working")
-    print("starting clone")
-    run(["git", "rev-parse", "--is-inside-work-tree"]) #check if are in worktree
-    run(["git", "remote", "show", "origin"]) # check where we are
     run(["git", "clone", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git"],
         check=True)
     os.chdir("sphinx-github-pages-generator-test")
