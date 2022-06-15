@@ -16,7 +16,9 @@ jobs:
     with:
       workflow-call-ckeck: true
     secrets:
+      # Machine user private access token
       MAuserPAT-workflow-call: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
+      # Machine user name
       MAuserName-workflow-call: ${{ secrets.EXA_CI_USER_NAME }}
 
   upload:

@@ -41,13 +41,17 @@ jobs:
       run: poetry install
     - if: ${{ inputs.workflow-call-ckeck }}
       env:
+        # Machine user private access token
         MAuserPAT: ${{ secrets.MAuserPAT-workflow-call }}
+        # Machine user name
         MAuserName: ${{ secrets.MAuserName-workflow-call }}
       run:
         poetry run pytest tests
     - if:  ${{ inputs.workflow-call-ckeck == false }}
       env:
+        # Machine user private access token
         MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
+        # Machine user name
         MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
       run:
         poetry run pytest tests
