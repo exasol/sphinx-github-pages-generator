@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       workflow-call-ckeck:
-        description: 'set to true if calling from a workflow. So we can check the trigger and set the secrets acordingly'
+        description: 'set to true if calling from a workflow. So we can check the trigger and set the secrets accordingly'
         required: true
         type: boolean
     secrets:
