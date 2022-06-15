@@ -51,6 +51,3 @@ jobs:
         MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
       run:
         poetry run pytest tests
-
-
-
