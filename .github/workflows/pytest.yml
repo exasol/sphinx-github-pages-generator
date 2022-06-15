@@ -2,11 +2,21 @@ name: run_tests
 
 on:
   workflow_call:
+    inputs:
+      workflow-call-ckeck:
+        description: 'set to true if calling from a workflow. So we can check the trigger and set the secrets accordingly'
+        required: true
+        type: boolean
+    secrets:
+      MAuserPAT-workflow-call:
+        required: true
+      MAuserName-workflow-call:
+        required: true
   push:
-  # This way it only triggers on branch pushes,
-  # and ignores releases that push a tag.
-      branches:
-      - '**'
+    # This way it only triggers on branch pushes,
+    # and ignores releases that push a tag.
+    branches:
+    - '**'
 
 jobs:
   test-job:
@@ -29,10 +39,19 @@ jobs:
         poetry-version: 1.1.4
     - name: Poetry install
       run: poetry install
-
-    - name: run_generator_tests
+    - if: ${{ inputs.workflow-call-ckeck }}
       env:
+        # Machine user private access token
+        MAuserPAT: ${{ secrets.MAuserPAT-workflow-call }}
+        # Machine user name
+        MAuserName: ${{ secrets.MAuserName-workflow-call }}
+      run:
+        poetry run pytest tests
+    - if:  ${{ inputs.workflow-call-ckeck == false }}
+      env:
+        # Machine user private access token
         MAuserPAT: ${{ secrets.EXA_CI_TOKEN_FOR_ADDING_AUTOMATIC_DOCUMENTATION }}
+        # Machine user name
         MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
       run:
         poetry run pytest tests
