@@ -2,6 +2,13 @@ name: run_tests
 
 on:
   workflow_call:
+    inputs:
+      wc:
+        description: 'desc todo'
+        required: true
+        type: bool
+
+
     secrets:
       MAuserPAT-wc:
         required: true
