@@ -4,6 +4,7 @@ from subprocess import run
 from tempfile import TemporaryDirectory
 import os
 from pathlib import Path
+from fixtures import setup_test_env
 import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
 from helper_test_functions import remove_branch, setup_workdir
 import shutil

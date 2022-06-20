@@ -5,6 +5,7 @@ import os
 import re
 from pathlib import Path
 from jinja2 import Environment, PackageLoader, select_autoescape
+from fixtures import setup_test_env, setup_index_tests_target_branch, setup_index_tests_integration
 import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
 from helper_test_functions import remove_branch
 from exasol_sphinx_github_pages_generator.generate_index import find_index, \
