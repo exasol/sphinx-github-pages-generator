@@ -1,5 +1,3 @@
-import sys
-
 import pytest
 from subprocess import run
 from tempfile import TemporaryDirectory
@@ -7,13 +5,10 @@ import os
 import re
 from pathlib import Path
 from jinja2 import Environment, PackageLoader, select_autoescape
-
 import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
 from helper_test_functions import remove_branch
-from fixtures import setup_test_env, setup_index_tests_target_branch, setup_index_tests_integration
 from exasol_sphinx_github_pages_generator.generate_index import find_index, \
     get_releases, generate_release_dicts, generate_release_index
-
 from importlib_resources import files
 import exasol_sphinx_github_pages_generator
 
@@ -129,9 +124,9 @@ def test_get_releases(setup_index_tests_target_branch):
     correct_releases_local = [{'release': "latest", 'release_path': f'{source_branch}/index.html'},
                         {'release': 'feature-some-feature', 'release_path': 'feature-some-feature/index.html'},
                         {'release': 'another_branch', 'release_path': 'another_branch/index.html'}]
-    for release in releases:
-        assert release in correct_releases_local
-    assert len(releases) == len(correct_releases_local)
+
+    assert len(releases) == len(correct_releases_local) \
+           and set(releases).issubset(set(correct_releases_local))
 
 
 def test_get_releases_no_target_branch():
@@ -155,8 +150,12 @@ def test_generate_release_index(setup_index_tests_integration):
 
     with open(f"{target_worktree}/index.html") as index_file:
         index_content = index_file.readlines()
-    for i in range(0, len(correct_content)):
-        assert correct_content[i].strip() == index_content[i].strip()
+
+    stripped_correct_content = sorted([correct_content[i].strip()
+                                       for i in range(0, len(correct_content))])
+    stripped_index_content = sorted([index_content[i].strip()
+                                     for i in range(0, len(index_content))])
+    assert stripped_correct_content == stripped_index_content
 
 
 def test_abort_generate_release_index_wrong_target_branch(setup_index_tests_integration):
@@ -171,8 +170,8 @@ def test_abort_generate_release_index_wrong_target_branch(setup_index_tests_inte
             r"Check if target_branch really exists on remote?.*received Error:.*returncode: .*stderr: .*stdout: .*"
     print(e.value)
     comp_regex = re.compile(regex, flags=re.DOTALL)
-    assert e.match(comp_regex)
-    assert e.type == SystemExit
+    assert e.match(comp_regex) \
+           and e.type == SystemExit
 
 
 def test_abort_generate_release_index_worktree_not_a_dir(setup_index_tests_integration):
@@ -181,8 +180,8 @@ def test_abort_generate_release_index_worktree_not_a_dir(setup_index_tests_integ
     with pytest.raises(FileNotFoundError) as e:
         generate_release_index(target_branch, Path(not_target_worktree), source_branch, target_branch_exists_remote = True)
 
-    assert e.match(f"No such file or directory: '{not_target_worktree}'")
-    assert e.type == FileNotFoundError
+    assert e.match(f"No such file or directory: '{not_target_worktree}'") \
+           and e.type == FileNotFoundError
 
 def test_abort_generate_release_index_source_branch_not_exists(setup_index_tests_integration):
     target_branch, _, target_branch_exists, target_worktree = setup_index_tests_integration
@@ -191,8 +190,8 @@ def test_abort_generate_release_index_source_branch_not_exists(setup_index_tests
         generate_release_index(target_branch, Path(target_worktree), not_source_branch, target_branch_exists_remote = True)
 
     assert e.match(f".* not currently checked out. Please Check out branch .*"
-                   f" before calling generate_release_index.")
-    assert e.type == SystemExit
+                   f" before calling generate_release_index.") \
+           and e.type == SystemExit
 
 def test_generate_release_index_target_branch_not_exists(setup_index_tests_integration):
     _, source_branch, target_branch_exists, target_worktree = setup_index_tests_integration
@@ -224,16 +223,22 @@ def test_index_no_existing_releases(setup_test_env): #todo move these tests?
                                              "--module_path", "../test_package", "../another_test_package"])
     index_exists = run(["git", "ls-tree", "-d", f"origin/{target_branch}", "index.html"],
                                     capture_output=True, text=True, check=True)
-    assert index_exists.returncode == 0
     index_source_exists = run(["git", "ls-tree", "-d", f"origin/{target_branch}", "_sources/index_template.jinja"],
                                     capture_output=True, text=True, check=True)
-    assert index_source_exists.returncode == 0
 
     run(["git", "checkout", target_branch], check=True)
     with open("index.html") as index_file:
         index_content = index_file.readlines()
-    for i in range(0, len(correct_content)):
-        assert correct_content[i].strip() == index_content[i].strip()
+
+    stripped_correct_content = sorted([correct_content[i].strip()
+                                       for i in range(0, len(correct_content))])
+    stripped_index_content = sorted([index_content[i].strip()
+                                     for i in range(0, len(index_content))])
+
+    assert index_exists.returncode == 0 \
+           and index_source_exists.returncode == 0 \
+           and stripped_correct_content == stripped_index_content
+
     remove_branch(target_branch)
 
 
