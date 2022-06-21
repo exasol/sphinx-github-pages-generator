@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "exasol-sphinx-github-pages-generator"
-version = "0.1.0"
+version = "0.1.1"
 description = "Generates Sphinx GitHub pages for a given Git Repository"
 
 license = "MIT"
