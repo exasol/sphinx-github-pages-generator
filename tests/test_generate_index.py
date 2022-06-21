@@ -128,7 +128,7 @@ def test_get_releases(setup_index_tests_target_branch):
     not_existing_releases = [release for release in releases
                              if release not in correct_releases_local]
     assert (len(releases) == len(correct_releases_local)
-                and not not_existing_releases)
+            and not not_existing_releases)
 
 
 def test_get_releases_no_target_branch():
@@ -155,8 +155,8 @@ def test_generate_release_index(setup_index_tests_integration):
 
     stripped_correct_content = sorted((correct_content[i].strip()
                                        for i in range(0, len(correct_content))))
-    stripped_index_content = sorted([index_content[i].strip()
-                                     for i in range(0, len(index_content))])
+    stripped_index_content = sorted((index_content[i].strip()
+                                     for i in range(0, len(index_content))))
     assert stripped_correct_content == stripped_index_content
 
 
@@ -173,7 +173,7 @@ def test_abort_generate_release_index_wrong_target_branch(setup_index_tests_inte
     print(e.value)
     comp_regex = re.compile(regex, flags=re.DOTALL)
     assert (e.match(comp_regex) 
-                and e.type == SystemExit)
+            and e.type == SystemExit)
 
 
 def test_abort_generate_release_index_worktree_not_a_dir(setup_index_tests_integration):
@@ -183,7 +183,7 @@ def test_abort_generate_release_index_worktree_not_a_dir(setup_index_tests_integ
         generate_release_index(target_branch, Path(not_target_worktree), source_branch, target_branch_exists_remote = True)
 
     assert (e.match(f"No such file or directory: '{not_target_worktree}'")
-                and e.type == FileNotFoundError)
+            and e.type == FileNotFoundError)
 
 def test_abort_generate_release_index_source_branch_not_exists(setup_index_tests_integration):
     target_branch, _, target_branch_exists, target_worktree = setup_index_tests_integration
@@ -234,12 +234,12 @@ def test_index_no_existing_releases(setup_test_env): #todo move these tests?
 
     stripped_correct_content = sorted((correct_content[i].strip()
                                        for i in range(0, len(correct_content))))
-    stripped_index_content = sorted([index_content[i].strip()
-                                     for i in range(0, len(index_content))])
+    stripped_index_content = sorted((index_content[i].strip()
+                                     for i in range(0, len(index_content))))
 
     assert (index_exists.returncode == 0
-                and index_source_exists.returncode == 0
-                and stripped_correct_content == stripped_index_content)
+            and index_source_exists.returncode == 0
+            and stripped_correct_content == stripped_index_content)
 
     remove_branch(target_branch)
 
