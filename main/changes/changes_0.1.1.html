@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Requirements this Software aims to fulfill:" href="../system_requirements.html" /><link rel="prev" title="Sphinx GitHub Pages Generator 0.1.0, released 2022-06-15" href="../changes/changes_0.1.0.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Sphinx GitHub Pages Generator 0.1.0, released 2022-06-15" href="changes_0.1.0.html" /><link rel="prev" title="Changes" href="changelog.html" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
-        <title>Developer Guide - Exasol Github Pages Generator documentation</title>
+        <title>Sphinx GitHub Pages Generator 0.1.1, released YYYY-MM-DD - Exasol Github Pages Generator documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -154,16 +154,16 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">User Guide</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../changes/changelog.html">Changes</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../changes/changes_0.1.1.html">Sphinx GitHub Pages Generator 0.1.1, released YYYY-MM-DD</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../changes/changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-15</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="changelog.html">Changes</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Sphinx GitHub Pages Generator 0.1.1, released YYYY-MM-DD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes_0.1.0.html">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-15</a></li>
 </ul>
 </li>
 </ul>
-<ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Developer Guide</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/developer_guide.html">Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../system_requirements.html">Requirements this Software aims to fulfill:</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../design.html">Design Decisions:</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
@@ -209,55 +209,30 @@
           </label>
         </div>
         <article role="main">
-          <section id="developer-guide">
-<h1>Developer Guide<a class="headerlink" href="#developer-guide" title="Permalink to this headline">#</a></h1>
-<p>In this developer guide we explain how you can build this project, build the documentation and run the tests.</p>
-<section id="installation-and-build-setup">
-<h2>Installation and Build/Setup<a class="headerlink" href="#installation-and-build-setup" title="Permalink to this headline">#</a></h2>
-<p>First, you need to clone the Repository:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">exasol</span><span class="o">/</span><span class="n">sphinx</span><span class="o">-</span><span class="n">github</span><span class="o">-</span><span class="n">pages</span><span class="o">-</span><span class="n">generator</span><span class="o">.</span><span class="n">git</span>
-</pre></div>
-</div>
-<p>Then, got to the project root and use poetry to install your dependencies:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">install</span>
-<span class="n">poetry</span> <span class="n">update</span>
-</pre></div>
-</div>
-<p>Now, you can run the project using the poethepoet task defined in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/blob/main/pyproject.toml">pyproject.toml</a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">commit_pages_main</span>  <span class="c1"># creates or updates github-pages/main locally</span>
-<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_main</span>  <span class="c1"># creates or updates github-pages/main and pushes it to origin</span>
-<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">commit_pages_current</span>  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; locally</span>
-<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_current</span>  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; and pushes it to origin</span>
-<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_release</span>  <span class="c1"># creates or updates github-pages/&lt;latest-tag&gt; and pushes it to origin</span>
-</pre></div>
-</div>
-<p>These are also used in the CI to build and publish the documentation of this project.</p>
+          <section id="sphinx-github-pages-generator-0-1-1-released-yyyy-mm-dd">
+<h1>Sphinx GitHub Pages Generator 0.1.1, released YYYY-MM-DD<a class="headerlink" href="#sphinx-github-pages-generator-0-1-1-released-yyyy-mm-dd" title="Permalink to this headline">#</a></h1>
+<p>Code name: TBD</p>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<p>TBD</p>
+</section>
+<section id="features-enhancements">
+<h2>Features / Enhancements<a class="headerlink" href="#features-enhancements" title="Permalink to this headline">#</a></h2>
+</section>
+<section id="bug-fixes">
+<h2>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this headline">#</a></h2>
 </section>
 <section id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">#</a></h2>
-<p>This repository also uses itself to generate the documentation for the Generator. The Source Files for the documentation
-can be found in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/tree/main/doc">doc folder</a>. Here is the <a class="reference internal" href="../index.html#docu-start"><span class="std std-ref">generated documentation</span></a> (You are already here ;) ).
-To build the documentation manually for testing, you can use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry run poe build-html-doc <span class="c1"># Builds the documentation</span>
-poetry run poe open-html-doc <span class="c1"># Opens the currently build documentation in the browser</span>
-poetry run poe build-and-open-html-doc <span class="c1"># Builds and opens the documentation</span>
-</pre></div>
-</div>
-<p>All three build commands generate the documentation into /doc/.build-docu
-which is excluded in gitignore.</p>
 </section>
-<section id="tests">
-<h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">#</a></h2>
-<p>Tests are located in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/tree/main/tests">tests folder</a>. Run them with</p>
-<blockquote>
-<div><p>poetry run pytest tests</p>
-</div></blockquote>
-<p>The tests use a <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator-test">test repository</a>
-with a Machine user which is private in order not to confuse users. In order to run them,
-the environment variables “MAuserPAT”(Machine user private access token) and “MAuserName”(machine user name) have to be set to the Machine Users Personal Access Token and
-Name respectively. If you need to change the names of these environment variables you can do so in <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/blob/7235e9577531bb3992425ffd200004dc4a7fee32/tests/helper_test_functions.py#L13">setup_test_repo</a>, but don’t commit
-these changes in order not to break the CI tests.</p>
-<p>For running your own tests, you can change the tests Repository, User and Password in <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/blob/7235e9577531bb3992425ffd200004dc4a7fee32/tests/helper_test_functions.py#L13">setup_test_repo</a>.</p>
+<section id="refactoring">
+<h2>Refactoring<a class="headerlink" href="#refactoring" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>#22: Fixed multiple asserts in tests</p></li>
+</ul>
+</section>
+<section id="security">
+<h2>Security<a class="headerlink" href="#security" title="Permalink to this headline">#</a></h2>
 </section>
 </section>
 
@@ -266,23 +241,23 @@ these changes in order not to break the CI tests.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../system_requirements.html">
+          <a class="next-page" href="changes_0.1.0.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Requirements this Software aims to fulfill:</div>
+                <div class="title">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-15</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../changes/changes_0.1.0.html">
+          <a class="prev-page" href="changelog.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Sphinx GitHub Pages Generator 0.1.0, released 2022-06-15</div>
+                <div class="title">Changes</div>
                 
               </div>
             </a>
@@ -318,10 +293,13 @@ these changes in order not to break the CI tests.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Developer Guide</a><ul>
-<li><a class="reference internal" href="#installation-and-build-setup">Installation and Build/Setup</a></li>
+<li><a class="reference internal" href="#">Sphinx GitHub Pages Generator 0.1.1, released YYYY-MM-DD</a><ul>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#features-enhancements">Features / Enhancements</a></li>
+<li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
-<li><a class="reference internal" href="#tests">Tests</a></li>
+<li><a class="reference internal" href="#refactoring">Refactoring</a></li>
+<li><a class="reference internal" href="#security">Security</a></li>
 </ul>
 </li>
 </ul>
