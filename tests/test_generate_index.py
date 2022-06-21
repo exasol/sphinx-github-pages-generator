@@ -28,6 +28,7 @@ env = Environment(
     )
 template = env.get_template("index_template.html.jinja2")
 
+
 def test_find_index():
     source_branch = "main"
     with TemporaryDirectory("dir") as tempdir:
