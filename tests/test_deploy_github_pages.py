@@ -61,9 +61,9 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     commit_id_new = current_commit_id.stdout
 
     # the docu files where updated, so a new commit should be pushed to the remote
-    assert not commit_id_new == "" \
-           and not commit_id_old == "" \
-           and not commit_id_old == commit_id_new
+    assert (not commit_id_new == "" 
+                and not commit_id_old == "" 
+                and not commit_id_old == commit_id_new)
 
 
 def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
@@ -100,9 +100,9 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
              f"origin/{target_branch}:{source_branch_two}"],
             capture_output=True, text=True, check=True)
 
-        assert target_branch_exists.returncode == 0 \
-               and doc_dir_source_one_exists.returncode == 0 \
-               and doc_dir_source_two_exists.returncode == 0
+        assert (target_branch_exists.returncode == 0
+                    and doc_dir_source_one_exists.returncode == 0
+                    and doc_dir_source_two_exists.returncode == 0)
 
 
 def test_no_new_push_and_commit_if_no_changes(setup_test_env):
@@ -130,9 +130,9 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
     commit_id_new = current_commit_id.stdout
 
     # the docu files where not updated, so no new commit should be pushed to the remote
-    assert commit_id_old != 0 \
-           and commit_id_old == commit_id_new \
-           and not commit_id_new == ""
+    assert (commit_id_old != 0 
+                and commit_id_old == commit_id_new
+                and not commit_id_new == "")
 
 
 def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env):
@@ -261,9 +261,9 @@ def test_only_commit_dont_push(setup_test_env):
         ["git", "show-branch", f"remotes/origin/{target_branch}"],
         capture_output=True, text=True)
 
-    assert not remote_commit_id_new == current_local_commit_id.stdout \
-           and not current_local_commit_id.stdout == "" and \
-           not target_branch_exists.returncode == 0
+    assert (not remote_commit_id_new == current_local_commit_id.stdout
+                and not current_local_commit_id.stdout == ""
+                and not target_branch_exists.returncode == 0)
 
 
 def test_select_different_source_branch_which_does_exists_locally(setup_test_env):
@@ -330,9 +330,9 @@ def test_select_different_source_branch_does_not_delete_local_changes(setup_test
     with open("./index.rst", "r") as file:
         content = file.read()
 
-    assert current_branch.stdout[:-1] == local_branch \
-           and current_commit_id.stdout == new_current_commit_id.stdout \
-           and "\n\nThis text is a change." in content
+    assert (current_branch.stdout[:-1] == local_branch
+                and current_commit_id.stdout == new_current_commit_id.stdout
+                and "\n\nThis text is a change." in content)
 
 
 def test_infer_source_branch(setup_test_env):
@@ -352,8 +352,8 @@ def test_infer_source_branch(setup_test_env):
     run(["git", "checkout", target_branch], check=True)
     path = Path(f"./{source_branch}")
 
-    assert target_branch_exists.returncode == 0 \
-           and path.is_dir()
+    assert (target_branch_exists.returncode == 0
+                and path.is_dir())
 
 
 def test_abort_if_given_source_branch_does_not_exist(setup_test_env):
@@ -366,8 +366,8 @@ def test_abort_if_given_source_branch_does_not_exist(setup_test_env):
         deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
                                                  "--source_branch", source_branch,
                                                  "--module_path", "../test_package", "../another_test_package"])
-    assert e.match(f"source branch {source_branch} does not exist") \
-           and e.type == SystemExit
+    assert (e.match(f"source branch {source_branch} does not exist")
+                and e.type == SystemExit)
 
 
 def test_abort_local_uncommitted_changes_exist_in_source_branch(setup_test_env):
@@ -454,8 +454,8 @@ def test_abort_if_no_source_branch_detected(setup_test_env):
             finally:
                 deployer.clean_worktree(cwd)
 
-    assert e.match(f"Abort. Could not detect current branch and no source branch given.") \
-           and e.type == SystemExit
+    assert (e.match(f"Abort. Could not detect current branch and no source branch given.")
+                and e.type == SystemExit)
 
 
 def test_use_different_source_dir(setup_test_env):
