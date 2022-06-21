@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+
 # Unit test / coverage reports
 .pytest_cache/
 
