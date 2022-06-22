@@ -99,7 +99,7 @@ def commit(session, branch):
     }
     branch_specific_arguments = {
         "main": ["--source_branch", "main"],
-        "current": [],
+        "current": ["--source_branch", f"{_current_branch()}"],
     }
     args = [
         "python",
@@ -129,7 +129,7 @@ def push(session, target):
     }
     target_specific_arguments = {
         "main": ["--source_branch", "main"],
-        "current": [],
+        "current": ["--source_branch", f"{_current_branch()}"],
         "release": ["--source_branch", _tags()[-1], "--source_origin", "tags"],
     }
     args = [
