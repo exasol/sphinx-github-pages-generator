@@ -2,7 +2,7 @@ from subprocess import run
 import os
 import shutil
 from pathlib import Path
-import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
+
 
 
 def run_deployer_build_and_copy_documentation_without_gen_index(deployer):

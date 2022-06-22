@@ -4,6 +4,7 @@ from subprocess import run
 from tempfile import TemporaryDirectory
 import os
 from pathlib import Path
+from click.testing import CliRunner
 from fixtures import setup_test_env
 import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
 from helper_test_functions import remove_branch, setup_workdir
@@ -19,9 +20,13 @@ def test_remote_branch_creation(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
     print(os.getcwd())
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--module_path", "../test_package"])
+
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
+
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
@@ -38,9 +43,13 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     run(["git", "push", "-u", "origin", temp_test_branch], check=True)
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", temp_test_branch,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
+
     current_commit_id = run(["git", "ls-remote",
                              f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
                              target_branch], capture_output=True, check=True)
@@ -52,9 +61,12 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     run(["git", "add", "*"], check=True)
     run(["git", "commit", "-m", "test-commit"], check=True)
     run(["git", "push"], check=True)
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", temp_test_branch,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
     current_commit_id = run(["git", "ls-remote",
                              f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
                              target_branch], capture_output=True, check=True)
@@ -62,8 +74,8 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
 
     # the docu files where updated, so a new commit should be pushed to the remote
     assert (not commit_id_new == "" 
-                and not commit_id_old == "" 
-                and not commit_id_old == commit_id_new)
+            and not commit_id_old == ""
+            and not commit_id_old == commit_id_new)
 
 
 def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
@@ -74,9 +86,12 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch_one,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch_one,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
 
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
@@ -84,10 +99,14 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
         source_branch_two = "branch-with-different-docu-source-dir"
         run(["git", "checkout", source_branch_two], check=True)
 
-        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--source_branch", source_branch_two,
-                                                 "--source_dir", "/documentation/",
-                                                 "--module_path", "../test_package", "../another_test_package"])
+        args_list = [
+            "--target_branch", target_branch,
+            "--source_branch", source_branch_two,
+            "--source_dir", "/documentation/",
+            "--module_path", "../test_package",
+            "--module_path", "../another_test_package"]
+        CliRunner().invoke(deploy_github_pages.main, args_list)
+
         target_branch_exists = run(
             ["git", "show-branch", f"remotes/origin/{target_branch}"],
             capture_output=True, text=True)
@@ -113,17 +132,25 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
+
     current_commit_id = run(
         ["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
          target_branch], capture_output=True, check=True)
     commit_id_old = current_commit_id.stdout
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
+
     current_commit_id = run(
         ["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
          target_branch], capture_output=True, check=True)
@@ -144,9 +171,13 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
     module_path = ["../test_package", "../another_test_package"]
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--module_path", module_path[0], module_path[1]])
+
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", module_path[0],
+        "--module_path", module_path[1]]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
 
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
@@ -189,9 +220,12 @@ def test_no_doctree_files_in_remote(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
 
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
@@ -215,9 +249,12 @@ def test_no__pycache__files_in_remote(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
 
     with TemporaryDirectory() as tempdir2:
         os.chdir(tempdir2)
@@ -241,10 +278,14 @@ def test_only_commit_dont_push(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--push_enabled", "commit",
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--push_enabled", "commit",
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
+
     current_remote_commit_id = run(
         ["git", "ls-remote", f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
          target_branch], capture_output=True, check=True)
@@ -277,9 +318,13 @@ def test_select_different_source_branch_which_does_exists_locally(setup_test_env
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
+
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
@@ -295,9 +340,13 @@ def test_select_different_source_branch_which_does_not_exists_locally(setup_test
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
+
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
@@ -317,9 +366,12 @@ def test_select_different_source_branch_does_not_delete_local_changes(setup_test
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
 
     # check if we are on starting branch and correct commit
     current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
@@ -343,8 +395,12 @@ def test_infer_source_branch(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
+
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
 
@@ -362,12 +418,17 @@ def test_abort_if_given_source_branch_does_not_exist(setup_test_env):
     run(["git", "checkout", actual_branch], check=True)
     target_branch = "test-docu-new-branch"
 
-    with pytest.raises(SystemExit) as e:
-        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--source_branch", source_branch,
-                                                 "--module_path", "../test_package", "../another_test_package"])
-    assert (e.match(f"source branch {source_branch} does not exist")
-            and e.type == SystemExit)
+
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    result = CliRunner().invoke(deploy_github_pages.main, args_list, catch_exceptions=False)
+
+    assert (isinstance(result.exception, SystemExit)
+            and bool(re.match(f"source branch {source_branch} does not exist",
+                              result.exception.code)))
 
 
 def test_abort_local_uncommitted_changes_exist_in_source_branch(setup_test_env):
@@ -381,14 +442,21 @@ def test_abort_local_uncommitted_changes_exist_in_source_branch(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch] # in case something is wrongly pushed for some reason
     remove_branch(target_branch)
 
-    with pytest.raises(SystemExit) as e:
-        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--source_branch", source_branch,
-                                                 "--module_path", "../test_package", "../another_test_package"])
-    assert e.match(f"Abort, you have uncommitted changes in source branch  {source_branch}, "
-                     f"please commit and push the following files:\n .*") \
-           and e.type == SystemExit
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    result = CliRunner().invoke(deploy_github_pages.main, args_list)
 
+    assert (isinstance(result.exception, SystemExit)
+            and bool(re.match(f"Abort, you have uncommitted changes in source "
+                              f"branch  {source_branch}, please commit and push"
+                              f" the following files:\n .*",
+                              result.exception.code))
+            )
+
+    
 
 def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
     branches_to_delete_in_cleanup, _,_ = setup_test_env
@@ -403,13 +471,18 @@ def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
     target_branch = "test-docu-new-branch"
     branches_to_delete_in_cleanup += [target_branch]
 
-    with pytest.raises(SystemExit) as e:
-        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--source_branch", source_branch,
-                                                 "--module_path", "../test_package", "../another_test_package"])
-    assert e.match(f"Abort. Local commit id .* and commit id of remote source branch"
-                   f" .* are not equal. Please push your changes or pull new commits from remote.") \
-           and e.type == SystemExit
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    result = CliRunner().invoke(deploy_github_pages.main, args_list)
+    assert (isinstance(result.exception, SystemExit)
+            and bool(re.match("Abort. Local commit id .* and commit id of "
+                              "remote source branch .* are not equal. Please "
+                              "push your changes or pull new commits from "
+                              "remote.", result.exception.code))
+            )
 
 
 def test_abort_source_branch_only_exists_locally(setup_test_env):
@@ -422,14 +495,20 @@ def test_abort_source_branch_only_exists_locally(setup_test_env):
     run(["git", "checkout", a_branch], check=True)
     target_branch = "test-docu-new-branch"
     branches_to_delete_in_cleanup += [temp_test_branch, target_branch]
-    with pytest.raises(SystemExit) as e:
-        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--source_branch", temp_test_branch,
-                                                 "--module_path", "../test_package", "../another_test_package"])
 
-    assert e.match(f"Source branch exists locally, but not on remote, and source branch is not current branch."
-                   f"Please push your source branch to remote.") \
-           and e.type == SystemExit
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", temp_test_branch,
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    result = CliRunner().invoke(deploy_github_pages.main, args_list)
+    assert (isinstance(result.exception, SystemExit)
+            and bool(re.match(f"Source branch exists locally, but not on "
+                              f"remote, and source branch is not current "
+                              f"branch.Please push your source branch to "
+                              f"remote.", result.exception.code))
+            )
+
 
 
 def test_abort_if_no_source_branch_detected(setup_test_env):
@@ -466,10 +545,14 @@ def test_use_different_source_dir(setup_test_env):
     #branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--source_dir", "/documentation/",
-                                             "--module_path", "../test_package", "../another_test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--source_dir", "/documentation/",
+        "--module_path", "../test_package",
+        "--module_path", "../another_test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
+
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
@@ -483,10 +566,13 @@ def test_abort_if_invalid_source_dir(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
     with pytest.raises(FileNotFoundError) as e:
-        deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                                 "--source_branch", source_branch,
-                                                 "--source_dir", "/not_a_source_dir/",
-                                                 "--module_path", "../test_package", "../another_test_package"])
+        args_list = [
+            "--target_branch", target_branch,
+            "--source_branch", source_branch,
+            "--source_dir", "/not_a_source_dir/",
+            "--module_path", "../test_package",
+            "--module_path", "../another_test_package"]
+        CliRunner().invoke(deploy_github_pages.main, args_list, catch_exceptions=False)
 
     assert e.match(re.escape("[Errno 2] No such file or directory: './not_a_source_dir/'"))
     remove_branch(target_branch)
@@ -500,10 +586,12 @@ def test_source_branch_is_tag(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
     print(os.getcwd())
-    deploy_github_pages.deploy_github_pages(["--target_branch", target_branch,
-                                             "--source_branch", source_branch,
-                                             "--source_origin", "tags",
-                                             "--module_path", "../test_package"])
+    args_list = [
+        "--target_branch", target_branch,
+        "--source_branch", source_branch,
+        "--source_origin", "tags",
+        "--module_path", "../test_package"]
+    CliRunner().invoke(deploy_github_pages.main, args_list)
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
     assert target_branch_exists.returncode == 0
