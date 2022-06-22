@@ -1,10 +1,18 @@
+import sys
 import argparse
+from functools import partial
+
+
+class Console:
+    stdout = partial(print, file=sys.stdout)
+    stderr = partial(print, file=sys.stderr)
 
 
 class Parser:
     """
     Parses the given command-line options and arguments.
     """
+
     def __init__(self, argv):
         parser = argparse.ArgumentParser(description='Process some integers.')
         parser.add_argument('--target_branch', type=str,
@@ -13,7 +21,7 @@ class Parser:
         parser.add_argument('--push_origin', type=str,
                             default="origin",
                             help='where to push from')
-        parser.add_argument('--push_enabled',  type=str,
+        parser.add_argument('--push_enabled', type=str,
                             default="push",
                             help='whether to push or not, set to "commit" or "push"')
         parser.add_argument('--source_branch', type=str,
