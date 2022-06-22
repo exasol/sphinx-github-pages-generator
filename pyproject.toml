@@ -19,7 +19,6 @@ keywords = ['exasol', 'github pages', 'documentaion']
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 Sphinx = "^4.5"
-poethepoet = "^0.13.0"
 myst-parser = "^0.17.0"
 Jinja2 = "^3.0.3"
 furo = "^2022.02.14.1"
@@ -34,23 +33,3 @@ nox = "^2022.1.7"
 
 [tool.poetry.plugins."console_scripts"]
 "sgpg"="exasol_sphinx_github_pages_generator.deploy_github_pages:main"
-
-[tool.poe.tasks]
-commit_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/commit_pages_main.sh""" }
-commit_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)";  bash ./doc/scripts/commit_pages_current.sh""" }
-push_pages_main = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_main.sh""" }
-push_pages_current = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_current.sh """ }
-
-push_pages_release = { shell = """cd "$(git rev-parse --show-toplevel)"; bash ./doc/scripts/push_pages_release.sh""" }
-
-build-html-doc = {shell = """
-    cd "$(git rev-parse --show-toplevel)/doc";
-    sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator;
-    sphinx-build -b html -W . .build
-    """ }
-open-html-doc = { shell = """
-    cd "$(git rev-parse --show-toplevel)/doc";
-    xdg-open .build/index.html""" }
-build-and-open-html-doc = [ "build-html-doc", "open-html-doc" ]
-
-test =  "pytest tests"
