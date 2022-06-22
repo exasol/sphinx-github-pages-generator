@@ -1,4 +1,4 @@
-from exasol_sphinx_github_pages_generator.parser import Parser, Console
+from exasol_sphinx_github_pages_generator.cli import Parser, Console
 from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
 from tempfile import TemporaryDirectory
 from subprocess import run

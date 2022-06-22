@@ -12,7 +12,7 @@ from typing import List, Dict, Generator, Union, Any
 from importlib_resources import files
 
 import exasol_sphinx_github_pages_generator
-from exasol_sphinx_github_pages_generator.parser import Console
+from exasol_sphinx_github_pages_generator.cli import Console
 
 
 @contextmanager
