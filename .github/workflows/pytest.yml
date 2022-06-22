@@ -46,7 +46,7 @@ jobs:
         # Machine user name
         MAuserName: ${{ secrets.MAuserName-workflow-call }}
       run:
-        poetry run pytest tests
+        poetry run nox -s tests
     - if:  ${{ inputs.workflow-call-ckeck == false }}
       env:
         # Machine user private access token
@@ -54,4 +54,4 @@ jobs:
         # Machine user name
         MAuserName: ${{ secrets.EXA_CI_USER_NAME }}
       run:
-        poetry run pytest tests
+        poetry run nox -s tests
