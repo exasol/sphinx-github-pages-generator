@@ -54,7 +54,7 @@ def clean(session):
 
 
 @nox.session(python=False)
-def build(session: nox.session):
+def build(session):
     """Build the documentation"""
     with session.chdir(DOC):
         session.run(
