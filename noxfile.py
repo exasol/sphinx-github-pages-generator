@@ -4,7 +4,7 @@ from subprocess import PIPE, run
 
 import nox
 
-nox.options.sessions = ["clean", "build", "open"]
+nox.options.sessions = ["clean-docs", "build-docs", "open-docs"]
 
 PROJECT_ROOT = Path(__file__).parent
 DOC = PROJECT_ROOT / "doc"
@@ -44,16 +44,16 @@ def _current_branch():
     return branch_name
 
 
-@nox.session(python=False)
+@nox.session(python=False, name='clean-docs')
 def clean(session):
-    """Remove all build and documentation artifacts"""
+    """Remove all documentation artifacts"""
     build_directory = DOC / "build"
     if build_directory.exists():
         rmtree(build_directory.resolve())
         session.log(f"Removed {build_directory}")
 
 
-@nox.session(python=False)
+@nox.session(python=False, name='build-docs')
 def build(session):
     """Build the documentation"""
     with session.chdir(DOC):
@@ -69,7 +69,7 @@ def build(session):
         session.run("sphinx-build", "-b", "html", "-W", ".", "build", external=True)
 
 
-@nox.session(python=False)
+@nox.session(python=False, name='open-docs')
 def open(session):
     """Open the documentation in the browser"""
     index_page = DOC / "build" / "index.html"
