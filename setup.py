@@ -14,6 +14,7 @@ package_data = \
 install_requires = \
 ['Jinja2>=3.0.3,<4.0.0',
  'Sphinx>=4.5,<5.0',
+ 'click>=8.1.3,<9.0.0',
  'furo>=2022.02.14.1,<2023.0.0.0',
  'importlib_resources>=1.3,<2.0',
  'myst-parser>=0.17.0,<0.18.0']
