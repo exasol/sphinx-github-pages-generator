@@ -96,11 +96,12 @@ python script like this:
 
 .. code:: py
 
-    import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
+    import exasol_sphinx_github_pages_generator.cli as cli
+    from click.testing import CliRunner
     import sys
 
     if __name__ == "__main__":
-        deploy_github_pages.deploy_github_pages(sys.argv[1:])
+        CliRunner().invoke(cli.main, sys.argv[1:])
 
 Then call the script using command line parameters like this:
 
@@ -140,7 +141,7 @@ Calling the module with "-h" will print the help page for the generator.
 
 Parameters:
 
-.. autoclass:: exasol_sphinx_github_pages_generator.deploy_github_pages.GithubPagesDeployer
+.. autoclass:: exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer
 
 
 ======================================================
