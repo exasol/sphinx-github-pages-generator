@@ -11,7 +11,7 @@ DOC = PROJECT_ROOT / "doc"
 DOC_SCRIPTS = DOC / "scripts"
 DOC_BUILD = DOC / "build"
 PACKAGE = PROJECT_ROOT / "exasol_sphinx_github_pages_generator"
-ENTRY_POINT = "exasol_sphinx_github_pages_generator.deploy_github_pages"
+ENTRY_POINT = "exasol_sphinx_github_pages_generator.cli"
 
 
 def _tags():

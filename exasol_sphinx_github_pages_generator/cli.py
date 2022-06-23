@@ -1,4 +1,5 @@
 import os
+import sys
 import click
 import traceback
 from subprocess import run
@@ -80,7 +81,6 @@ def main(
             deployer.clean_worktree(original_workdir)
 
 
-_SUCCESS = 0
 _FAILURE = 1
 DEBUG = False
 
@@ -88,13 +88,12 @@ DEBUG = False
 def _main():
     try:
         main()
-        return _SUCCESS
     except Exception as ex:
         if DEBUG:
             Console.stderr(traceback.format_exc())
         else:
             Console.stderr(ex)
-        return _FAILURE
+        sys.exit(_FAILURE)
 
 
 if __name__ == "__main__":
