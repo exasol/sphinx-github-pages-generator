@@ -33,4 +33,4 @@ toml = "^=0.10.2"
 nox = "^2022.1.7"
 
 [tool.poetry.plugins."console_scripts"]
-"sgpg"="exasol_sphinx_github_pages_generator.deploy_github_pages:main"
+"sgpg"="exasol_sphinx_github_pages_generator.cli:main"

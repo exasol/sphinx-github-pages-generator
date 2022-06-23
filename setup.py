@@ -20,8 +20,7 @@ install_requires = \
  'myst-parser>=0.17.0,<0.18.0']
 
 entry_points = \
-{'console_scripts': ['sgpg = '
-                     'exasol_sphinx_github_pages_generator.deploy_github_pages:main']}
+{'console_scripts': ['sgpg = exasol_sphinx_github_pages_generator.cli:main']}
 
 setup_kwargs = {
     'name': 'exasol-sphinx-github-pages-generator',
