@@ -128,7 +128,7 @@ def push(session, target):
     }
     target_specific_arguments = {
         "main": ["--source_branch", "main"],
-        "current": ["--source_branch", f"{_current_branch()}"],
+        "current": [],
         "release": ["--source_branch", _tags()[-1], "--source_origin", "tags"],
     }
     args = [
