@@ -142,6 +142,7 @@ Calling the module with "-h" will print the help page for the generator.
 Parameters:
 
 .. autoclass:: exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer
+    :noindex:
 
 
 ======================================================
