@@ -32,7 +32,7 @@ jobs:
         git config --local user.email "opensource@exasol.com"
         git config --local user.name "GitHub Action"
         git fetch
-        poetry run nox -s "push(target='release')"
+        poetry run nox -s "push-pages(target='release')"
 
 
 

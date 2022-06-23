@@ -35,7 +35,7 @@ jobs:
         git config --local user.email "opensource@exasol.com"
         git config --local user.name "GitHub Action"
         git fetch
-        poetry run nox -s "push(target='current')"
+        poetry run nox -s "push-pages(target='current')"
     - name: Cleanup delete target branch
       if: ${{ !contains(github.ref, 'main') }}
       run: git push -d origin "github-pages/"$(git branch --show-current)""

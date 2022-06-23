@@ -88,7 +88,7 @@ def tests(session):
     session.run("pytest", f"{PROJECT_ROOT / 'tests'}")
 
 
-@nox.session(python=False)
+@nox.session(python=False, name="commit-pages")
 @nox.parametrize("branch", ["current", "main"])
 def commit(session, branch):
     """Generates documentation for the specified branch commits it to appropriate target branch"""
@@ -118,7 +118,7 @@ def commit(session, branch):
     session.run(*args, external=True)
 
 
-@nox.session(python=False)
+@nox.session(python=False, name="push-pages")
 @nox.parametrize("target", ["current", "main", "release"])
 def push(session, target):
     """Generates documentation for the specified branch commits it to appropriate target branch"""
