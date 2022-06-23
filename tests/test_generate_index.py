@@ -7,7 +7,7 @@ from click.testing import CliRunner
 from pathlib import Path
 from jinja2 import Environment, PackageLoader, select_autoescape
 
-from exasol_sphinx_github_pages_generator import deploy_github_pages
+from exasol_sphinx_github_pages_generator import cli
 from fixtures import setup_test_env, setup_index_tests_target_branch, setup_index_tests_integration
 from helper_test_functions import remove_branch
 from exasol_sphinx_github_pages_generator.generate_index import find_index, \
@@ -228,7 +228,7 @@ def test_index_no_existing_releases(setup_test_env): #todo move these tests?
         "--source_branch", source_branch,
         "--module_path", "../test_package",
         "--module_path", "../another_test_package"]
-    CliRunner().invoke(deploy_github_pages.main, args_list)
+    CliRunner().invoke(cli.main, args_list)
 
     index_exists = run(["git", "ls-tree", "-d", f"origin/{target_branch}", "index.html"],
                                     capture_output=True, text=True, check=True)
