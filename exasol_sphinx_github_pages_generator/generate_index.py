@@ -3,7 +3,6 @@ from contextlib import contextmanager
 from pathlib import Path
 import sys
 import glob
-import shutil
 from subprocess import run
 
 import importlib_resources
@@ -13,6 +12,7 @@ from typing import List, Dict, Generator, Union, Any
 from importlib_resources import files
 
 import exasol_sphinx_github_pages_generator
+from exasol_sphinx_github_pages_generator.cli import Console
 
 
 @contextmanager
@@ -99,7 +99,9 @@ def get_releases(target_branch: str, target_branch_exists_remote: bool, source_b
         with change_and_restore(find_index_worktree_path):
             current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
                                  check=True)
-            print(f"current_branch {current_branch.stdout} in find_index_worktree_path {find_index_worktree_path}.")
+            Console.stderr(
+                f"current_branch {current_branch.stdout} in find_index_worktree_path {find_index_worktree_path}."
+            )
             release_list = (name for name in os.listdir(find_index_worktree_path)
                             if os.path.isdir(os.path.join(find_index_worktree_path, name)))
 
@@ -160,7 +162,7 @@ def generate_release_index(target_branch: str, target_worktree: Path,
         repository.
     """
 
-    print("s_branch " + source_branch)
+    Console.stderr(f"s_branch {source_branch}")
     local_source_branch_commit_id = run(["git", "rev-parse", source_branch], capture_output=True,
                                         text=True)
     if local_source_branch_commit_id.returncode != 0:
