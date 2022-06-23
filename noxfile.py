@@ -47,10 +47,9 @@ def _current_branch():
 @nox.session(python=False, name='clean-docs')
 def clean(session):
     """Remove all documentation artifacts"""
-    build_directory = DOC / "build"
-    if build_directory.exists():
-        rmtree(build_directory.resolve())
-        session.log(f"Removed {build_directory}")
+    if DOC_BUILD.exists():
+        rmtree(DOC_BUILD.resolve())
+        session.log(f"Removed {DOC_BUILD}")
 
 
 @nox.session(python=False, name='build-docs')
@@ -66,13 +65,13 @@ def build(session):
             f"{PACKAGE.resolve()}",
             external=True,
         )
-        session.run("sphinx-build", "-b", "html", "-W", ".", "build", external=True)
+    session.run("sphinx-build", "-b", "html", "-W", f"{DOC}", f"{DOC_BUILD}", external=True)
 
 
 @nox.session(python=False, name='open-docs')
 def open(session):
     """Open the documentation in the browser"""
-    index_page = DOC / "build" / "index.html"
+    index_page = DOC_BUILD / "index.html"
     if not index_page.exists():
         session.error(
             (f"File {index_page} does not exist." "Please run `nox -s build` first")
