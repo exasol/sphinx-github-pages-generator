@@ -223,28 +223,29 @@
 <span class="n">poetry</span> <span class="n">update</span>
 </pre></div>
 </div>
-<p>Now, you can run the project using the poethepoet task defined in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/blob/main/pyproject.toml">pyproject.toml</a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">commit_pages_main</span>  <span class="c1"># creates or updates github-pages/main locally</span>
-<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_main</span>  <span class="c1"># creates or updates github-pages/main and pushes it to origin</span>
-<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">commit_pages_current</span>  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; locally</span>
-<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_current</span>  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; and pushes it to origin</span>
-<span class="n">poetry</span> <span class="n">run</span> <span class="n">poe</span> <span class="n">push_pages_release</span>  <span class="c1"># creates or updates github-pages/&lt;latest-tag&gt; and pushes it to origin</span>
+<p>You are ready to go! As an action runner we are using <a class="reference external" href="https://nox.thea.codes/en/stable/">nox</a>. In order to find out which actions are available run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nox -l
 </pre></div>
 </div>
-<p>These are also used in the CI to build and publish the documentation of this project.</p>
+<p>To run the default action(s) (marked with a <cite>*</cite>) run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nox
+</pre></div>
+</div>
+<p>To run a specific action run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>nox -s &lt;action-name&gt;
+</pre></div>
+</div>
+<p>These actions are also used in the CI to build and publish the documentation of this project.</p>
 </section>
 <section id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">#</a></h2>
 <p>This repository also uses itself to generate the documentation for the Generator. The Source Files for the documentation
 can be found in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/tree/main/doc">doc folder</a>. Here is the <a class="reference internal" href="../index.html#docu-start"><span class="std std-ref">generated documentation</span></a> (You are already here ;) ).
 To build the documentation manually for testing, you can use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry run poe build-html-doc <span class="c1"># Builds the documentation</span>
-poetry run poe open-html-doc <span class="c1"># Opens the currently build documentation in the browser</span>
-poetry run poe build-and-open-html-doc <span class="c1"># Builds and opens the documentation</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nox build-docs <span class="c1"># Builds the documentation</span>
+nox open-docs <span class="c1"># Builds and opens the documentation</span>
 </pre></div>
 </div>
-<p>All three build commands generate the documentation into /doc/.build-docu
-which is excluded in gitignore.</p>
 </section>
 <section id="tests">
 <h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">#</a></h2>

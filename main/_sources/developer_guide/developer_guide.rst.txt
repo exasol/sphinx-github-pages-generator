@@ -20,17 +20,27 @@ Then, got to the project root and use poetry to install your dependencies:
     poetry install
     poetry update
 
-Now, you can run the project using the poethepoet task defined in the `pyproject.toml`_:
 
-.. code::
+You are ready to go! As an action runner we are using `nox`_. In order to find out which actions are available run:
 
-    poetry run poe commit_pages_main  # creates or updates github-pages/main locally
-    poetry run poe push_pages_main  # creates or updates github-pages/main and pushes it to origin
-    poetry run poe commit_pages_current  # creates or updates github-pages/<current-branch-name> locally
-    poetry run poe push_pages_current  # creates or updates github-pages/<current-branch-name> and pushes it to origin
-    poetry run poe push_pages_release  # creates or updates github-pages/<latest-tag> and pushes it to origin
+.. code-block:: shell
 
-These are also used in the CI to build and publish the documentation of this project.
+    nox -l
+
+To run the default action(s) (marked with a `*`) run:
+
+.. code-block:: shell
+
+    nox
+
+To run a specific action run:
+
+
+.. code-block:: shell
+
+    nox -s <action-name>
+
+These actions are also used in the CI to build and publish the documentation of this project.
 
 #############
 Documentation
@@ -42,12 +52,8 @@ To build the documentation manually for testing, you can use:
 
 .. code:: bash
 
-    poetry run poe build-html-doc # Builds the documentation
-    poetry run poe open-html-doc # Opens the currently build documentation in the browser
-    poetry run poe build-and-open-html-doc # Builds and opens the documentation
-
-All three build commands generate the documentation into /doc/.build-docu
-which is excluded in gitignore.
+    nox build-docs # Builds the documentation
+    nox open-docs # Builds and opens the documentation
 
 #####
 Tests
@@ -69,4 +75,5 @@ For running your own tests, you can change the tests Repository, User and Passwo
 .. _doc folder: https://github.com/exasol/sphinx-github-pages-generator/tree/main/doc
 .. _tests folder: https://github.com/exasol/sphinx-github-pages-generator/tree/main/tests
 .. _setup_test_repo: https://github.com/exasol/sphinx-github-pages-generator/blob/7235e9577531bb3992425ffd200004dc4a7fee32/tests/helper_test_functions.py#L13
+.. _nox: https://nox.thea.codes/en/stable/
 
