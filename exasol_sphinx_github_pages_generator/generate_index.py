@@ -3,16 +3,14 @@ from contextlib import contextmanager
 from pathlib import Path
 import sys
 import glob
+import inspect
 from subprocess import run
-
 import importlib_resources
 from jinja2 import Environment, PackageLoader, select_autoescape
-import inspect
 from typing import List, Dict, Generator, Union, Any
 from importlib_resources import files
-
 import exasol_sphinx_github_pages_generator
-from exasol_sphinx_github_pages_generator.cli import Console
+from exasol_sphinx_github_pages_generator.console import Console
 
 
 @contextmanager

@@ -1,16 +1,11 @@
 import os
-import traceback
 import click
+import traceback
 from subprocess import run
 from inspect import cleandoc
-from functools import partial
 from tempfile import TemporaryDirectory
-import exasol_sphinx_github_pages_generator.deployer as github_deployer
-
-
-class Console:
-    stdout = click.echo
-    stderr = partial(click.echo, err=True)
+from exasol_sphinx_github_pages_generator.console import Console
+from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
 
 
 @click.command()
@@ -64,7 +59,7 @@ def main(
                    PUSH_ENABLED= {push_enabled} 
                    SOURCE_BRANCH= {source_branch}""") + "\n")
     with TemporaryDirectory() as tempdir:
-        deployer = github_deployer.GithubPagesDeployer(
+        deployer = GithubPagesDeployer(
             source_dir, source_branch, source_origin,
             current_commit_id.stdout[:-1], module_path,
             target_branch, push_origin, push_enabled, tempdir)
