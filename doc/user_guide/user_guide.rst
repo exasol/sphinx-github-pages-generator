@@ -96,11 +96,12 @@ python script like this:
 
 .. code:: py
 
-    import exasol_sphinx_github_pages_generator.deploy_github_pages as deploy_github_pages
+    import exasol_sphinx_github_pages_generator.cli as cli
+    from click.testing import CliRunner
     import sys
 
     if __name__ == "__main__":
-        deploy_github_pages.deploy_github_pages(sys.argv[1:])
+        CliRunner().invoke(cli.main, sys.argv[1:])
 
 Then call the script using command line parameters like this:
 
@@ -108,23 +109,23 @@ Then call the script using command line parameters like this:
 
     declare -a StringArray=("../package/module-path1" "../package/module-path2")
     python3 your_caller_script.py \
-        --target_branch "github-pages/main" \
-        --push_origin "origin" \
-        --push_enabled "push" \
-        --source_branch "main"  \
-        --module_path "${StringArray[@]}" \
-        --source_dir "/doc/"
+        --target-branch "github-pages/main" \
+        --push-origin "origin" \
+        --push-enabled "push" \
+        --source-branch "main"  \
+        --module-path "${StringArray[@]}" \
+        --source-dir "/doc/"
 
 Alternatively you can also pass the parameters directly in the python script:
 
 .. code:: py
 
-    deploy_github_pages.deploy_github_pages(["--target_branch", "target_branch",
-                                             "--push_origin", "origin",
-                                             "--push_enabled", "push",
-                                             "--source_branch", "source_branch",
-                                             "--source_dir", "/doc/",
-                                             "--module_path", "../package/module-path1", "../package/module-path2"])
+    deploy_github_pages.deploy_github_pages(["--target-branch", "target_branch",
+                                             "--push-origin", "origin",
+                                             "--push-enabled", "push",
+                                             "--source-branch", "source_branch",
+                                             "--source-dir", "/doc/",
+                                             "--module-path", "../package/module-path1", "../package/module-path2"])
 
 The generator has to be called from the working directory containing the index.rst file.
 
@@ -140,7 +141,8 @@ Calling the module with "-h" will print the help page for the generator.
 
 Parameters:
 
-.. autoclass:: exasol_sphinx_github_pages_generator.deploy_github_pages.GithubPagesDeployer
+.. autoclass:: exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer
+    :noindex:
 
 
 ======================================================
@@ -174,11 +176,11 @@ They use bash scripts that look like this:
 
     declare -a StringArray=("../exasol_sphinx_github_pages_generator" )
     python3 <path/to/your/call_generator_script.py> \
-      --target_branch "github-pages/main" \
-      --push_origin "origin" \
-      --push_enabled "commit" \
-      --source_branch "main"  \
-      --module_path "${StringArray[@]}"
+      --target-branch "github-pages/main" \
+      --push-origin "origin" \
+      --push-enabled "commit" \
+      --source-branch "main"  \
+      --module-path "${StringArray[@]}"
 
 
 The task can be called like this:

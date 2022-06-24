@@ -14,13 +14,13 @@ package_data = \
 install_requires = \
 ['Jinja2>=3.0.3,<4.0.0',
  'Sphinx>=4.5,<5.0',
+ 'click>=8.1.3,<9.0.0',
  'furo>=2022.02.14.1,<2023.0.0.0',
  'importlib_resources>=1.3,<2.0',
  'myst-parser>=0.17.0,<0.18.0']
 
 entry_points = \
-{'console_scripts': ['sgpg = '
-                     'exasol_sphinx_github_pages_generator.deploy_github_pages:main']}
+{'console_scripts': ['sgpg = exasol_sphinx_github_pages_generator.cli:main']}
 
 setup_kwargs = {
     'name': 'exasol-sphinx-github-pages-generator',

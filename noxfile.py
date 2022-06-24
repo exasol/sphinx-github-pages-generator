@@ -11,7 +11,7 @@ DOC = PROJECT_ROOT / "doc"
 DOC_SCRIPTS = DOC / "scripts"
 DOC_BUILD = DOC / "build"
 PACKAGE = PROJECT_ROOT / "exasol_sphinx_github_pages_generator"
-ENTRY_POINT = "exasol_sphinx_github_pages_generator.deploy_github_pages"
+ENTRY_POINT = "exasol_sphinx_github_pages_generator.cli"
 
 
 def _tags():
@@ -97,20 +97,20 @@ def commit(session, branch):
         "current": f"github-pages/{_current_branch()}",
     }
     branch_specific_arguments = {
-        "main": ["--source_branch", "main"],
-        "current": ["--source_branch", f"{_current_branch()}"],
+        "main": ["--source-branch", "main"],
+        "current": ["--source-branch", f"{_current_branch()}"],
     }
     args = [
         "python",
         "-m",
         ENTRY_POINT,
-        "--module_path",
+        "--module-path",
         f"{PACKAGE}",
-        "--push_origin",
+        "--push-origin",
         "origin",
-        "--push_enabled",
+        "--push-enabled",
         "commit",
-        "--target_branch",
+        "--target-branch",
         target_branch[branch],
     ]
     args += branch_specific_arguments[branch]
@@ -127,21 +127,21 @@ def push(session, target):
         "release": f"github-pages/{_tags()[-1]}",
     }
     target_specific_arguments = {
-        "main": ["--source_branch", "main"],
-        "current": ["--source_branch", f"{_current_branch()}"],
-        "release": ["--source_branch", _tags()[-1], "--source_origin", "tags"],
+        "main": ["--source-branch", "main"],
+        "current": [],
+        "release": ["--source-branch", _tags()[-1], "--source-origin", "tags"],
     }
     args = [
         "python",
         "-m",
         ENTRY_POINT,
-        "--module_path",
+        "--module-path",
         f"{PACKAGE}",
-        "--push_origin",
+        "--push-origin",
         "origin",
-        "--push_enabled",
+        "--push-enabled",
         "push",
-        "--target_branch",
+        "--target-branch",
         target_branch[target],
     ]
     args += target_specific_arguments[target]
