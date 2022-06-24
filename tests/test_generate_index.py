@@ -224,10 +224,10 @@ def test_index_no_existing_releases(setup_test_env): #todo move these tests?
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     index_exists = run(["git", "ls-tree", "-d", f"origin/{target_branch}", "index.html"],

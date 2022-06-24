@@ -10,26 +10,26 @@ from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
 
 
 @click.command()
-@click.option('--target_branch',
+@click.option('--target-branch',
               type=str, default="github-pages/main", help="branch to push to")
-@click.option('--push_origin',
+@click.option('--push-origin',
               type=str, default="origin", help="where to push from")
-@click.option('--push_enabled',
+@click.option('--push-enabled',
               type=str, default="push", help="whether to push or commit")
-@click.option('--source_branch',
+@click.option('--source-branch',
               type=str, default="",
               help="The branch you want to generate documentation from. "
                    "If empty, defaults to current branch. Can also be "
                    "a GitHub tag")
-@click.option('--source_origin',
+@click.option('--source-origin',
               type=str, default="origin",
               help="origin of source_branch. Set to 'tags' "
                    "if your source_branch is a tag")
-@click.option('--source_dir',
+@click.option('--source-dir',
               type=str, default="/doc/",
               help="Path to the directory inside the source_branch where the "
                    "index.rst and conf.py reside in.")
-@click.option('--module_path',
+@click.option('--module-path',
               type=str, multiple=True,
               help="The paths to all the modules the docu is "
                    "being generated for")

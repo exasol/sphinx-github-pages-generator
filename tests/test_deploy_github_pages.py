@@ -22,9 +22,9 @@ def test_remote_branch_creation(setup_test_env):
     print(os.getcwd())
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
@@ -44,10 +44,10 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     current_commit_id = run(["git", "ls-remote",
@@ -62,10 +62,10 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
     run(["git", "commit", "-m", "test-commit"], check=True)
     run(["git", "push"], check=True)
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
     current_commit_id = run(["git", "ls-remote",
                              f"https://{user_access_token}@github.com/exasol/sphinx-github-pages-generator-test.git",
@@ -87,10 +87,10 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch_one,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch_one,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     with TemporaryDirectory() as tempdir2:
@@ -100,11 +100,11 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
         run(["git", "checkout", source_branch_two], check=True)
 
         args_list = [
-            "--target_branch", target_branch,
-            "--source_branch", source_branch_two,
-            "--source_dir", "/documentation/",
-            "--module_path", "../test_package",
-            "--module_path", "../another_test_package"]
+            "--target-branch", target_branch,
+            "--source-branch", source_branch_two,
+            "--source-dir", "/documentation/",
+            "--module-path", "../test_package",
+            "--module-path", "../another_test_package"]
         CliRunner().invoke(cli.main, args_list)
 
         target_branch_exists = run(
@@ -133,10 +133,10 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     current_commit_id = run(
@@ -145,10 +145,10 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
     commit_id_old = current_commit_id.stdout
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     current_commit_id = run(
@@ -173,10 +173,10 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
     module_path = ["../test_package", "../another_test_package"]
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", module_path[0],
-        "--module_path", module_path[1]]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", module_path[0],
+        "--module-path", module_path[1]]
     CliRunner().invoke(cli.main, args_list)
 
     with TemporaryDirectory() as tempdir2:
@@ -221,10 +221,10 @@ def test_no_doctree_files_in_remote(setup_test_env):
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     with TemporaryDirectory() as tempdir2:
@@ -250,10 +250,10 @@ def test_no__pycache__files_in_remote(setup_test_env):
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     with TemporaryDirectory() as tempdir2:
@@ -279,11 +279,11 @@ def test_only_commit_dont_push(setup_test_env):
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--push_enabled", "commit",
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--push-enabled", "commit",
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     current_remote_commit_id = run(
@@ -319,10 +319,10 @@ def test_select_different_source_branch_which_does_exists_locally(setup_test_env
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
@@ -341,10 +341,10 @@ def test_select_different_source_branch_which_does_not_exists_locally(setup_test
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
@@ -367,10 +367,10 @@ def test_select_different_source_branch_does_not_delete_local_changes(setup_test
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     # check if we are on starting branch and correct commit
@@ -396,9 +396,9 @@ def test_infer_source_branch(setup_test_env):
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
@@ -420,10 +420,10 @@ def test_abort_if_given_source_branch_does_not_exist(setup_test_env):
 
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     result = CliRunner().invoke(cli.main, args_list, catch_exceptions=False)
 
     assert (isinstance(result.exception, SystemExit)
@@ -443,10 +443,10 @@ def test_abort_local_uncommitted_changes_exist_in_source_branch(setup_test_env):
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     result = CliRunner().invoke(cli.main, args_list)
 
     assert (isinstance(result.exception, SystemExit)
@@ -472,10 +472,10 @@ def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     result = CliRunner().invoke(cli.main, args_list)
     assert (isinstance(result.exception, SystemExit)
             and bool(re.match("Abort. Local commit id .* and commit id of "
@@ -497,10 +497,10 @@ def test_abort_source_branch_only_exists_locally(setup_test_env):
     branches_to_delete_in_cleanup += [temp_test_branch, target_branch]
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", temp_test_branch,
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", temp_test_branch,
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     result = CliRunner().invoke(cli.main, args_list)
     assert (isinstance(result.exception, SystemExit)
             and bool(re.match(f"Source branch exists locally, but not on "
@@ -546,11 +546,11 @@ def test_use_different_source_dir(setup_test_env):
     remove_branch(target_branch)
 
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--source_dir", "/documentation/",
-        "--module_path", "../test_package",
-        "--module_path", "../another_test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--source-dir", "/documentation/",
+        "--module-path", "../test_package",
+        "--module-path", "../another_test_package"]
     CliRunner().invoke(cli.main, args_list)
 
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
@@ -567,11 +567,11 @@ def test_abort_if_invalid_source_dir(setup_test_env):
     remove_branch(target_branch)
     with pytest.raises(FileNotFoundError) as e:
         args_list = [
-            "--target_branch", target_branch,
-            "--source_branch", source_branch,
-            "--source_dir", "/not_a_source_dir/",
-            "--module_path", "../test_package",
-            "--module_path", "../another_test_package"]
+            "--target-branch", target_branch,
+            "--source-branch", source_branch,
+            "--source-dir", "/not_a_source_dir/",
+            "--module-path", "../test_package",
+            "--module-path", "../another_test_package"]
         CliRunner().invoke(cli.main, args_list, catch_exceptions=False)
 
     assert e.match(re.escape("[Errno 2] No such file or directory: './not_a_source_dir/'"))
@@ -587,10 +587,10 @@ def test_source_branch_is_tag(setup_test_env):
     remove_branch(target_branch)
     print(os.getcwd())
     args_list = [
-        "--target_branch", target_branch,
-        "--source_branch", source_branch,
-        "--source_origin", "tags",
-        "--module_path", "../test_package"]
+        "--target-branch", target_branch,
+        "--source-branch", source_branch,
+        "--source-origin", "tags",
+        "--module-path", "../test_package"]
     CliRunner().invoke(cli.main, args_list)
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
