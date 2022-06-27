@@ -11,6 +11,7 @@ TBD
 
 ## Bug Fixes
 
+   - #35: Fix Check the documentation build action failing because of empty teg list
 
 ## Documentation
 

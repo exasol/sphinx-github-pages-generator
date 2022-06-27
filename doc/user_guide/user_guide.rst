@@ -67,19 +67,13 @@ When called from your "./doc" directory, the commands below will build you html 
     sphinx-apidoc -T -e -o api ../<your-module-name>
     sphinx-build -b html -W . .build
 
-We also provide shortcuts for this as poethepoet tasks in the pyproject.toml file:
+We also provide shortcuts for this as nox tasks in the noxfile.py:
 
 .. code:: bash
 
-    build-html-doc = {shell = """
-        cd "$(git rev-parse --show-toplevel)/doc";
-        sphinx-apidoc -T -e -o api ../exasol_sphinx_github_pages_generator;
-        sphinx-build -b html -W . .build
-        """ }           # Builds the documentation
-    open-html-doc = { shell = """
-        cd "$(git rev-parse --show-toplevel)/doc";
-        xdg-open .build/index.html""" }     # Opens the currently build documentation in the browser
-    build-and-open-html-doc = [ "build-html-doc", "open-html-doc" ]     # Builds and opens the documentation
+    nox -s build-docs          # Builds the documentation
+    nox -s open-docs    # Opens the currently build documentation in the browser
+    nox -s clen-docs     # Clean existing docs artefacts
 
 
 You can use similar shorthands in your project, just adjust the module path.
