@@ -125,7 +125,7 @@ def push(session, target):
         latest_tag = _tags()[-1]
     except IndexError as e:
         if "release" in target:
-            raise
+            raise Exception("Couldn't find any tag") from e
         else:
             latest_tag = ""
     target_branch = {

@@ -71,8 +71,8 @@ We also provide shortcuts for this as nox tasks in the noxfile.py:
 
 .. code:: bash
 
-    nox -s build-docs          # Builds the documentation
-    nox -s open-docs    # Opens the currently build documentation in the browser
+    nox -s build-docs    # Builds the documentation
+    nox -s open-docs     # Opens the currently build documentation in the browser
     nox -s clen-docs     # Clean existing docs artefacts
 
 
