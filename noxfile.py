@@ -131,7 +131,8 @@ def push(session, target):
     target_branch = {
         "main": "github-pages/main",
         "current": f"github-pages/{_current_branch()}",
-        "release": f"github-pages/{latest_tag}",
+        "release": f"github-pages/main",    # This has to be main because github-pages expects all documentation to be
+                                            # in the same source branch.
     }
     target_specific_arguments = {
         "main": ["--source-branch", "main"],
