@@ -69,12 +69,12 @@ def build(session):
 
 
 @nox.session(python=False, name='open-docs')
-def open(session):
+def open_docs(session):
     """Open the documentation in the browser"""
     index_page = DOC_BUILD / "index.html"
     if not index_page.exists():
         session.error(
-            (f"File {index_page} does not exist." "Please run `nox -s build` first")
+            (f"File {index_page} does not exist." "Please run `nox -s build-docs` first")
         )
     session.run(
         "python", "-m", "webbrowser", "-t", f"{index_page.resolve()}", external=True
@@ -120,16 +120,24 @@ def commit(session, branch):
 @nox.session(python=False, name="push-pages")
 @nox.parametrize("target", ["current", "main", "release"])
 def push(session, target):
-    """Generates documentation for the specified branch commits it to appropriate target branch"""
+    """Generates documentation for the specified branch pushes it to appropriate target branch"""
+    try:
+        latest_tag = _tags()[-1]
+    except IndexError as e:
+        if "release" in target:
+            raise Exception("Couldn't find any tag") from e
+        else:
+            latest_tag = ""
     target_branch = {
         "main": "github-pages/main",
         "current": f"github-pages/{_current_branch()}",
-        "release": f"github-pages/{_tags()[-1]}",
+        "release": f"github-pages/main",    # This has to be main because github-pages expects all documentation to be
+                                            # in the same source branch.
     }
     target_specific_arguments = {
         "main": ["--source-branch", "main"],
         "current": [],
-        "release": ["--source-branch", _tags()[-1], "--source-origin", "tags"],
+        "release": ["--source-branch", latest_tag, "--source-origin", "tags"],
     }
     args = [
         "python",
