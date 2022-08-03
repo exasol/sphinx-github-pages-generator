@@ -84,7 +84,7 @@ def open_docs(session):
 @nox.session(python=False)
 def tests(session):
     """Run all unit tests"""
-    session.run("pytest", f"{PROJECT_ROOT / 'tests'}")
+    session.run("pytest", "--pdb", f"{PROJECT_ROOT / 'tests'}")
 
 
 @nox.session(python=False, name="commit-pages")

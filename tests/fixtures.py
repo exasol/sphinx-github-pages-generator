@@ -35,7 +35,7 @@ def setup_index_tests_integration(setup_test_env):
     with TemporaryDirectory() as tempdir:
         deployer = GithubPagesDeployer("/doc/", source_branch, "origin", current_commit_id.stdout[:-1], ["../test_package"],
                                        target_branch, "origin", "push",
-                                       tempdir)
+                                       Path(tempdir))
         os.mkdir(deployer.build_dir)
         deployer.detect_or_verify_source_branch()
         deployer.checkout_target_branch_as_worktree()

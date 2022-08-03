@@ -219,7 +219,7 @@ class GithubPagesDeployer:
         output_dir.mkdir(parents=True)
         Console.stderr(f"Copying HTML output {self.build_dir} to the output directory {output_dir}")
         for obj in os.listdir(self.build_dir):
-            shutil.move(self.build_dir / str(obj), output_dir)
+            shutil.move(str(self.build_dir / str(obj)), output_dir)
         open(self.worktree_paths['target_worktree'] / ".nojekyll", "w").close()
 
         Console.stderr(f"Content of output directory {output_dir}")
