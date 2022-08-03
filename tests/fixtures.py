@@ -17,7 +17,6 @@ def setup_test_env(tmp_path):
     used_branches = []
     yield used_branches, user_name, user_access_token,
 
-    print("clean")
     for branch in used_branches:
         remove_branch(branch)
 

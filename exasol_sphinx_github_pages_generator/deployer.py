@@ -29,7 +29,7 @@ class GithubPagesDeployer:
     def __init__(self, source_dir: str, source_branch: str, source_origin: str, current_commit_id: str,
                  module_path: list,
                  target_branch: str, push_origin: str, push_enabled: str,
-                 tempdir: str):
+                 tempdir: Path):
         self.source_dir = source_dir
         self.source_branch = source_branch
         self.current_commit_id = current_commit_id
@@ -40,10 +40,10 @@ class GithubPagesDeployer:
         self.source_origin = f"refs/remotes/{source_origin}/" if source_origin == "origin" else f"refs/{source_origin}/"
         self.push_enabled = push_enabled
 
-        self.worktree_paths = {"target_worktree": tempdir + "/worktrees/worktree_target",
-                               "source_worktree": tempdir + "/worktrees/worktree_source"}
-        self.build_dir = tempdir + "/build"
-        self.intermediate_dir = tempdir + "/intermediate"
+        self.worktree_paths = {"target_worktree": tempdir / "worktrees/worktree_target",
+                               "source_worktree": tempdir / "worktrees/worktree_source"}
+        self.build_dir = tempdir / "build"
+        self.intermediate_dir = tempdir / "intermediate"
         self.target_branch_exists = run(["git", "show-branch", f"remotes/origin/{self.target_branch}"],
                                         capture_output=True, text=True)
 
@@ -74,7 +74,7 @@ class GithubPagesDeployer:
                      f"and checked out (Local or stashed changes will be ignored in this build).")
                 )
                 # change into documentation source dir
-                os.chdir(f"{self.worktree_paths['source_worktree']}{self.source_dir}")
+                os.chdir(self.worktree_paths['source_worktree'] / self.source_dir)
                 current_branch = run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True,
                                      check=True)
             except subprocess.CalledProcessError as ex:
@@ -128,7 +128,7 @@ class GithubPagesDeployer:
             sys.exit(f"Abort, you have uncommitted changes in source branch  {self.source_branch}, "
                      f"please commit and push the following files:\n "
                      f"{uncommitted_changes.stdout}")
-        os.chdir(f".{self.source_dir}")
+        os.chdir(f"./{self.source_dir}")
         Console.stderr(f"Detected source branch {self.source_branch}")
 
     def checkout_target_branch_as_worktree(self) -> None:
@@ -156,7 +156,7 @@ class GithubPagesDeployer:
             # we don't want to mix the generated documentation with sources.
             # Furthermore, Github Pages expects a certain directory structure in the repository
             # which we only can provide with a separate history.
-            gh_pages_root_branch = "github-pages/root"  # is needed to temporarly create a new root commit
+            gh_pages_root_branch = "github-pages/root"  # is needed to temporarily create a new root commit
             gh_pages_main_branch = "github-pages/main"
             gh_pages_main_branch_exists = run(
                 ["git", "show-ref", f"refs/heads/{self.push_origin}/{gh_pages_main_branch}", "||", "echo"],
@@ -209,7 +209,7 @@ class GithubPagesDeployer:
 
         # remove slashes from branch-name, this makes parsing the release-names for the release-index much easier
         simple_source_branch_name = self.source_branch.replace("/", "-")
-        output_dir = Path(self.worktree_paths['target_worktree']) / simple_source_branch_name
+        output_dir = self.worktree_paths['target_worktree'] / simple_source_branch_name
 
         Console.stderr(f"Using output_dir={output_dir}")
         if output_dir.exists() and output_dir.is_dir():
@@ -219,8 +219,8 @@ class GithubPagesDeployer:
         output_dir.mkdir(parents=True)
         Console.stderr(f"Copying HTML output {self.build_dir} to the output directory {output_dir}")
         for obj in os.listdir(self.build_dir):
-            shutil.move(self.build_dir + "/" + str(obj), output_dir)
-        open(f"{self.worktree_paths['target_worktree']}/.nojekyll", "w").close()
+            shutil.move(self.build_dir / str(obj), output_dir)
+        open(self.worktree_paths['target_worktree'] / ".nojekyll", "w").close()
 
         Console.stderr(f"Content of output directory {output_dir}")
         run(["ls", "-la", output_dir], check=True)
@@ -239,7 +239,7 @@ class GithubPagesDeployer:
         currentworkdir = os.getcwd()
         os.chdir(self.worktree_paths['target_worktree'])
         Console.stderr("Git commit")
-        with open(f"{output_dir}/.source", "w+") as file:
+        with open(output_dir / ".source", "w+") as file:
             file.write(f"BRANCH={self.source_branch} \n")
             file.write(f"COMMIT_ID={self.current_commit_id} \n")
         run(["git", "add", "-v", "."], check=True)

@@ -102,7 +102,7 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
         args_list = [
             "--target-branch", target_branch,
             "--source-branch", source_branch_two,
-            "--source-dir", "/documentation/",
+            "--source-dir", "documentation/",
             "--module-path", "../test_package",
             "--module-path", "../another_test_package"]
         CliRunner().invoke(cli.main, args_list)
