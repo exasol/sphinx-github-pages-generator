@@ -31,7 +31,7 @@ def test_remote_branch_creation(setup_test_env):
 
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
-    assert target_branch_exists.returncode == 0
+    assert target_branch_exists.returncode == 1
 
 
 def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
@@ -558,29 +558,31 @@ def test_abort_if_no_source_branch_detected(setup_test_env):
 
 
 def test_use_different_source_dir(setup_test_env):
-    branches_to_delete_in_cleanup, _,_ = setup_test_env
+    branches_to_delete_in_cleanup, _ ,_ = setup_test_env
     source_branch = "branch-with-different-docu-source-dir"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
-    #branches_to_delete_in_cleanup += [target_branch]
+    branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
 
     args_list = [
         "--target-branch", target_branch,
         "--source-branch", source_branch,
-        "--source-dir", "/documentation/",
+        "--source-dir", "documentation/",
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
-    result = CliRunner().invoke(cli.main, args_list)
+        "--module-path", "../another_test_package",
+        "--debug"]
+    result = CliRunner(mix_stderr=False).invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
+
     assert target_branch_exists.returncode == 0
 
 
 def test_abort_if_invalid_source_dir(setup_test_env):
-    branches_to_delete_in_cleanup, _,_ = setup_test_env
+    branches_to_delete_in_cleanup, _, _ = setup_test_env
     source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
     target_branch = "test-docu-new-branch"
@@ -596,7 +598,7 @@ def test_abort_if_invalid_source_dir(setup_test_env):
         result = CliRunner().invoke(cli.main, args_list, catch_exceptions=False)
         traceback.print_exception(*result.exc_info)
 
-    assert e.match(re.escape("[Errno 2] No such file or directory: './not_a_source_dir/'"))
+    assert e.match(re.escape("[Errno 2] No such file or directory:") + ".*/not_a_source_dir'")
     remove_branch(target_branch)
 
 

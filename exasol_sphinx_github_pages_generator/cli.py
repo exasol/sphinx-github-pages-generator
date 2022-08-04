@@ -27,18 +27,18 @@ from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
               help="origin of source_branch. Set to 'tags' "
                    "if your source_branch is a tag")
 @click.option('--source-dir',
-              type=str, default="doc/",
+              type=Path, default="doc/",
               help="Path to the directory inside the source_branch where the "
                    "index.rst and conf.py reside in.")
 @click.option('--module-path',
               type=str, multiple=True,
-              help="The paths to all the modules the docu is "
+              help="List of paths to all the modules the docu is "
                    "being generated for")
 @click.option('--debug', is_flag=True, default=False,
               help="Prints full exception traceback")
 def main(
         target_branch: str, push_origin: str, push_enabled: str,
-        source_branch: str, source_origin: str, source_dir: str,
+        source_branch: str, source_origin: str, source_dir: Path,
         module_path: str, debug: bool):
     """
     Runs the GithubPagesDeployer inside a temp directory given the command-line
@@ -49,7 +49,6 @@ def main(
 
     module_path = list(module_path)
     original_workdir = os.getcwd()
-    source_dir = source_dir
     current_commit_id = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
     Console.stderr(cleandoc(f"""
                    Commandline parameter
@@ -92,6 +91,7 @@ def _main():
     except Exception as ex:
         if DEBUG:
             Console.stderr(traceback.format_exc())
+            print(sys.exc_info()[2])
         else:
             Console.stderr(ex)
         sys.exit(_FAILURE)

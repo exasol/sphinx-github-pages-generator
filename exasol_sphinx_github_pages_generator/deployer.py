@@ -26,7 +26,7 @@ class GithubPagesDeployer:
     :param tempdir: Path of the temporary directory this Generator runs in.
     """
 
-    def __init__(self, source_dir: str, source_branch: str, source_origin: str, current_commit_id: str,
+    def __init__(self, source_dir: Path, source_branch: str, source_origin: str, current_commit_id: str,
                  module_path: list,
                  target_branch: str, push_origin: str, push_enabled: str,
                  tempdir: Path):
@@ -128,7 +128,7 @@ class GithubPagesDeployer:
             sys.exit(f"Abort, you have uncommitted changes in source branch  {self.source_branch}, "
                      f"please commit and push the following files:\n "
                      f"{uncommitted_changes.stdout}")
-        os.chdir(f"./{self.source_dir}")
+        os.chdir(os.getcwd() / self.source_dir)
         Console.stderr(f"Detected source branch {self.source_branch}")
 
     def checkout_target_branch_as_worktree(self) -> None:
