@@ -91,7 +91,6 @@ def _main():
     except Exception as ex:
         if DEBUG:
             Console.stderr(traceback.format_exc())
-            print(sys.exc_info()[2])
         else:
             Console.stderr(ex)
         sys.exit(_FAILURE)
