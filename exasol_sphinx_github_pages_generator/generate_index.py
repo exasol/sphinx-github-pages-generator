@@ -174,19 +174,17 @@ def generate_release_index(target_branch: str, target_worktree: Path,
     )
     template = env.get_template("index_template.html.jinja2")
     releases = get_releases(target_branch, target_branch_exists_remote, simple_source_branch_name, target_worktree)
-    with open(f"{target_worktree}/index.html", "w+") as file:
+    with open(target_worktree / "index.html", "w+") as file:
         file.write(template.render(meta_list=[], releases=releases, footer=[]))
     run(["ls", "-la", ".."], check=True)
 
     generator_init_path = files(exasol_sphinx_github_pages_generator)
     sources_dir = generator_init_path / "templates"
-    target_path = Path(f"{target_worktree}/_sources")
+    target_path = target_worktree / "_sources"
     copy_importlib_resources_dir_tree(sources_dir, target_path)
 
-    target_path = Path(f"{target_worktree}/_static")
+    target_path = target_worktree / "_static"
     static_dir = generator_init_path / "_static"
     if not Path(target_path).is_dir():
         copy_importlib_resources_dir_tree(static_dir, target_path)
-
-
 

@@ -17,7 +17,6 @@ def setup_test_env(tmp_path):
     used_branches = []
     yield used_branches, user_name, user_access_token,
 
-    print("clean")
     for branch in used_branches:
         remove_branch(branch)
 
@@ -34,9 +33,9 @@ def setup_index_tests_integration(setup_test_env):
     branches_to_delete_in_cleanup += [target_branch]
 
     with TemporaryDirectory() as tempdir:
-        deployer = GithubPagesDeployer("/doc/", source_branch, "origin", current_commit_id.stdout[:-1], ["../test_package"],
+        deployer = GithubPagesDeployer(Path("doc/"), source_branch, "origin", current_commit_id.stdout[:-1], ["../test_package"],
                                        target_branch, "origin", "push",
-                                       tempdir)
+                                       Path(tempdir))
         os.mkdir(deployer.build_dir)
         deployer.detect_or_verify_source_branch()
         deployer.checkout_target_branch_as_worktree()

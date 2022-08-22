@@ -4,7 +4,6 @@ import shutil
 from pathlib import Path
 
 
-
 def run_deployer_build_and_copy_documentation_without_gen_index(deployer):
     currentworkdir = os.getcwd()
     print(currentworkdir)
@@ -20,7 +19,7 @@ def run_deployer_build_and_copy_documentation_without_gen_index(deployer):
         shutil.rmtree(output_dir)
     output_dir.mkdir(parents=True)
     for obj in os.listdir(deployer.build_dir):
-        shutil.move(deployer.build_dir + "/" + str(obj), output_dir)
+        shutil.move(str(deployer.build_dir / str(obj)), output_dir)
 
     return output_dir
 
