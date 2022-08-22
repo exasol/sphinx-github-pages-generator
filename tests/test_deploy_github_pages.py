@@ -17,7 +17,7 @@ def test_remote_branch_creation(setup_test_env):
     branches_to_delete_in_cleanup, _, _ = setup_test_env
     source_branch = "main"
     run(["git", "checkout", source_branch], check=True)
-    target_branch = "test-docu-new-branch-menu"
+    target_branch = "test-docu-new-branch"
     branches_to_delete_in_cleanup += [target_branch]
     remove_branch(target_branch)
     print(os.getcwd())
@@ -31,7 +31,7 @@ def test_remote_branch_creation(setup_test_env):
 
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,
                                text=True)
-    assert target_branch_exists.returncode == 1
+    assert target_branch_exists.returncode == 0
 
 
 def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
