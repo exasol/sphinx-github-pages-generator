@@ -259,14 +259,14 @@ sphinx-build -b html -W . .build
 <p>We also provide shortcuts for this as nox tasks in the noxfile.py:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nox -s build-docs    <span class="c1"># Builds the documentation</span>
 nox -s open-docs     <span class="c1"># Opens the currently build documentation in the browser</span>
-nox -s clen-docs     <span class="c1"># Clean existing docs artefacts</span>
+nox -s clean-docs    <span class="c1"># Clean existing docs artefacts</span>
 </pre></div>
 </div>
 <p>You can use similar shorthands in your project, just adjust the module path.</p>
 </section>
 <section id="call-the-sphinx-generator">
 <h3>Call the Sphinx generator<a class="headerlink" href="#call-the-sphinx-generator" title="Permalink to this headline">#</a></h3>
-<p>Once Sphinx generator is installed in your environment, you can use the “sgpg” command to run it. Use “sgpg -h”
+<p>Once Sphinx generator is installed in your environment, you can use the “sgpg” command to run it. Use “sgpg –help”
 for an overview over parameters.</p>
 <p>You can also import and use it in a
 python script like this:</p>
@@ -283,16 +283,20 @@ python script like this:</p>
 python3 your_caller_script.py <span class="se">\</span>
     --target-branch <span class="s2">&quot;github-pages/main&quot;</span> <span class="se">\</span>
     --push-origin <span class="s2">&quot;origin&quot;</span> <span class="se">\</span>
-    --push-enabled <span class="s2">&quot;push&quot;</span> <span class="se">\</span>
+    --push <span class="se">\</span>
     --source-branch <span class="s2">&quot;main&quot;</span>  <span class="se">\</span>
     --module-path <span class="s2">&quot;</span><span class="si">${</span><span class="nv">StringArray</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
     --source-dir <span class="s2">&quot;/doc/&quot;</span>
 </pre></div>
 </div>
 <p>Alternatively you can also pass the parameters directly in the python script:</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">deploy_github_pages</span><span class="o">.</span><span class="n">deploy_github_pages</span><span class="p">([</span><span class="s2">&quot;--target-branch&quot;</span><span class="p">,</span> <span class="s2">&quot;target_branch&quot;</span><span class="p">,</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">deployer</span> <span class="o">=</span> <span class="n">GithubPagesDeployer</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;doc/&quot;</span><span class="p">),</span> <span class="n">source_branch</span><span class="p">,</span> <span class="s2">&quot;origin&quot;</span><span class="p">,</span> <span class="n">current_commit_id</span><span class="o">.</span><span class="n">stdout</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;../test_package&quot;</span><span class="p">],</span>
+                                   <span class="n">target_branch</span><span class="p">,</span> <span class="s2">&quot;origin&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span>
+                                   <span class="n">Path</span><span class="p">(</span><span class="n">tempdir</span><span class="p">))</span>
+
+<span class="n">deploy_github_pages</span><span class="o">.</span><span class="n">deploy_github_pages</span><span class="p">([</span><span class="s2">&quot;--target-branch&quot;</span><span class="p">,</span> <span class="s2">&quot;target_branch&quot;</span><span class="p">,</span>
                                          <span class="s2">&quot;--push-origin&quot;</span><span class="p">,</span> <span class="s2">&quot;origin&quot;</span><span class="p">,</span>
-                                         <span class="s2">&quot;--push-enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;push&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;--push-enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span>
                                          <span class="s2">&quot;--source-branch&quot;</span><span class="p">,</span> <span class="s2">&quot;source_branch&quot;</span><span class="p">,</span>
                                          <span class="s2">&quot;--source-dir&quot;</span><span class="p">,</span> <span class="s2">&quot;/doc/&quot;</span><span class="p">,</span>
                                          <span class="s2">&quot;--module-path&quot;</span><span class="p">,</span> <span class="s2">&quot;../package/module-path1&quot;</span><span class="p">,</span> <span class="s2">&quot;../package/module-path2&quot;</span><span class="p">])</span>
@@ -302,14 +306,54 @@ python3 your_caller_script.py <span class="se">\</span>
 </section>
 <section id="options">
 <h3>Options<a class="headerlink" href="#options" title="Permalink to this headline">#</a></h3>
-<p>Calling the module with “-h” will print the help page for the generator.</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">deploy_github_pages</span><span class="o">.</span><span class="n">deploy_github_pages</span><span class="p">([</span><span class="s2">&quot;-h&quot;</span><span class="p">])</span>
+<p>Calling the module with “–help” will print the help page for the generator.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgpg --help
 </pre></div>
 </div>
-<p>Parameters:</p>
+<dl>
+<dt>Options for sgpg:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">--target-branch <var>TEXT</var></span></kbd></dt>
+<dd><p>Branch to push to</p>
+</dd>
+<dt><kbd><span class="option">--push-origin <var>TEXT</var></span></kbd></dt>
+<dd><p>Where to push from</p>
+</dd>
+<dt><kbd><span class="option">--push</span></kbd></dt>
+<dd><p>Commit and push the documentation.</p>
+</dd>
+<dt><kbd><span class="option">--commit</span></kbd></dt>
+<dd><p>Only commit the documentation.</p>
+</dd>
+<dt><kbd><span class="option">--source-branch <var>TEXT</var></span></kbd></dt>
+<dd><p>The branch you want to generate documentation from. If
+empty, defaults to current branch. Can also be a
+GitHub tag</p>
+</dd>
+<dt><kbd><span class="option">--source-origin <var>TEXT</var></span></kbd></dt>
+<dd><p>Origin of source_branch. Set to ‘tags’ if your
+source_branch is a tag</p>
+</dd>
+<dt><kbd><span class="option">--source-dir <var>PATH</var></span></kbd></dt>
+<dd><p>Path to the directory inside the source_branch where
+the index.rst and conf.py reside in.</p>
+</dd>
+<dt><kbd><span class="option">--module-path <var>TEXT</var></span></kbd></dt>
+<dd><p>List of paths to all the modules the docu is being
+generated for</p>
+</dd>
+<dt><kbd><span class="option">--debug</span></kbd></dt>
+<dd><p>Prints full exception traceback</p>
+</dd>
+<dt><kbd><span class="option">--help</span></kbd></dt>
+<dd><p>Show this message and exit.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Parameters for the Python class:</p>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">exasol_sphinx_github_pages_generator.deployer.</span></span><span class="sig-name descname"><span class="pre">GithubPagesDeployer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_commit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tempdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">exasol_sphinx_github_pages_generator.deployer.</span></span><span class="sig-name descname"><span class="pre">GithubPagesDeployer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_commit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tempdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Builds and deploys GitHub Pages using Sphinx given a branch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -324,7 +368,8 @@ for generation. Local unpushed changes will cause program exit or be ignored.</p
 <li><p><strong>source_origin</strong> – origin of the source branch. “origin” results in “refs/remotes/origin/source_branch”,
 other results in “refs/source_origin/source_branch”.
 Example: source_origin = tags, source_branch = tag_name result : “refs/tags/tag_name”</p></li>
-<li><p><strong>push_enabled</strong> – Set to “push” if generated files should be pushed to the remote, otherwise set to “commit”.</p></li>
+<li><p><strong>push_enabled</strong> – Bool. Set to True if generated files should be pushed to the remote, otherwise set to “commit”.
+If Calling from the command line, you can use the “–commit”/”–push” flags instead.</p></li>
 <li><p><strong>tempdir</strong> – Path of the temporary directory this Generator runs in.</p></li>
 </ul>
 </dd>
@@ -341,7 +386,7 @@ documentation for each push not on the main branch or on documentation branches.
 It uses the target branch github-pages/&lt;feature-branch-name&gt;,
 and if the branch is not “main”, the target branch is deleted immediately after generation. Your can find the yaml file
 for this action in “.github/workflows/check_documentation_build.yaml”.</p>
-<p>The GitHub Action uses poethepoet tasks which we describe in the pyproject.toml:</p>
+<p>The GitHub Action uses nox tasks which we describe in the pyproject.toml:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">poe</span><span class="o">.</span><span class="n">tasks</span><span class="p">]</span>
     <span class="n">commit_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;; bash ./doc/scripts/commit_pages_main.sh&quot;&quot;&quot;</span> <span class="p">}</span>
     <span class="n">commit_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;;  bash ./doc/scripts/commit_pages_current.sh&quot;&quot;&quot;</span> <span class="p">}</span>
@@ -356,7 +401,7 @@ for this action in “.github/workflows/check_documentation_build.yaml”.</p>
 python3 &lt;path/to/your/call_generator_script.py&gt; <span class="se">\</span>
   --target-branch <span class="s2">&quot;github-pages/main&quot;</span> <span class="se">\</span>
   --push-origin <span class="s2">&quot;origin&quot;</span> <span class="se">\</span>
-  --push-enabled <span class="s2">&quot;commit&quot;</span> <span class="se">\</span>
+  --commit <span class="se">\</span>
   --source-branch <span class="s2">&quot;main&quot;</span>  <span class="se">\</span>
   --module-path <span class="s2">&quot;</span><span class="si">${</span><span class="nv">StringArray</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span>
 </pre></div>

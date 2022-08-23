@@ -242,8 +242,8 @@
 <p>This repository also uses itself to generate the documentation for the Generator. The Source Files for the documentation
 can be found in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/tree/main/doc">doc folder</a>. Here is the <a class="reference internal" href="../index.html#docu-start"><span class="std std-ref">generated documentation</span></a> (You are already here ;) ).
 To build the documentation manually for testing, you can use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nox build-docs <span class="c1"># Builds the documentation</span>
-nox open-docs <span class="c1"># Builds and opens the documentation</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nox -s build-docs <span class="c1"># Builds the documentation</span>
+nox -s open-docs <span class="c1"># Builds and opens the documentation</span>
 </pre></div>
 </div>
 </section>
@@ -251,7 +251,7 @@ nox open-docs <span class="c1"># Builds and opens the documentation</span>
 <h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">#</a></h2>
 <p>Tests are located in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/tree/main/tests">tests folder</a>. Run them with</p>
 <blockquote>
-<div><p>poetry run pytest tests</p>
+<div><p>nox -s tests</p>
 </div></blockquote>
 <p>The tests use a <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator-test">test repository</a>
 with a Machine user which is private in order not to confuse users. In order to run them,
