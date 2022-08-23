@@ -2,6 +2,7 @@ import os
 import sys
 import click
 import traceback
+import functools
 from subprocess import run
 from inspect import cleandoc
 from tempfile import TemporaryDirectory
@@ -12,11 +13,11 @@ from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
 
 @click.command()
 @click.option('--target-branch',
-              type=str, default="github-pages/main", help="branch to push to")
+              type=str, default="github-pages/main", help="Branch to push to")
 @click.option('--push-origin',
-              type=str, default="origin", help="where to push from")
-@click.option('--push-enabled',
-              type=str, default="push", help="whether to push or commit")
+              type=str, default="origin", help="Where to push from")
+@click.option('--push/--commit',
+              default=False, help="Whether to commit or commit and push the documentation.")
 @click.option('--source-branch',
               type=str, default="",
               help="The branch you want to generate documentation from. "
@@ -24,7 +25,7 @@ from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
                    "a GitHub tag")
 @click.option('--source-origin',
               type=str, default="origin",
-              help="origin of source_branch. Set to 'tags' "
+              help="Origin of source_branch. Set to 'tags' "
                    "if your source_branch is a tag")
 @click.option('--source-dir',
               type=Path, default="doc/",
@@ -36,8 +37,10 @@ from exasol_sphinx_github_pages_generator.deployer import GithubPagesDeployer
                    "being generated for")
 @click.option('--debug', is_flag=True, default=False,
               help="Prints full exception traceback")
+# WARNING: These options can not be included in the autosummary for the documentation,
+# if you change them you have to change the documentation manually
 def main(
-        target_branch: str, push_origin: str, push_enabled: str,
+        target_branch: str, push_origin: str, push: bool,
         source_branch: str, source_origin: str, source_dir: Path,
         module_path: str, debug: bool):
     """
@@ -57,13 +60,13 @@ def main(
                    module_path= {str(module_path)}
                    TARGET_BRANCH= {target_branch}
                    PUSH_ORIGIN= {push_origin}
-                   PUSH_ENABLED= {push_enabled} 
+                   PUSH_ENABLED= {push} 
                    SOURCE_BRANCH= {source_branch}""") + "\n")
     with TemporaryDirectory() as tempdir:
         deployer = GithubPagesDeployer(
             source_dir, source_branch, source_origin,
             current_commit_id.stdout[:-1], module_path,
-            target_branch, push_origin, push_enabled, Path(tempdir))
+            target_branch, push_origin, push, Path(tempdir))
         os.mkdir(deployer.build_dir)
         Console.stderr(cleandoc(f"""
                        Using following Directories:

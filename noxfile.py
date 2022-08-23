@@ -108,8 +108,7 @@ def commit(session, branch):
         f"{PACKAGE}",
         "--push-origin",
         "origin",
-        "--push-enabled",
-        "commit",
+        "--commit",
         "--target-branch",
         target_branch[branch],
     ]
@@ -147,8 +146,7 @@ def push(session, target):
         f"{PACKAGE}",
         "--push-origin",
         "origin",
-        "--push-enabled",
-        "push",
+        "--push",
         "--target-branch",
         target_branch[target],
     ]

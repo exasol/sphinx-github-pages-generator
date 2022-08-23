@@ -73,7 +73,7 @@ We also provide shortcuts for this as nox tasks in the noxfile.py:
 
     nox -s build-docs    # Builds the documentation
     nox -s open-docs     # Opens the currently build documentation in the browser
-    nox -s clen-docs     # Clean existing docs artefacts
+    nox -s clean-docs    # Clean existing docs artefacts
 
 
 You can use similar shorthands in your project, just adjust the module path.
@@ -82,7 +82,7 @@ You can use similar shorthands in your project, just adjust the module path.
 Call the Sphinx generator
 -----------------------------
 
-Once Sphinx generator is installed in your environment, you can use the "sgpg" command to run it. Use "sgpg -h"
+Once Sphinx generator is installed in your environment, you can use the "sgpg" command to run it. Use "sgpg --help"
 for an overview over parameters.
 
 You can also import and use it in a
@@ -105,7 +105,7 @@ Then call the script using command line parameters like this:
     python3 your_caller_script.py \
         --target-branch "github-pages/main" \
         --push-origin "origin" \
-        --push-enabled "push" \
+        --push \
         --source-branch "main"  \
         --module-path "${StringArray[@]}" \
         --source-dir "/doc/"
@@ -114,9 +114,13 @@ Alternatively you can also pass the parameters directly in the python script:
 
 .. code:: py
 
+    deployer = GithubPagesDeployer(Path("doc/"), source_branch, "origin", current_commit_id.stdout[:-1], ["../test_package"],
+                                       target_branch, "origin", True,
+                                       Path(tempdir))
+
     deploy_github_pages.deploy_github_pages(["--target-branch", "target_branch",
                                              "--push-origin", "origin",
-                                             "--push-enabled", "push",
+                                             "--push-enabled", "True"
                                              "--source-branch", "source_branch",
                                              "--source-dir", "/doc/",
                                              "--module-path", "../package/module-path1", "../package/module-path2"])
@@ -127,13 +131,40 @@ The generator has to be called from the working directory containing the index.r
 Options
 -------
 
-Calling the module with "-h" will print the help page for the generator.
+Calling the module with "--help" will print the help page for the generator.
 
-.. code:: py
+.. code:: bash
 
-    deploy_github_pages.deploy_github_pages(["-h"])
+    sgpg --help
 
-Parameters:
+Options for sgpg:
+  --target-branch TEXT  Branch to push to
+
+  --push-origin TEXT    Where to push from
+
+  --push                Commit and push the documentation.
+
+  --commit              Only commit the documentation.
+
+  --source-branch TEXT  The branch you want to generate documentation from. If
+                        empty, defaults to current branch. Can also be a
+                        GitHub tag
+
+  --source-origin TEXT  Origin of source_branch. Set to 'tags' if your
+                        source_branch is a tag
+
+  --source-dir PATH     Path to the directory inside the source_branch where
+                        the index.rst and conf.py reside in.
+
+  --module-path TEXT    List of paths to all the modules the docu is being
+                        generated for
+
+  --debug               Prints full exception traceback
+
+  --help                Show this message and exit.
+
+
+Parameters for the Python class:
 
 .. autoclass:: exasol_sphinx_github_pages_generator.deployer.GithubPagesDeployer
     :noindex:
@@ -151,7 +182,7 @@ It uses the target branch github-pages/<feature-branch-name>,
 and if the branch is not "main", the target branch is deleted immediately after generation. Your can find the yaml file
 for this action in ".github/workflows/check_documentation_build.yaml".
 
-The GitHub Action uses poethepoet tasks which we describe in the pyproject.toml:
+The GitHub Action uses nox tasks which we describe in the pyproject.toml:
 
 .. code::
 
@@ -172,7 +203,7 @@ They use bash scripts that look like this:
     python3 <path/to/your/call_generator_script.py> \
       --target-branch "github-pages/main" \
       --push-origin "origin" \
-      --push-enabled "commit" \
+      --commit \
       --source-branch "main"  \
       --module-path "${StringArray[@]}"
 

@@ -52,8 +52,8 @@ To build the documentation manually for testing, you can use:
 
 .. code:: bash
 
-    nox build-docs # Builds the documentation
-    nox open-docs # Builds and opens the documentation
+    nox -s build-docs # Builds the documentation
+    nox -s open-docs # Builds and opens the documentation
 
 #####
 Tests
@@ -61,7 +61,7 @@ Tests
 
 Tests are located in the `tests folder`_. Run them with
 
-    poetry run pytest tests
+    nox -s tests
 
 The tests use a `test repository <https://github.com/exasol/sphinx-github-pages-generator-test>`_
 with a Machine user which is private in order not to confuse users. In order to run them,
