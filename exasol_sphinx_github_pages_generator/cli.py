@@ -2,7 +2,6 @@ import os
 import sys
 import click
 import traceback
-import functools
 from subprocess import run
 from inspect import cleandoc
 from tempfile import TemporaryDirectory
