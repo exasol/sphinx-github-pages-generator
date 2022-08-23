@@ -25,7 +25,8 @@ def test_remote_branch_creation(setup_test_env):
     args_list = [
         "--target-branch", target_branch,
         "--source-branch", source_branch,
-        "--module-path", "../test_package"]
+        "--module-path", "../test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -49,7 +50,8 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -68,7 +70,8 @@ def test_pushing_to_existing_docu_branch_same_source(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
     current_commit_id = run(["git", "ls-remote",
@@ -94,7 +97,8 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch_one,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -109,7 +113,8 @@ def test_pushing_to_existing_docu_branch_different_source(setup_test_env):
             "--source-branch", source_branch_two,
             "--source-dir", "documentation/",
             "--module-path", "../test_package",
-            "--module-path", "../another_test_package"]
+            "--module-path", "../another_test_package",
+            "--push"]
         result = CliRunner().invoke(cli.main, args_list)
         traceback.print_exception(*result.exc_info)
 
@@ -142,7 +147,8 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -155,7 +161,8 @@ def test_no_new_push_and_commit_if_no_changes(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -184,7 +191,8 @@ def test_verify_existence_of_generated_files_on_remote_after_push(setup_test_env
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", module_path[0],
-        "--module-path", module_path[1]]
+        "--module-path", module_path[1],
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -233,7 +241,8 @@ def test_no_doctree_files_in_remote(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -263,7 +272,8 @@ def test_no__pycache__files_in_remote(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -292,9 +302,9 @@ def test_only_commit_dont_push(setup_test_env):
     args_list = [
         "--target-branch", target_branch,
         "--source-branch", source_branch,
-        "--push-enabled", "commit",
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--commit"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -334,7 +344,8 @@ def test_select_different_source_branch_which_does_exists_locally(setup_test_env
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -357,7 +368,8 @@ def test_select_different_source_branch_which_does_not_exists_locally(setup_test
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -384,7 +396,8 @@ def test_select_different_source_branch_does_not_delete_local_changes(setup_test
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -413,7 +426,8 @@ def test_infer_source_branch(setup_test_env):
     args_list = [
         "--target-branch", target_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -439,7 +453,8 @@ def test_abort_if_given_source_branch_does_not_exist(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list, catch_exceptions=False)
     traceback.print_exception(*result.exc_info)
 
@@ -463,7 +478,8 @@ def test_abort_local_uncommitted_changes_exist_in_source_branch(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -493,7 +509,8 @@ def test_abort_local_committed_changes_exist_in_source_branch(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
     assert (isinstance(result.exception, SystemExit)
@@ -519,7 +536,8 @@ def test_abort_source_branch_only_exists_locally(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", temp_test_branch,
         "--module-path", "../test_package",
-        "--module-path", "../another_test_package"]
+        "--module-path", "../another_test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
     assert (isinstance(result.exception, SystemExit)
@@ -571,7 +589,7 @@ def test_use_different_source_dir(setup_test_env):
         "--source-dir", "documentation/",
         "--module-path", "../test_package",
         "--module-path", "../another_test_package",
-        "--debug"]
+        "--push"]
     result = CliRunner(mix_stderr=False).invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
 
@@ -594,7 +612,8 @@ def test_abort_if_invalid_source_dir(setup_test_env):
             "--source-branch", source_branch,
             "--source-dir", "not_a_source_dir/",
             "--module-path", "../test_package",
-            "--module-path", "../another_test_package"]
+            "--module-path", "../another_test_package",
+            "--push"]
         result = CliRunner().invoke(cli.main, args_list, catch_exceptions=False)
         traceback.print_exception(*result.exc_info)
 
@@ -614,7 +633,8 @@ def test_source_branch_is_tag(setup_test_env):
         "--target-branch", target_branch,
         "--source-branch", source_branch,
         "--source-origin", "tags",
-        "--module-path", "../test_package"]
+        "--module-path", "../test_package",
+        "--push"]
     result = CliRunner().invoke(cli.main, args_list)
     traceback.print_exception(*result.exc_info)
     target_branch_exists = run(["git", "show-branch", f"remotes/origin/{target_branch}"], capture_output=True,

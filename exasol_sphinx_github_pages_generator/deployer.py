@@ -22,13 +22,14 @@ class GithubPagesDeployer:
     :param source_origin: origin of the source branch. "origin" results in "refs/remotes/origin/source_branch",
         other results in "refs/source_origin/source_branch".
         Example: source_origin = tags, source_branch = tag_name result : "refs/tags/tag_name"
-    :param push_enabled: Set to "push" if generated files should be pushed to the remote, otherwise set to "commit".
+    :param push_enabled: Bool. Set to True if generated files should be pushed to the remote, otherwise set to "commit".
+        If Calling from the command line, you can use the "--commit"/"--push" flags instead.
     :param tempdir: Path of the temporary directory this Generator runs in.
     """
 
     def __init__(self, source_dir: Path, source_branch: str, source_origin: str, current_commit_id: str,
                  module_path: list,
-                 target_branch: str, push_origin: str, push_enabled: str,
+                 target_branch: str, push_origin: str, push_enabled: bool,
                  tempdir: Path):
         self.source_dir = source_dir
         self.source_branch = source_branch
@@ -254,7 +255,7 @@ class GithubPagesDeployer:
             run(["git", "commit", "--no-verify", "-m",
                  f"Update documentation from source branch {self.source_branch} with commit id"
                  f" {self.current_commit_id}"], check=True)
-            if self.push_origin != "" and self.push_enabled == "push":
+            if self.push_origin != "" and self.push_enabled:
                 Console.stderr(f"Executing push [git push {self.push_origin} {self.target_branch}]")
                 run(["git", "push", self.push_origin, self.target_branch], check=True)
         elif 0 == changes_exists.returncode:
