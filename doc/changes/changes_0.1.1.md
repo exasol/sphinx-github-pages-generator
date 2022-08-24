@@ -27,3 +27,7 @@ TBD
 
 ## Security
 
+##Documentation
+
+  - #38: Adjusted documentation to reflect latest changes
+
