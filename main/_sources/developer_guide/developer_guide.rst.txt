@@ -52,8 +52,37 @@ To build the documentation manually for testing, you can use:
 
 .. code:: bash
 
-    nox -s build-docs # Builds the documentation
-    nox -s open-docs # Builds and opens the documentation
+    nox -s build-docs       # Builds the documentation
+    nox -s open-docs        # Builds and opens the documentation
+    nox -s clean-docs       # Clean existing docs artefacts
+
+
+======================================================
+Building the Documentation in the CI
+======================================================
+
+The documentation for this project is built on GitHub Actions using this project. We will use the process as an example here.
+
+There is an action, both for updating the documentation for the main branch, and for validating the build of the
+documentation for each push not on the main branch or on documentation branches.
+It uses the target branch github-pages/<feature-branch-name>,
+and if the branch is not "main", the target branch is deleted immediately after generation. You can find the yaml file
+for this action in ".github/workflows/check_documentation_build.yaml".
+
+The GitHub Action uses nox tasks which we describe in the noxfile.py:
+
+.. code:: bash
+
+    nox -s commit-pages    # Generates documentation for the specified branch commits it to appropriate target branch
+    nox -s push-pages      # Generates documentation for the specified branch pushes it to appropriate target branch
+
+These can be run in CI using poetry like this:
+
+.. code:: bash
+
+    poetry run nox -s "push-pages(target='release')"    # Build and release documentation
+    poetry run nox -s "push-pages(target='current')"    # Build Documentation for current branch
+
 
 #####
 Tests

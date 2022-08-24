@@ -378,43 +378,6 @@ If Calling from the command line, you can use the “–commit”/”–push” 
 
 </section>
 </section>
-<section id="building-the-documentation-in-the-ci">
-<h2>Building the Documentation in the CI<a class="headerlink" href="#building-the-documentation-in-the-ci" title="Permalink to this headline">#</a></h2>
-<p>The documentation for this project is built on GitHub Actions using this project. We will use the process as an example here.</p>
-<p>There is an action, both for updating the documentation for the main branch, and for validating the build of the
-documentation for each push not on the main branch or on documentation branches.
-It uses the target branch github-pages/&lt;feature-branch-name&gt;,
-and if the branch is not “main”, the target branch is deleted immediately after generation. Your can find the yaml file
-for this action in “.github/workflows/check_documentation_build.yaml”.</p>
-<p>The GitHub Action uses nox tasks which we describe in the pyproject.toml:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">poe</span><span class="o">.</span><span class="n">tasks</span><span class="p">]</span>
-    <span class="n">commit_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;; bash ./doc/scripts/commit_pages_main.sh&quot;&quot;&quot;</span> <span class="p">}</span>
-    <span class="n">commit_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;;  bash ./doc/scripts/commit_pages_current.sh&quot;&quot;&quot;</span> <span class="p">}</span>
-    <span class="n">push_pages_main</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;; bash ./doc/scripts/push_pages_main.sh&quot;&quot;&quot;</span> <span class="p">}</span>
-    <span class="n">push_pages_current</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;; bash ./doc/scripts/push_pages_current.sh &quot;&quot;&quot;</span> <span class="p">}</span>
-
-    <span class="n">push_pages_release</span> <span class="o">=</span> <span class="p">{</span> <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;cd &quot;$(git rev-parse --show-toplevel)&quot;; bash ./doc/scripts/push_pages_release.sh&quot;&quot;&quot;</span> <span class="p">}</span>
-</pre></div>
-</div>
-<p>They use bash scripts that look like this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">declare</span> -a <span class="nv">StringArray</span><span class="o">=(</span><span class="s2">&quot;../exasol_sphinx_github_pages_generator&quot;</span> <span class="o">)</span>
-python3 &lt;path/to/your/call_generator_script.py&gt; <span class="se">\</span>
-  --target-branch <span class="s2">&quot;github-pages/main&quot;</span> <span class="se">\</span>
-  --push-origin <span class="s2">&quot;origin&quot;</span> <span class="se">\</span>
-  --commit <span class="se">\</span>
-  --source-branch <span class="s2">&quot;main&quot;</span>  <span class="se">\</span>
-  --module-path <span class="s2">&quot;</span><span class="si">${</span><span class="nv">StringArray</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span>
-</pre></div>
-</div>
-<p>The task can be called like this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry run poe commit_pages_main  <span class="c1"># creates or updates github-pages/main locally</span>
-poetry run poe push_pages_main  <span class="c1"># creates or updates github-pages/main and pushes it to origin</span>
-poetry run poe commit_pages_current  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; locally</span>
-poetry run poe push_pages_current  <span class="c1"># creates or updates github-pages/&lt;current-branch-name&gt; and pushes it to origin</span>
-poetry run poe push_pages_release  <span class="c1"># creates or updates github-pages/&lt;latest-tag&gt; and pushes it to origin</span>
-</pre></div>
-</div>
-</section>
 </section>
 
         </article>
@@ -482,7 +445,6 @@ poetry run poe push_pages_release  <span class="c1"># creates or updates github-
 <li><a class="reference internal" href="#options">Options</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#building-the-documentation-in-the-ci">Building the Documentation in the CI</a></li>
 </ul>
 </li>
 </ul>

@@ -242,10 +242,30 @@
 <p>This repository also uses itself to generate the documentation for the Generator. The Source Files for the documentation
 can be found in the <a class="reference external" href="https://github.com/exasol/sphinx-github-pages-generator/tree/main/doc">doc folder</a>. Here is the <a class="reference internal" href="../index.html#docu-start"><span class="std std-ref">generated documentation</span></a> (You are already here ;) ).
 To build the documentation manually for testing, you can use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nox -s build-docs <span class="c1"># Builds the documentation</span>
-nox -s open-docs <span class="c1"># Builds and opens the documentation</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nox -s build-docs       <span class="c1"># Builds the documentation</span>
+nox -s open-docs        <span class="c1"># Builds and opens the documentation</span>
+nox -s clean-docs       <span class="c1"># Clean existing docs artefacts</span>
 </pre></div>
 </div>
+<section id="building-the-documentation-in-the-ci">
+<h3>Building the Documentation in the CI<a class="headerlink" href="#building-the-documentation-in-the-ci" title="Permalink to this headline">#</a></h3>
+<p>The documentation for this project is built on GitHub Actions using this project. We will use the process as an example here.</p>
+<p>There is an action, both for updating the documentation for the main branch, and for validating the build of the
+documentation for each push not on the main branch or on documentation branches.
+It uses the target branch github-pages/&lt;feature-branch-name&gt;,
+and if the branch is not “main”, the target branch is deleted immediately after generation. You can find the yaml file
+for this action in “.github/workflows/check_documentation_build.yaml”.</p>
+<p>The GitHub Action uses nox tasks which we describe in the noxfile.py:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nox -s commit-pages    <span class="c1"># Generates documentation for the specified branch commits it to appropriate target branch</span>
+nox -s push-pages      <span class="c1"># Generates documentation for the specified branch pushes it to appropriate target branch</span>
+</pre></div>
+</div>
+<p>These can be run in CI using poetry like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry run nox -s <span class="s2">&quot;push-pages(target=&#39;release&#39;)&quot;</span>    <span class="c1"># Build and release documentation</span>
+poetry run nox -s <span class="s2">&quot;push-pages(target=&#39;current&#39;)&quot;</span>    <span class="c1"># Build Documentation for current branch</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="tests">
 <h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">#</a></h2>
@@ -321,7 +341,10 @@ these changes in order not to break the CI tests.</p>
             <ul>
 <li><a class="reference internal" href="#">Developer Guide</a><ul>
 <li><a class="reference internal" href="#installation-and-build-setup">Installation and Build/Setup</a></li>
-<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a><ul>
+<li><a class="reference internal" href="#building-the-documentation-in-the-ci">Building the Documentation in the CI</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#tests">Tests</a></li>
 </ul>
 </li>
