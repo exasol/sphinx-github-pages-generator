@@ -28,6 +28,13 @@ TBD
 
 ## Security
 
+  - ReDoS in py library CVE ID: CVE-2022-42969: 
+        The affected code is not used used by our project itself, nor by the dependencies pulling in the vulnerable library.
+          Checked dependencies:
+             * Nox (Code search)
+             * Pytest (Code search + [Tracking-Issue] (https://github.com/pytest-dev/pytest/issues/10392))
+  - Dependabot allerts for GitPython, markdown-it-py, Certifi fixed
+
 ##Documentation
 
   - #38: Adjusted documentation to reflect latest changes
