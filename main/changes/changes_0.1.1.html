@@ -239,6 +239,7 @@
 <li><p>#16: Changed path-like parameters from String to Path</p></li>
 <li><p>#34: Changed “push-enabled” parameter to Bool</p></li>
 <li><p>#41: Updated importlib_resources and Poetry in GH workflows</p></li>
+<li><p>Removed setup.py, installation via wheel from Github or poetry env should be unaffected</p></li>
 </ul>
 </section>
 <section id="security">
@@ -249,7 +250,8 @@ The affected code is not used used by our project itself, nor by the dependencie
 Checked dependencies:
 * Nox (Code search)
 * Pytest (Code search + [Tracking-Issue] (https://github.com/pytest-dev/pytest/issues/10392))</p></li>
-<li><p>Dependabot allerts for GitPython, markdown-it-py, Certifi fixed</p></li>
+<li><p>Dependabot alerts for GitPython, markdown-it-py, Certifi fixed</p></li>
+<li><p>Dependabot alerts fixed with relock and Poetry updated to 1.8.0 in GitHub actions</p></li>
 </ul>
 <p>##Documentation</p>
 <ul class="simple">
