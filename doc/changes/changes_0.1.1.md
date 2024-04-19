@@ -25,6 +25,7 @@ TBD
   - #16: Changed path-like parameters from String to Path
   - #34: Changed "push-enabled" parameter to Bool
   - #41: Updated importlib_resources and Poetry in GH workflows
+  - Removed setup.py, installation via wheel from Github or poetry env should be unaffected
 
 ## Security
 
