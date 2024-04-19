@@ -33,8 +33,9 @@ TBD
           Checked dependencies:
              * Nox (Code search)
              * Pytest (Code search + [Tracking-Issue] (https://github.com/pytest-dev/pytest/issues/10392))
-  - Dependabot allerts for GitPython, markdown-it-py, Certifi fixed
-
+  - Dependabot alerts for GitPython, markdown-it-py, Certifi fixed
+  - Dependabot alerts fixed with relock and Poetry updated to 1.8.0 in GitHub actions
+  
 ##Documentation
 
   - #38: Adjusted documentation to reflect latest changes
