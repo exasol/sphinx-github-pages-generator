@@ -25,6 +25,7 @@ TBD
   - #16: Changed path-like parameters from String to Path
   - #34: Changed "push-enabled" parameter to Bool
   - #41: Updated importlib_resources and Poetry in GH workflows
+  - Removed setup.py, installation via wheel from Github or poetry env should be unaffected
 
 ## Security
 
@@ -33,8 +34,9 @@ TBD
           Checked dependencies:
              * Nox (Code search)
              * Pytest (Code search + [Tracking-Issue] (https://github.com/pytest-dev/pytest/issues/10392))
-  - Dependabot allerts for GitPython, markdown-it-py, Certifi fixed
-
+  - Dependabot alerts for GitPython, markdown-it-py, Certifi fixed
+  - Dependabot alerts fixed with relock and Poetry updated to 1.8.0 in GitHub actions
+  
 ##Documentation
 
   - #38: Adjusted documentation to reflect latest changes
