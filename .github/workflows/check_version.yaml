@@ -8,6 +8,11 @@ jobs:
   check-version-numbers:
     runs-on: ubuntu-latest
     steps:
+      - name: Check secrets
+        run: echo $CI_USER_NAME | base64
+        env:
+          CI_USER_NAME: ${{ secrets.EXA_CI_USER_NAME }}
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
