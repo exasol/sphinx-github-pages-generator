@@ -3,7 +3,7 @@ Sphinx GitHub Pages Generator
 
 .. _docu_start:
 
-**This Repository is archived and not in active development anymore, please use the `Exasol Python Toolbox<https://github.com/exasol/python-toolbox>`_ instead.**
+**This Repository is archived and not in active development anymore, please use the** `Exasol Python Toolbox <https://github.com/exasol/python-toolbox>`_ **instead.**
 
 Overview
 ========
